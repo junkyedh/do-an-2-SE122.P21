@@ -1,5 +1,5 @@
 import "@/App.scss";
-import { useSystemContext } from "@/hooks/useSystemContext";
+import { useSystemContext } from "../hooks/useSystemContext";
 import { useEffect } from "react";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 
