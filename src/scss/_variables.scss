@@ -121,12 +121,27 @@ $btn-link-padding-y: 8px;
 $btn-border-width: 1px;
 $btn-border-radius: 16px;
 
+// //default button
+// $btn-default-color: get-color($primary, 200);
+// $btn-default-bg: get-color($primary, 200);
+// $btn-default-border-color: get-color($primary, 200);
+// $btn-default-hover-color: get-color($primary, 100);
+// $btn-default-hover-bg: get-color($primary, 100);
+// $btn-default-hover-border-color: get-color($primary, 100);
+// $btn-default-disabled-color: get-color($secondary, 100);
+// $btn-default-disabled-bg: get-color($secondary, 200);
+// $btn-default-disabled-border-color: get-color($secondary, 200);
+// $btn-default-active-color: get-color($primary, 100);
+// $btn-default-active-bg: get-color($primary, 100);
+// $btn-default-active-border-color: get-color($primary, 100);
+
 //primary button
 $btn-primary-default-color: $white;
 $btn-primary-default-bg: get-color($primary, 100);
 
+
 $btn-primary-hover-color: $white;
-$btn-primary-hover-bg: get-color($primary, 200);
+$btn-primary-hover-bg: get-color($neutral, 100);
 
 $btn-primary-disabled-color: get-color($secondary, 100);
 $btn-primary-disabled-bg: get-color($secondary, 200);

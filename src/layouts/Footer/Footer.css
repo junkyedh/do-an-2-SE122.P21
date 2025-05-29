@@ -1,0 +1,141 @@
+.footer {
+  display: flex;
+  justify-content: space-between;
+  height: fit-content;
+  padding-left: 40px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  background: url(@/assets/banner-2.jpg) no-repeat;
+  color: #555;
+  font-family: Arial, sans-serif;
+}
+
+.footer__section {
+  flex: 1;
+  margin-right: 20px;
+}
+
+.footer__logo-section {
+  max-width: 40%;
+}
+
+.footer__logo {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+}
+
+.footer__description {
+  font-size: 14px;
+  margin: 10px 0 20px;
+  line-height: 1.5;
+}
+
+.footer__buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.footer__button {
+  padding: 10px 20px;
+  border: none;
+  background-color: #e0e0e0;
+  border-radius: 5px;
+  font-size: 14px;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.footer__button:hover {
+  background-color: #d6d6d6;
+}
+
+.footer__title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.footer__list {
+  list-style: none;
+  padding: 0;
+}
+
+.footer__list li {
+  margin-bottom: 8px;
+}
+
+.footer__link {
+  text-decoration: none;
+  color: #555;
+  font-size: 14px;
+  transition: color 0.3s;
+}
+
+.footer__link:hover {
+  color: #000;
+}
+
+.footer__socials {
+  display: flex;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.footer__social {
+  cursor: pointer;
+  font-size: 14px;
+  color: #555;
+  transition: color 0.3s;
+}
+
+.footer__social:hover {
+  color: #000;
+}
+
+
+.footer__list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0;
+}
+
+.footer__item {
+  cursor: pointer;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #555;
+  transition: color 0.3s;
+}
+
+.footer__item:hover {
+  color: #000;
+}
+
+#back-top{
+  opacity: 0;
+  z-index: 99999;
+  font-size: 26px;
+  color:white;
+  line-height: 47px;
+  text-align: center;
+  position: fixed;
+  right: 20px;
+  bottom: 50px;
+  width: 45px;
+  height: 45px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: all 0.6s ease;
+  transform: translateY(40px);
+  background: var(--primaryClr);
+
+
+}
+
+#back-top.active{
+  opacity: 1;
+  transition: all 0.6s ease;
+  transform: translateY(-20px);
+}

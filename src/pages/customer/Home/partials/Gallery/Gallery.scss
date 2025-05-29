@@ -1,0 +1,45 @@
+.gallery {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px; /* Khoảng cách giữa các ảnh */
+    justify-content: space-between; /* Giãn cách ảnh đồng đều trong các hàng */
+    margin: 0 auto;
+    
+    .gallery-item {
+      flex: 1 1 calc(50% - 16px); 
+      max-width: calc(50% - 16px); /* Đảm bảo ảnh không vượt quá chiều rộng */
+      margin-bottom: 16px; /* Khoảng cách giữa các hàng */
+      position: relative;
+      overflow: hidden;
+      
+      img {
+        width: 100%;  /* Giới hạn chiều rộng của ảnh */
+        height: 450px; /* Giới hạn chiều cao của ảnh */
+        object-fit: cover; /* Đảm bảo ảnh lấp đầy không gian mà không bị biến dạng */
+        object-position: center; /* Đảm bảo ảnh được căn giữa */
+        border-radius: 8px; /* Làm tròn góc ảnh nếu muốn */
+        transition: transform 0.3s ease;
+        
+        &:hover {
+          transform: scale(1.05); /* Tạo hiệu ứng phóng to khi hover */
+        }
+      }
+    }
+  
+    /* Điều chỉnh cho các ảnh nhỏ (2 ảnh một hàng) */
+    @media only screen and (max-width: 768px) {
+      .gallery-item {
+        flex: 1 1 calc(50% - 16px); /* Hai ảnh trên mỗi hàng */
+        max-width: calc(50% - 16px); /* Mỗi ảnh chiếm 1/2 chiều rộng */
+      }
+    }
+  
+    /* Điều chỉnh cho ảnh lớn (chiếm hết chiều ngang) */
+    @media only screen and (max-width: 768px) {
+      .gallery-item {
+        flex: 1 1 100%; /* Mỗi ảnh chiếm toàn bộ chiều rộng */
+        max-width: 100%;
+      }
+    }
+  }
+  

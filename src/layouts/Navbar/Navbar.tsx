@@ -4,86 +4,7 @@ import { Link, useLocation } from 'react-router-dom';
 import './Navbar.scss';
 import { comparePathname } from '@/utils/uri';
 
-export const routePath = [
-  {
-    icon: "fa-solid fa-list",
-    title: "ĐẶT HÀNG",
-    link: "/order",
-    roles: ["ROLE_ADMIN", "ROLE_STAFF"],
-    children: [
-      {
-        icon: "fa-solid fa-mug-saucer",
-        title: "CHỌN BÀN",
-        link: "choose-table",
-        roles: ["ROLE_ADMIN", "ROLE_STAFF"]
-      },
-      {
-        icon: "fa-solid fa-cart-plus",
-        title: "GỌI MÓN",
-        link: "place-order",
-        roles: ["ROLE_ADMIN", "ROLE_STAFF"]
-      },
-      {
-        icon: "fa-solid fa-clipboard-list",
-        title: "ĐƠN HÀNG",
-        link: "list",
-        roles: ["ROLE_ADMIN", "ROLE_STAFF"]
-      }
-    ]
-  },
-  {
-    icon: "fa-solid fa-list",
-    title: "QUẢN LÝ DANH SÁCH",
-    link: "/manage-list",
-    // roles: ["ROLE_ADMIN"],
-    roles: ["ROLE_ADMIN", "ROLE_STAFF"],
-    children: [
-      {
-        icon: "fa-solid fa-martini-glass",
-        title: "SẢN PHẨM",
-        link: "product",
-        roles: ["ROLE_ADMIN"]
-      },
-      {
-        icon: "fa-solid fa-box",
-        title: "NGUYÊN LIỆU",
-        link: "material",
-        roles: ["ROLE_ADMIN"]
-      },
-      {
-        icon: "fa-solid fa-ticket",
-        title: "VOUCHER & COUPON",
-        link: "promote",
-        roles: ["ROLE_ADMIN"]
-      },
-      {
-        icon: "fa-solid fa-users",
-        title: "KHÁCH HÀNG",
-        link: "customer",
-        roles: ["ROLE_ADMIN", "ROLE_STAFF"]
-      },
-      {
-        icon: "fa-regular fa-rectangle-list",
-        title: "NHÂN VIÊN",
-        link: "staff",
-        roles: ["ROLE_ADMIN"]
-      },
-    ]
-  },
-  {
-    icon: "fa-solid fa-chart-line",
-    title: "THỐNG KÊ",
-    link: "/statistics",
-    roles: ["ROLE_ADMIN"]
-  },
-  {
-    icon: "fa-solid fa-user",
-    title: "THÔNG TIN NHÂN VIÊN",
-    link: "/staff-info",
-    roles: ["ROLE_ADMIN", "ROLE_STAFF"]
-  }
 
-];
 
 type SubRoutesState = {
   [key: string]: boolean;
@@ -92,13 +13,71 @@ type SubRoutesState = {
 const Navbar: React.FC = () => {
   const [currentPath, setCurrentPath] = useState("");
   const [openSubRoutes, setOpenSubRoutes] = useState<SubRoutesState>({});
-  const [userRole, setUserRole] = useState<string | null>(null);
   const location = useLocation();
 
   useEffect(() => {
     setCurrentPath(location.pathname);
-    const role = localStorage.getItem('role');
   }, [location]);
+
+  const role = localStorage.getItem('role');
+  const isBrand = localStorage.getItem('isBrand') === 'true';
+  type Route = {
+    title: string;
+    link: string;
+    icon: string;
+    roles: string[];
+    children?: Route[];
+  };
+  
+  let routes: Route[] = [];
+
+  if (role === "ROLE_ADMIN"){
+    if (isBrand) {
+      routes = [
+        {title: "Thống kê", link: "/admin/statistics", icon: "fa-solid fa-chart-line", roles: ["ROLE_ADMIN"]},
+        {title: "Danh sách nhân viên", link: "/admin/staff-list", icon: "fa-solid fa-users", roles: ["ROLE_ADMIN"]},
+        {title: "Danh sách khách hàng", link: "/admin/customer-list", icon: "fa-solid fa-users", roles: ["ROLE_ADMIN"]},
+        {title: "Danh sách sản phẩm", link: "/admin/product-list", icon: "fa-solid fa-box", roles: ["ROLE_ADMIN"]},
+        {title: "Danh sách nguyên liệu", link: "/admin/material-list", icon: "fa-solid fa-boxes-stacked", roles: ["ROLE_ADMIN"]},
+        {title: "Danh sách voucher", link: "/admin/voucher-list", icon: "fa-solid fa-ticket", roles: ["ROLE_ADMIN"]},
+        {title: "Danh sách đơn hàng", link: "/admin/order-list", icon: "fa-solid fa-receipt", roles: ["ROLE_ADMIN"]},
+      ];
+    } else {
+      routes = [
+        {title: "Thống kê", link: "/statistics", icon: "fa-solid fa-chart-line", roles: ["ROLE_ADMIN"]},
+        {title: "Danh sách chi nhánh", link: "/branch-list", icon: "fa-solid fa-building", roles: ["ROLE_ADMIN"]},  
+        {title: "Danh sách nhân viên", link: "/staff-list", icon: "fa-solid fa-users", roles: ["ROLE_ADMIN"]},
+        {title: "Danh sách khách hàng", link: "/customer-list", icon: "fa-solid fa-users", roles: ["ROLE_ADMIN"]},
+        {title: "Danh sách sản phẩm", link: "/product-list", icon: "fa-solid fa-box", roles: ["ROLE_ADMIN"]},
+        {title: "Danh sách nguyên liệu", link: "/material-list", icon: "fa-solid fa-boxes-stacked", roles: ["ROLE_ADMIN"]},
+        {title: "Danh sách voucher", link: "/voucher-list", icon: "fa-solid fa-ticket", roles: ["ROLE_ADMIN"]},
+        {title: "Danh sách đơn hàng", link: "/order-list", icon: "fa-solid fa-receipt", roles: ["ROLE_ADMIN"]},
+      ];
+    }
+  } else if (role === "ROLE_STAFF") {
+    if (isBrand) {
+      routes = [
+        {title: "ĐẶT HÀNG", link: "/staff/order", icon: "fa-solid fa-cart-plus", roles: ["ROLE_STAFF"], children: [
+          {title: "Chọn bàn", link: "choose-table", icon: "fa-solid fa-mug-saucer", roles: ["ROLE_STAFF"]},
+          {title: "Gọi món", link: "place-order", icon: "fa-solid fa-cart-plus", roles: ["ROLE_STAFF"]},
+          {title: "Danh sách đơn hàng", link: "order-list", icon: "fa-solid fa-receipt", roles: ["ROLE_STAFF"]},
+        ]},
+        {title: "Danh sách khách hàng", link: "/staff/customer-list", icon: "fa-solid fa-users", roles: ["ROLE_STAFF"]},
+        {title: "Thông tin nhân viên", link: "/staff/info", icon: "fa-solid fa-user", roles: ["ROLE_STAFF"]},
+      ];
+    }
+  }
+  else if (role === "ROLE_CUSTOMER") {
+  routes = [
+    { title: "Trang chủ", link: "/", icon: "fa-solid fa-house", roles: ["ROLE_CUSTOMER"] },
+    { title: "Giới thiệu", link: "/about-us", icon: "fa-solid fa-circle-info", roles: ["ROLE_CUSTOMER"] },
+    { title: "Liên hệ", link: "/contact-us", icon: "fa-solid fa-phone", roles: ["ROLE_CUSTOMER"] },
+    { title: "Đặt phòng", link: "/booking", icon: "fa-solid fa-calendar", roles: ["ROLE_CUSTOMER"] },
+    { title: "Lịch sử", link: "/history", icon: "fa-solid fa-clock-rotate-left", roles: ["ROLE_CUSTOMER"] },
+    { title: "Thông tin cá nhân", link: "/profile-user", icon: "fa-solid fa-user", roles: ["ROLE_CUSTOMER"] },
+  ];
+}
+
 
   const toggleSubRoutes = (path: string) => {
     setOpenSubRoutes((prev) => ({
@@ -107,14 +86,17 @@ const Navbar: React.FC = () => {
     }));
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('role');
-    window.location.href = '/login';
-  }
+const handleLogout = () => {
+  localStorage.removeItem('adminToken');
+  localStorage.removeItem('token');
+  localStorage.removeItem('role');
+  localStorage.removeItem('isBrand');
+  window.location.href = '/login';
+};
+
 
   const renderNavigationList = () => {
-    return routePath.map((route, index) => {
+    return routes.map((route, index) => {
       if (!route.roles) return null;
       if (localStorage.getItem("role") && !route.roles.includes(localStorage.getItem("role") || "")) return null;
 
@@ -152,7 +134,7 @@ const Navbar: React.FC = () => {
           </Link>
           {hasChildren && isOpen && (
             <ul className="nav-children nav nav-pills">
-              {route.children.map((subRoute, subIndex) => {
+              {route.children?.map((subRoute, subIndex) => {
                 if (!subRoute.roles) return null;
                 if (localStorage.getItem("role") && !subRoute.roles.includes(localStorage.getItem("role") || "")) return null;
                 return (
