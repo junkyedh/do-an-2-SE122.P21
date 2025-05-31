@@ -1,6 +1,28 @@
 @import "../../../scss/variables.scss";
 .container-fluid {
     padding: 20px;
+
+    .sticky-header-wrapper {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background-color: #fff;
+      padding-bottom: 8px;
+      margin-bottom: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .header-custom {
+      font-size: 24px;
+      font-weight: bold;
+      padding: 12px 0;
+      margin: 0;
+    }
+
+    .header-actions {
+      padding-top: 4px;
+    }
+
   
     .h3, .h4 {
       color: #333;
@@ -9,13 +31,60 @@
     }
   
     button {
-      border-radius: 5px;
+      border-radius: 8px;
       font-size: 14px;
-      padding: 5px 10px;
+      width: 40px !important;
+      height: 40px !important;
+      margin: 0px 10px;
       transition: background-color 0.3s ease;
-      border-color: get-color($primary, "200");
       color:get-color($primary, "100");
-      background-color: transparent;
+      background-color: get-color($accent, "100");
+
+      &.ant-btn-primary {
+        background-color: get-color($neutral, "100") !important;
+        color: get-color($primary, "100") !important;
+        border: 1px solid get-color($primary, "100");
+
+      &:hover{
+          background-color: get-color($primary, "100") !important;
+          color: get-color($neutral, "100") !important;
+          border: 1.5px solid get-color($primary, "200") !important;
+          
+        }
+      }
+
+      &.ant-btn-default {
+        background-color: get-color($accent, "100") !important;
+        color: get-color($primary, "200") !important;
+        border: 1.25px solid get-color($secondary, "100");
+
+        &:hover {
+          background-color: lightblue !important;
+          color: get-color($neutral, "100") !important;
+          border: 1.5px solid get-color($primary, "200") !important;
+        }
+      }
+      
+      &.ant-btn-danger {
+        background-color: get-color($neutral, "100") !important;
+        color: get-color($accent, "200") !important;
+        border: 1px solid lightpink !important;
+
+      &:hover {
+        background-color: lightpink !important;
+        color: get-color($neutral, "100") !important;
+        border: 1.5px solid get-color($accent, "200") !important;
+        }
+      }
+      &.ant-btn-link {
+        color: get-color($primary, "100") !important;
+        background-color: transparent;
+
+        &:hover {
+          color: get-color($secondary, "100") !important;
+          background-color: transparent;
+        }
+      }
     }
     .search-form {
       margin-left: 100px;
@@ -70,6 +139,10 @@
       }
     }
   
+    .ant-table-wrapper {
+      margin-right: 10px !important;
+    }
+    
     .ant-table {
       margin-top: 10px;
       border: 1px solid #ddd;

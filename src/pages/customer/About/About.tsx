@@ -11,7 +11,7 @@ import about3 from "@/assets/lobby.jpeg";
 import icons1 from "@/assets/delicious4.jpg";
 import icons2 from "@/assets/spa.jpg";
 import icons3 from "@/assets/tienich8.jpg";
-import Breadcrumbs from "@/layouts/Breadcrumbs/Breadcrumbs";
+import Breadcrumbs from "@/components/Breadcrumbs/Breadcrumbs";
 import "./About.scss";
 
 const About = () => {

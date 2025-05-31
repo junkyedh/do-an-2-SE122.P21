@@ -5,7 +5,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import "./Search.scss";
 import { Container, Row, Col, Button } from "react-bootstrap";
 // import
-import CustomDropdown from "@/layouts/CustomDropdown/CustomDropdown";
+import CustomDropdown from "@/components/CustomDropdown/CustomDropdown";
 import { MainApiRequest } from "@/services/MainApiRequest";
 import { useNavigate, useNavigation } from "react-router-dom";
 import moment from "moment";

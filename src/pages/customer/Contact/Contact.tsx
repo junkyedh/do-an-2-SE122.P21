@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { Col, Container, Row, Card, ListGroup, Form, FloatingLabel } from "react-bootstrap";
 import image from "@/assets/service2.jpg";
 import "./Contact.scss";
-import Breadcrumbs from "@/layouts/Breadcrumbs/Breadcrumbs";
+import Breadcrumbs from "@/components/Breadcrumbs/Breadcrumbs";
 
 const Contact = () => {
   useEffect(() => {

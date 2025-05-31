@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./Room.scss";
 import ImageGallery from "react-image-gallery";
 import { Container, Row, Col, Tab, Card, Stack, ListGroup } from "react-bootstrap";
-import Breadcrumbs from "@/layouts/Breadcrumbs/Breadcrumbs";
+import Breadcrumbs from "@/components/Breadcrumbs/Breadcrumbs";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import { MainApiRequest } from "@/services/MainApiRequest";
 import moment from "moment";

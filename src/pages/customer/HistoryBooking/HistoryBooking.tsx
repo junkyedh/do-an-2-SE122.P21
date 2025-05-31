@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './HistoryBooking.scss';
 import { Table, Tag, Button, Modal, Form, Input, Rate, message } from 'antd';
 import { Container } from 'react-bootstrap';
-import Breadcrumbs from '@/layouts/Breadcrumbs/Breadcrumbs';
+import Breadcrumbs from '@/components/Breadcrumbs/Breadcrumbs';
 import { MainApiRequest } from '@/services/MainApiRequest';
 import { useNavigate } from 'react-router-dom';
 import moment from 'moment';

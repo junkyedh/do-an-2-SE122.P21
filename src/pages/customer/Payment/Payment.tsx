@@ -3,7 +3,7 @@ import { Col, Container, Row, Card, ListGroup, Form } from "react-bootstrap";
 import { useLocation, useNavigate } from "react-router-dom";
 import moment from "moment";
 import "./Payment.scss";
-import Breadcrumbs from "@/layouts/Breadcrumbs/Breadcrumbs";
+import Breadcrumbs from "@/components/Breadcrumbs/Breadcrumbs";
 import { Button, Tag, message } from "antd";
 import LoadingOverlay from "@achmadk/react-loading-overlay";
 import { MainApiRequest } from "@/services/MainApiRequest";

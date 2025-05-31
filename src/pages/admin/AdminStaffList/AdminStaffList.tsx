@@ -4,7 +4,7 @@ import moment from 'moment';
 import { useEffect, useState } from 'react';
 import * as XLSX from 'xlsx';
 import "./AdminStaffList.scss";
-import SearchInput from '@/components/Search/SearchInput';
+import SearchInput from '@/components/adminsytem/Search/SearchInput';
 import { AdminApiRequest } from '@/services/AdminApiRequest';
 
 const AdminStaffList = () => {
@@ -114,30 +114,34 @@ const AdminStaffList = () => {
             <Table
                 dataSource={staffList}
                 rowKey="id"
+                rowClassName={(_, index) => index % 2 === 0 ? 'table-row-even' : 'table-row-odd'}
                 columns={[
-                    { title: 'ID', dataIndex: 'id', key: 'id' },
-                    { title: 'Tên nhân viên', dataIndex: 'name', key: 'name' },
-                    { title: 'Giới tính', dataIndex: 'gender', key: 'gender' },
+                    { title: 'ID', dataIndex: 'id', key: 'id', sorter: (a, b) => a.id - b.id },
+                    { title: 'Tên nhân viên', dataIndex: 'name', key: 'name', sorter: (a, b) => a.name.localeCompare(b.name) },
+                    { title: 'Giới tính', dataIndex: 'gender', key: 'gender', sorter: (a,b) => a.gender.localeCompare(b.gender) },
                     {
                         title: 'Ngày sinh',
                         dataIndex: 'birth',
                         key: 'birth',
+                        sorter: (a, b) => moment(a.birth).unix() - moment(b.birth).unix(),
                         render: (birth: string) =>
                             birth ? moment(birth).format('DD-MM-YYYY') : '-',
                     },
-                    { title: 'Loại nhân viên', dataIndex: 'typeStaff', key: 'typeStaff' },
+                    { title: 'Loại nhân viên', dataIndex: 'typeStaff', key: 'typeStaff', sorter: (a, b) => a.typeStaff.localeCompare(b.typeStaff) },
                     { title: 'Số điện thoại', dataIndex: 'phone', key: 'phone' },
                     { title: 'Địa chỉ', dataIndex: 'address', key: 'address' },
                     {
                         title: 'Giờ làm việc',
                         dataIndex: 'workHours',
                         key: 'workHours',
+                        sorter: (a, b) => a.workHours - b.workHours,
                         render: (value: number) => `${value} giờ`,
                     },
                     {
                         title: 'Lương',
                         dataIndex: 'salary',
                         key: 'salary',
+                        sorter: (a, b) => a.salary - b.salary,
                         render: (value: number) =>
                             new Intl.NumberFormat('vi-VN', {
                                 style: 'currency',
@@ -148,6 +152,7 @@ const AdminStaffList = () => {
                         title: 'Ngày bắt đầu',
                         dataIndex: 'startDate',
                         key: 'startDate',
+                        sorter: (a, b) => moment(a.startDate).unix() - moment(b.startDate).unix(),
                         render: (value: string) =>
                             value ? moment(value).format('DD-MM-YYYY HH:mm:ss') : '-',
                     },

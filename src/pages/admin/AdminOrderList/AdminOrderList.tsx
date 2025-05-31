@@ -6,7 +6,7 @@ import moment from 'moment';
 import { useEffect, useState } from 'react';
 import * as XLSX from 'xlsx';
 import './AdminOrderList.scss';
-import SearchInput from '@/components/Search/SearchInput';
+import SearchInput from '@/components/adminsytem/Search/SearchInput';
 
 export const AdminOrderList = () => {
   const [adminOrderList, setAdminOrderList] = useState<any[]>([]);
@@ -24,18 +24,27 @@ export const AdminOrderList = () => {
   }, []);
 
   const handleSearchKeyword = () => {
-    if (!searchKeyword.trim()) {
-      setAdminOrderList(originalAdminOrderList);
+    const keyword = searchKeyword.trim().toLowerCase();
+    if (!keyword) {
+      fetchAdminOrderList();
       return;
     }
-    const keyword = searchKeyword.toLowerCase();
-    const filtered = originalAdminOrderList.filter(order =>
-      order.id.toString().includes(keyword) ||
-      (order.phone || '').toLowerCase().includes(keyword) ||
-      (order.staffName || '').toLowerCase().includes(keyword)
-    );
+    const filtered = originalAdminOrderList.filter(order => {
+      const id = String(order.id ?? '').toLowerCase();
+      const phone = (order.phone ?? '').toLowerCase();
+      const staffName = (order.staffName ?? '').toLowerCase();
+
+      return id.includes(keyword) || phone.includes(keyword) || staffName.includes(keyword);
+    });
     setAdminOrderList(filtered);
   };
+
+  // Reset search when keyword is empty
+  useEffect(() => {
+    if(!searchKeyword.trim()) {
+      fetchAdminOrderList();
+    }
+  },[searchKeyword]);
 
   const handleExportAdminOrderList = () => {
     const worksheet = XLSX.utils.json_to_sheet(
@@ -57,29 +66,30 @@ export const AdminOrderList = () => {
 
   return (
     <div className="container-fluid m-2">
-      <h2 className="h2 header-custom">DANH SÁCH ĐƠN HÀNG</h2>
-
-            {/* Tìm kiếm và  Export */}
-            <div className="d-flex me-3 py-2 align-items-center justify-content-between">
-                <div className="flex-grow-1 d-flex justify-content-center">
-                    <Form layout="inline" className="search-form d-flex">
-                    <SearchInput
-                        placeholder="Tìm kiếm theo SĐT, mã đơn hoặc nhân viên"
-                        value={searchKeyword}
-                        onChange={(e) => setSearchKeyword(e.target.value)}
-                        onSearch={handleSearchKeyword}
-                        allowClear
-                    />
-                    </Form>
-                </div>
-                <div className="d-flex" >
-                    <Button 
-                    type="default" icon={<DownloadOutlined />}
-                    onClick={handleExportAdminOrderList}
-                    title='Tải xuống danh sách'
-                    />
-                </div>
-            </div>
+      <div className='sticky-header-wrapper'>
+        <h2 className="h2 header-custom">DANH SÁCH ĐƠN HÀNG</h2>
+        {/* Tìm kiếm và  Export */}
+        <div className="header-actions d-flex me-3 py-2 align-items-center justify-content-between">
+          <div className="flex-grow-1 d-flex justify-content-center">
+            <Form layout="inline" className="search-form d-flex">
+              <SearchInput
+                  placeholder="Tìm kiếm theo SĐT, mã đơn hoặc nhân viên"
+                  value={searchKeyword}
+                  onChange={(e) => setSearchKeyword(e.target.value)}
+                  onSearch={handleSearchKeyword}
+                  allowClear
+              />
+            </Form>
+          </div>
+          <div className="d-flex" >
+            <Button 
+              type="default" icon={<DownloadOutlined />}
+              onClick={handleExportAdminOrderList}
+              title='Tải xuống danh sách'
+            />
+          </div>
+        </div>
+      </div>
 
       {/* Bảng đơn hàng */}
       <Table
@@ -100,7 +110,8 @@ export const AdminOrderList = () => {
           {
             title: 'Loại phục vụ',
             dataIndex: 'serviceType',
-            key: 'serviceType'
+            key: 'serviceType',
+            sorter: (a, b) => a.serviceType.localeCompare(b.serviceType)
           },
           {
             title: 'Tổng tiền',
@@ -112,12 +123,14 @@ export const AdminOrderList = () => {
             title: 'Ngày đặt',
             dataIndex: 'orderDate',
             key: 'orderDate',
-            render: (date: string) => moment(date).format('DD-MM-YYYY HH:mm:ss')
+            render: (date: string) => moment(date).format('DD-MM-YYYY HH:mm:ss'),
+            sorter: (a, b) => moment(a.orderDate).unix() - moment(b.orderDate).unix()
           },
           {
             title: 'Nhân viên',
             dataIndex: 'staffName',
-            key: 'staffName'
+            key: 'staffName',
+            sorter: (a, b) => a.staffName.localeCompare(b.staffName)
           },
           {
             title: 'Trạng thái',
@@ -129,7 +142,8 @@ export const AdminOrderList = () => {
               else if (status === 'Hoàn thành') color = 'green';
               else if (status === 'Đã hủy') color = 'red';
               return <Tag color={color}>{status}</Tag>;
-            }
+            },
+            sorter: (a, b) => a.status.localeCompare(b.status)
           }
         ]}
       />

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Col, Container, Form, Row, Card, ListGroup } from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import "./Booking.scss";
-import Breadcrumbs from "@/layouts/Breadcrumbs/Breadcrumbs";
+import Breadcrumbs from "@/components/Breadcrumbs/Breadcrumbs";
 import { useLocation, useNavigate } from "react-router-dom";
 import moment from "moment";
 import { MainApiRequest } from "@/services/MainApiRequest";

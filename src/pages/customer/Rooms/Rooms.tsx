@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Offcanvas } from "react-bootstrap";
 import "./Room.scss";
-import Breadcrumbs from "@/layouts/Breadcrumbs/Breadcrumbs";
+import Breadcrumbs from "@/components/Breadcrumbs/Breadcrumbs";
 import Filters from "./Filters";
-import ProductCard from "@/layouts/Cards/ProductCard";
+import ProductCard from "@/components/Cards/ProductCard";
 import { popularsData } from "@/modules/data";
 import { useLocation, useNavigate } from "react-router-dom";
 import { MainApiRequest } from "@/services/MainApiRequest";
-import Search from "@/layouts/Search/Search";
+import Search from "@/components/Search/Search";
 import { LoadingOverlay } from '@achmadk/react-loading-overlay';
 import moment from "moment";
 

@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import './RoomTier.scss';
-import Breadcrumbs from '@/layouts/Breadcrumbs/Breadcrumbs';
-import Cards from '@/layouts/Cards/Cards';
+import Breadcrumbs from '@/components/Breadcrumbs/Breadcrumbs';
+import Cards from '@/components/Cards/Cards';
 import { roomTierData } from '@/modules/data';
 
 const RoomTier = () => {

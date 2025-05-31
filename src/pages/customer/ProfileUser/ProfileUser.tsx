@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Form, Button, Card } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import Breadcrumbs from "@/layouts/Breadcrumbs/Breadcrumbs";
+import Breadcrumbs from "@/components/Breadcrumbs/Breadcrumbs";
 import { MainApiRequest } from "@/services/MainApiRequest"; // Thay thế với API thực tế của bạn
 import "./ProfileUser.scss";
 import userImg from "@/assets/cus1.jpg";

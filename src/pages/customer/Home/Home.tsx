@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Banner from "./partials/Banner/Banner";
-import Search from "@/layouts/Search/Search";
+import Search from "@/components/Search/Search";
 import Features from "./partials/Features/Features";
 import { Container, Row, Col, Button, } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
@@ -12,8 +12,8 @@ import "slick-carousel/slick/slick-theme.css";
 
 import "./Home.css";
 
-import Cards from "@/layouts/Cards/Cards";
-import ProductCard from "@/layouts/Cards/ProductCard";
+import Cards from "@/components/Cards/Cards";
+import ProductCard from "@/components/Cards/ProductCard";
 import { MainApiRequest } from "@/services/MainApiRequest";
 
 
