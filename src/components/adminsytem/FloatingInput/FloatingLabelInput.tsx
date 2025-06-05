@@ -11,6 +11,8 @@ interface FloatingLabelInputProps extends FormItemProps {
   required?: boolean;
   type?: string;
   component: ComponentType;
+  disabled?: boolean;
+  readOnly?: boolean;
   componentProps?: any;
   options?: { label: string; value: any }[];
 }
@@ -21,6 +23,8 @@ const FloatingLabelInput: React.FC<FloatingLabelInputProps> = ({
   required,
   type,
   component,
+  disabled,
+  readOnly,
   componentProps = {},
   options = [],
   ...formItemProps

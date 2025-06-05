@@ -3,7 +3,7 @@ import axios from 'axios';
 
 // Create an instance of Axios
 export const AdminApiRequest = axios.create({
-    baseURL: 'https://doan2cafe.onrender.com/', // Replace with your desired base URL
+    baseURL: 'https://doan2cafe-production.up.railway.app/', // Replace with your desired base URL
     timeout: 60000, // Replace with your desired timeout in milliseconds
     headers: {
         'Content-Type': 'application/json', // Set the Content-Type header to JSON
@@ -37,11 +37,11 @@ AdminApiRequest.interceptors.response.use(
     (error) => {
         // Handle response error here
         if (error.response.status === 401) {
-            window.location.href = '/admin/login';
+            window.location.href = '/admin-login';
         }
 
         if (error.response.status === 403) {
-            window.location.href = '/admin/login';
+            window.location.href = '/admin-login';
         }
 
         // Handle response error here

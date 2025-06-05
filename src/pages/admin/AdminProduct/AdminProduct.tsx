@@ -2,7 +2,7 @@ import { Button,  Form, GetProp, Input, message, Modal, Popconfirm,  Progress,  
 import { PlusOutlined } from '@ant-design/icons';
 import { use, useEffect, useState } from 'react';
 import "./AdminProduct.scss";
-import imgDefault from '@/assets/coffee.png';
+import imgDefault from '@/assets/cup10.jpg';
 import "../../../scss/_variables.scss";
 
 import { AdminApiRequest } from '@/services/AdminApiRequest';
@@ -242,27 +242,29 @@ const AdminProductList = () => {
 
     return (
         <div className="container-fluid m-2">
-            <h2 className="h2 header-custom">QUẢN LÝ SẢN PHẨM</h2>
+            <div className='sticky-header-wrapper'>
+                <h2 className="h2 header-custom">QUẢN LÝ SẢN PHẨM</h2>
 
-            <div className="d-flex me-3 py-2 align-items-center justify-content-between">
-                <div className="flex-grow-1 d-flex justify-content-center">
-                    <Form layout="inline" className="search-form d-flex">
-                    <SearchInput
-                        placeholder="Tìm kiếm theo tên hoặc loại sản phẩm"
-                        value={searchKeyword}
-                        onChange={(e) => setSearchKeyword(e.target.value)}
-                        onSearch={handleSearchKeyword}
-                        allowClear
-                    />
-                    </Form>
-                </div>
-                <div className="d-flex">
-                    <Button 
-                        type="primary" 
-                        icon={<i className="fas fa-plus"></i>}
-                        onClick={() => onOpenCreateProductModal()}
-                    >
-                    </Button>
+                <div className="header-actions d-flex me-3 py-2 align-items-center justify-content-between">
+                    <div className="flex-grow-1 d-flex justify-content-center">
+                        <Form layout="inline" className="search-form d-flex">
+                        <SearchInput
+                            placeholder="Tìm kiếm theo tên hoặc loại sản phẩm"
+                            value={searchKeyword}
+                            onChange={(e) => setSearchKeyword(e.target.value)}
+                            onSearch={handleSearchKeyword}
+                            allowClear
+                        />
+                        </Form>
+                    </div>
+                    <div className="d-flex">
+                        <Button 
+                            type="primary" 
+                            icon={<i className="fas fa-plus"></i>}
+                            onClick={() => onOpenCreateProductModal()}
+                        >
+                        </Button>
+                    </div>
                 </div>
             </div>
 

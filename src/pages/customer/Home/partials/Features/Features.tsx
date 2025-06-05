@@ -1,9 +1,9 @@
 import React from "react";
 import "./Features.scss";
 
-import feature1 from "@/assets/deal.png";
-import feature2 from "@/assets/location.png";
-import feature3 from "@/assets/medal.png";
+import feature1 from "@/assets/bg7.jpg";
+import feature2 from "@/assets/service3.jpg";
+import feature3 from "@/assets/img5.jpg";
 import { Card, Col, Container, Row } from "react-bootstrap";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -51,21 +51,21 @@ const Features = () => {
   const featureList = [
     {
       id: 1,
-      image: feature3,
-      title: "Stay in Style",
-      des: "With a wide range of luxurious rooms and suites, find the perfect stay tailored to your needs.",
+      image: feature1,
+      title: "Dịch vụ tận tâm",
+      des: "Nhân viên phục vụ chu đáo, sẵn sàng hỗ trợ khách hàng tại quán để mang lại trải nghiệm tốt nhất.",
     },
     {
       id: 2,
-      image: feature1,
-      title: "Exclusive Offers",
-      des: "Enjoy special discounts, complimentary services, and rewards to make your stay even better.",
+      image: feature2,
+      title: "Đặt hàng trực tuyến",
+      des: "Khách hàng dễ dàng đặt món ăn nhẹ và thức uống yêu thích ngay trên website, nhanh chóng và tiện lợi.",
     },
     {
       id: 3,
-      image: feature2,
-      title: "Effortless Booking",
-      des: "Book instantly, manage your reservations, and enjoy free cancellations for a stress-free experience.",
+      image: feature3,
+      title: "Không gian thoải mái",
+      des: "Quán cà phê với không gian ấm cúng, phù hợp để gặp gỡ bạn bè hoặc làm việc, thư giãn.",
     },
   ];
 
@@ -82,7 +82,9 @@ const Features = () => {
                       <Card.Img
                         variant="top"
                         src={feature.image}
-                        className="img-fluid"
+                        className="feature-image"
+                        width={300}
+                        height={100}
                         alt={feature.title}
                       />
                       <Card.Title>{feature.title}</Card.Title>

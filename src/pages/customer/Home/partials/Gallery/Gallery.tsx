@@ -1,42 +1,35 @@
 import React, { useState } from 'react';
-import GalleryImg1 from "@/assets/room1.jpg";
-import GalleryImg3 from "@/assets/room3.jpg";
-import GalleryImg4 from "@/assets/room2.jpg";
-import GalleryImg6 from "@/assets/room9.jpg";
-import GalleryImg7 from "@/assets/room6.jpg";
+import GalleryImg1 from "@/assets/cup32.jpg";
+import GalleryImg3 from "@/assets/bread9.jpg";
+import GalleryImg2 from "@/assets/cup21.jpg";
+import GalleryImg5 from "@/assets/cup15.jpg";
+import GalleryImg6 from "@/assets/cup29.jpg";
 import Lightbox from 'yet-another-react-lightbox'; // Import đúng thư viện Lightbox
 
 import './Gallery.scss';
 
 const Gallery = () => {
+  // Thông tin hình ảnh liên quan đến thức uống, đồ ăn
   const images = [
     {
       src: GalleryImg1,
-      desc: "Person wearing shoes",
-      sub: "Gift Habeshaw"
+      desc: "Trà sữa trân châu thơm béo",
+      sub: "Trà Sữa Trân Châu"
     },
     {
       src: GalleryImg3,
-      desc: "Blonde woman wearing sunglasses smiling at the camera",
-      sub: "Dmitriy Frantsev"
+      desc: "Bánh socola mềm mịn",
+      sub: "Bánh Socola"
+    },
+    {
+      src: GalleryImg5,
+      desc: "Sinh tố dâu tươi mát",
+      sub: "Sinh Tố Dâu"
     },
     {
       src: GalleryImg6,
-      sub: "Harry Cunningham"
-    },
-    {
-      src: GalleryImg4,
-      desc: "Jaipur, Rajasthan India",
-      sub: "Liam Baldock"
-    },
-    {
-      src: GalleryImg7,
-      sub: "Verne Ho"
-    },
-    {
-      src: GalleryImg6,
-      desc: "Rann of Kutch, India",
-      sub: "Hari Nandakumar"
+      desc: "Trà đào cam sả thanh mát",
+      sub: "Trà Đào Cam Sả"
     },
   ];
 
@@ -50,7 +43,7 @@ const Gallery = () => {
     enableZoom: false,
   };
 
-  const [isOpen, setIsOpen] = useState(false); // Quản lý trạng thái mở của lightbox
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <div>
@@ -66,12 +59,10 @@ const Gallery = () => {
         ))}
       </div>
 
-      {/* Lightbox để hiển thị ảnh khi nhấn */}
       <Lightbox
         slides={images}
         open={isOpen}
-        close={() => setIsOpen(false)} // Đóng lightbox
-        // settings={settings}
+        close={() => setIsOpen(false)}
       />
     </div>
   );

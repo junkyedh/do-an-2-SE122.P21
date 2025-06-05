@@ -75,13 +75,12 @@ const Header = () => {
 
   return (
 
-    <header className="header-section">
+    <header className="header-section is-sticky">
       <Container>
-
-        <Navbar expand="lg" className="p-0 mt-2">
+        <Navbar expand="lg" className=" p-0 mt-2 justify-content-between w-100">
           {/* Logo Section  */}
-          <Navbar.Brand>
-            <NavLink to="/"> PeachHotel</NavLink>
+          <Navbar.Brand className="logo d-flex">
+            <NavLink to="/"> Café w Fen</NavLink>
           </Navbar.Brand>
           {/* End Logo Section  */}
 
@@ -93,7 +92,7 @@ const Header = () => {
           >
             {/*mobile Logo Section  */}
             <Offcanvas.Header>
-              <h1 className="logo">Weekendmonks</h1>
+              <h1 className="logo space-x-2">Café w Fen</h1>
               <span className="navbar-toggler ms-auto" onClick={toggleMenu}>
                 <i className="iconClose bi bi-x-lg"></i>
               </span>
@@ -101,20 +100,22 @@ const Header = () => {
             {/*end mobile Logo Section  */}
 
             <Offcanvas.Body>
-              <Nav className="justify-content-end flex-grow-1 pe-3 mt-2">
-                <NavLink className="nav-link" to="/" onClick={closeMenu}>
-                  Home
-                </NavLink>
-                <NavLink className="nav-link" to="/about-us" onClick={closeMenu}>
-                  ABOUT US
-                </NavLink>
-                <NavLink className="nav-link" to="/rooms" onClick={closeMenu}>
-                  ROOMS
-                </NavLink>
-                <NavLink className="nav-link" to="/contact-us" onClick={closeMenu}>
-                  CONTACT
-                </NavLink>
-              </Nav>
+              <div className="d-flex align-items-center gap-3 space-x-8">
+                <Nav className="d-non d-lg-flex gap-3">
+                  <NavLink className="nav-link" to="/" onClick={closeMenu}>
+                    Home
+                  </NavLink>
+                  <NavLink className="nav-link" to="/about-us" onClick={closeMenu}>
+                    ABOUT US
+                  </NavLink>
+                  <NavLink className="nav-link" to="/rooms" onClick={closeMenu}>
+                    MENU
+                  </NavLink>
+                  <NavLink className="nav-link" to="/contact-us" onClick={closeMenu}>
+                    CONTACT
+                  </NavLink>
+                </Nav>
+              </div>
             </Offcanvas.Body>
           </Navbar.Offcanvas>
 
@@ -129,19 +130,12 @@ const Header = () => {
                     id="collasible-nav-dropdown"
                   >
                     <NavDropdown.Item onClick={() => navigate("/profile-user")}>
-                      {/* <img
-                      alt=""
-                      src={${userInfo.pic}}
-                      width="25"
-                      height="25"
-                      style={{ marginRight: 10 }}
-                    /> */}
                       My Profile
                     </NavDropdown.Item>
 
                     <NavDropdown.Divider />
                     <NavDropdown.Item onClick={() => navigate("/history")}>
-                      My Booking
+                      mY Orders
                     </NavDropdown.Item>
 
                     <NavDropdown.Divider />

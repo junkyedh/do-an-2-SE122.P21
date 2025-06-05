@@ -78,36 +78,38 @@ const AdminStaffList = () => {
 
     return (
         <div className="container-fluid m-2">
-            <h2 className="h2 header-custom">DANH SÁCH NHÂN VIÊN</h2>
-            {/* Tìm kiếm và Import + Export */}
-            <div className="d-flex me-2 py-2 align-items-center justify-content-between">
-                <div className="flex-grow-1 d-flex justify-content-center">
-                    <Form layout="inline" className="search-form d-flex">
-                    <SearchInput
-                        placeholder="Tìm kiếm theo tên, loại nhân viên hoặc SĐT"
-                        value={searchKeyword}
-                        onChange={(e) => setSearchKeyword(e.target.value)}
-                        onSearch={handleSearchKeyword}
-                        allowClear
-                    />
-                    </Form>
-                </div>
-                <div className="d-flex" >
-                    <Upload
-                    beforeUpload={handleImportExcel}
-                    showUploadList={false}
-                    accept=".xlsx, .xls"
-                    >
-                    <Button 
-                        type="default" icon={<UploadOutlined />}
-                        title='Tải lên file Excel'
-                    />
-                    </Upload>
-                    <Button 
-                    type="default" icon={<DownloadOutlined />}
-                    onClick={exportExcel}
-                    title='Tải xuống danh sách'
-                    />
+            <div className='sticky-header-wrapper'>
+                <h2 className="h2 header-custom">DANH SÁCH NHÂN VIÊN</h2>
+                {/* Tìm kiếm và Import + Export */}
+                <div className="header-actions d-flex me-2 py-2 align-items-center justify-content-between">
+                    <div className="flex-grow-1 d-flex justify-content-center">
+                        <Form layout="inline" className="search-form d-flex">
+                        <SearchInput
+                            placeholder="Tìm kiếm theo tên, loại nhân viên hoặc SĐT"
+                            value={searchKeyword}
+                            onChange={(e) => setSearchKeyword(e.target.value)}
+                            onSearch={handleSearchKeyword}
+                            allowClear
+                        />
+                        </Form>
+                    </div>
+                    <div className="d-flex" >
+                        <Upload
+                        beforeUpload={handleImportExcel}
+                        showUploadList={false}
+                        accept=".xlsx, .xls"
+                        >
+                        <Button 
+                            type="default" icon={<UploadOutlined />}
+                            title='Tải lên file Excel'
+                        />
+                        </Upload>
+                        <Button 
+                        type="default" icon={<DownloadOutlined />}
+                        onClick={exportExcel}
+                        title='Tải xuống danh sách'
+                        />
+                    </div>
                 </div>
             </div>
 

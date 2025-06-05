@@ -138,7 +138,7 @@ export const AdminOrderList = () => {
             key: 'status',
             render: (status: string) => {
               let color = 'default';
-              if (status === 'Đang chuẩn bị') color = 'purple';
+              if (status === 'Đang thực hiện') color = 'purple';
               else if (status === 'Hoàn thành') color = 'green';
               else if (status === 'Đã hủy') color = 'red';
               return <Tag color={color}>{status}</Tag>;

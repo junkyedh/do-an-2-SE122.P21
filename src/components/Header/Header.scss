@@ -1,17 +1,22 @@
+@import '../../scss/variables.scss';
 .is-sticky {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   animation: smothScroll 1s forwards;
-  background: var(--white);
-  z-index: 999;
+  background: transparentize($color: #dac5be, $amount: 0.3);
+  backdrop-filter: blur(10px);
   box-shadow: var(--bs-box-shadow-sm) !important;
-
+  z-index: 999;
+  backdrop-filter: blur(10px);
+  transition: background-color 0.3s ease-in-out;
+  border-radius: 0 0 10px 10px;
   .navbar {
     .navbar-brand a,
     .offcanvas-body a {
-      color: var(--black) !important;
+      color: get-color($primary, "100") !important;
+      
     }
 
     .toggle_btn {
@@ -51,9 +56,12 @@ header {
       font-size: 14px;
       color: var(--white) !important;
       line-height: 150%;
+      width: max-content;
       font-family: var(--fontFamily);
       font-weight: bold;
       text-transform: uppercase;
+      align-self: center;
+      gap: 10px;
 
       &:hover {
         color: var(--primaryClr) !important;

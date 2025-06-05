@@ -225,15 +225,16 @@ const AdminPromotion = () => {
 
     return (
         <div className="container-fluid m-2">
-            <h2 className="h2 header-custom">QUẢN LÝ KHUYẾN MÃI</h2>
-
+            <div className='sticky-header-wrapper'>
+                <h2 className="h2 header-custom">QUẢN LÝ KHUYẾN MÃI</h2>
+            </div>  
             {/* Modal for creating or editing promote */}
-        <Modal
-            className="custom-modal promote-modal"
-            title={editPromote ? "Chỉnh sửa" : "Thêm mới"}
-            open={openCreatePromoteModal}
-            onCancel={onCancelCreatePromote}
-            footer= {null}        
+            <Modal
+                className="custom-modal promote-modal"
+                title={editPromote ? "Chỉnh sửa" : "Thêm mới"}
+                open={openCreatePromoteModal}
+                onCancel={onCancelCreatePromote}
+                footer= {null}        
             >
             <Form form={promoteForm} layout="vertical">
                 <div className="grid-2">

@@ -236,11 +236,6 @@ const AdminCustomerList = () => {
 
             <Table
                 dataSource={customerList}
-                pagination={{
-                    pageSize: 10, // Số lượng item trên mỗi trang
-                    showSizeChanger: true, // Hiển thị tùy chọn thay đổi số item trên mỗi trang
-                     // Các tùy chọn cho số item mỗi trang
-                    }}
                 columns={[
                     { title: 'ID', dataIndex: 'id', key: 'id', sorter: (a, b) => a.id - b.id },
                     { title: 'Tên', dataIndex: 'name', key: 'name', sorter: (a, b) => a.name.localeCompare(b.name) },

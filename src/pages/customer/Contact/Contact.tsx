@@ -17,10 +17,10 @@ const Contact = () => {
           <Row>
             <Col md="12">
               <h1 className="mb-2 h1 font-bold">
-                Let's connect and get to know each other
+                Liên hệ với chúng tôi
               </h1>
-              <p className="body-text mt-1">
-                Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard
+              <p className="body-text mt-1 align-items-center px-3 text-center">
+                Chúng tôi rất vui được nghe ý kiến của bạn! Nếu bạn có bất kỳ câu hỏi, đề xuất hoặc phản hồi nào về cửa hàng thức uống của chúng tôi, hãy để lại thông tin liên hệ bên dưới. Chúng tôi sẽ cố gắng trả lời bạn trong thời gian sớm nhất.
               </p>
             </Col>
           </Row>
@@ -34,16 +34,16 @@ const Contact = () => {
                       <i className="bi bi-headset h3"></i>
                     </div>
                   </div>
-                  <Card.Title className="fw-bold h5">Call US</Card.Title>
-                  <p className="mb-3 body-text">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+                  <Card.Title className="fw-bold h5">Phone</Card.Title>
+                  <p className="mb-3 body-text">Gọi cho chúng tôi để được hỗ trợ nhanh chóng và hiệu quả.</p>
                   <div className="d-block justify-content-between">
                     <a type="button" className="btn btn-light me-2 btn-sm">
                       <i className="bi bi-phone me-1"></i>
-                      +12 3456 789
+                      +84 336126905
                     </a>
                     <a type="button" className="btn btn-light me-2 btn-sm">
                       <i className="bi bi-telephone me-1"></i>
-                      +12 3456 789
+                      +84 336126905
                     </a>
                   </div>
                 </Card.Body>
@@ -58,12 +58,14 @@ const Contact = () => {
                       <i className="bi bi-envelope h3"></i>
                     </div>
                   </div>
-                  <Card.Title className="fw-bold h5">Email Us</Card.Title>
-                  <p className="mb-3 body-text">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+                  <Card.Title className="fw-bold h5">Email</Card.Title>
+                  <p className="mb-3 body-text">
+                    Gửi email cho chúng tôi để nhận được phản hồi chi tiết và đầy đủ nhất.
+                  </p>
                   <div className="d-block justify-content-between">
                     <a type="button" className="btn btn-light me-2 btn-sm">
                       <i className="bi bi-envelope me-2"></i>
-                      demo@gmail.com
+                      anhhan@gmail.com
                     </a>
                   </div>
                 </Card.Body>
@@ -79,7 +81,7 @@ const Contact = () => {
                     </div>
                   </div>
                   <Card.Title className="fw-bold h5">Social Media</Card.Title>
-                  <p className="mb-3 body-text">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+                  <p className="mb-3 body-text">Liên hệ trang mạng xã hội</p>
                   <div className="d-block justify-content-center">
                     <ListGroup horizontal className="justify-content-center">
                       <ListGroup.Item className="border-0">

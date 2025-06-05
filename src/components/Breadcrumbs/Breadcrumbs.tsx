@@ -26,7 +26,7 @@ const Breadcrumbs = (props: any) => {
             <Breadcrumb>
               <Breadcrumb.Item active>
                 <NavLink to="/">
-                  <i className="bi bi-house-door-fill me-1"></i> Home
+                  <i className="bi bi-house-door-fill me-1"></i> Trang chủ
                 </NavLink>
               </Breadcrumb.Item>
               <Breadcrumb.Item active>{props.pagename}</Breadcrumb.Item>
