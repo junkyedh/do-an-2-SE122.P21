@@ -43,17 +43,10 @@ const Navbar: React.FC = () => {
         {title: "Danh sách đơn hàng", link: "/admin/order-list", icon: "fa-solid fa-receipt", roles: ["ROLE_ADMIN"]},
       ];
     } else {
-                // <Route path="admin/stafflist" element={<AdminStaffList />} />
-                // <Route path="admin/customerlist" element={<AdminCustomerList />} />
-                // <Route path="admin/orderlist" element={<AdminOrderList />} />
-                // <Route path="admin/promotion" element={<AdminPromotion />} />
-                // <Route path="admin/productlist" element={<AdminProductList />} />
-                // <Route path="admin/brandlist" element={<AdminBrandList />} />
-                // <Route path="admin/rating" element={<Rating />} />
       routes = [
         {title: "Thống kê", link: "/admin/statistics", icon: "fa-solid fa-chart-line", roles: ["ROLE_ADMIN"]},
         {title: "Danh sách nhân viên", link: "/admin/stafflist", icon: "fa-solid fa-users", roles: ["ROLE_ADMIN"]},
-        {title: "Danh sách khách hàng", link: "/admin/customerlist", icon: "fa-solid fa-users", roles: ["ROLE_ADMIN"]},
+        {title: "Danh sách khách hàng", link: "/admin/customerlist", icon: "fa-solid fa-user", roles: ["ROLE_ADMIN"]},
         {title: "Danh sách đơn hàng", link: "/admin/orderlist", icon: "fa-solid fa-receipt", roles: ["ROLE_ADMIN"]},    
         {title: "Danh sách sản phẩm", link: "/admin/productlist", icon: "fa-solid fa-box", roles: ["ROLE_ADMIN"]},
         {title: "Danh sách khuyến mãi", link: "/admin/promote", icon: "fa-solid fa-ticket", roles: ["ROLE_ADMIN"]},
