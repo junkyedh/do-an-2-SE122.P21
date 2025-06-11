@@ -1,0 +1,18 @@
+# Bỏ thư mục không cần thiết trong build
+node_modules
+build
+dist
+
+# Bỏ file hệ thống, IDE, tạm
+.DS_Store
+*.log
+*.env
+.env.*
+
+# Bỏ các thư mục ẩn và metadata git
+.git
+.gitignore
+
+# Tránh copy các file cấu hình này nếu không cần
+README.md
+LICENSE

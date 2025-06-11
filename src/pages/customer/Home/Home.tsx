@@ -16,8 +16,8 @@ import { Button, List } from "antd";
 import Gallery from "./partials/Gallery/Gallery";
 import img1 from "@/assets/cup7.jpg";
 import img2 from "@/assets/cup32.jpg";
-import img4 from "@/assets/bread12.jpg";
-import img3 from "@/assets/cup39.jpg";
+import img4 from "@/assets/bread10.jpg";
+import img3 from "@/assets/cup9.jpg";
 import CardProduct from "../CardProduct/CardProduct";
 
 interface ProductSize {
@@ -127,7 +127,7 @@ const Home = () => {
         { name: "L", price: 35000 },
       ],
       hot: true,
-      cold: true,
+      cold: false,
       materials: ["Cà phê robusta", "Đường", "Đá"],
       description: "Cà phê đen truyền thống, đậm đà hương vị Việt Nam",
       isPopular: true,
