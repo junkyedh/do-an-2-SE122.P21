@@ -27,3 +27,6 @@ COPY --from=builder /app/build /usr/local/apache2/htdocs/
 # Thêm file cấu hình Apache để hỗ trợ React Router
 COPY apache/default.conf /usr/local/apache2/conf/extra/react.conf
 RUN echo "Include conf/extra/react.conf" >> /usr/local/apache2/conf/httpd.conf
+
+# Thêm dòng này để tăng RAM cho node
+ENV NODE_OPTIONS=--max-old-space-size=4096

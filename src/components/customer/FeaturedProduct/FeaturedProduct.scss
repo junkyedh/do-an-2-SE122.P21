@@ -1,0 +1,80 @@
+@import "../../../scss/variables.scss";
+
+.featured-list {
+    background-color: transparent;
+
+    .featured-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #000;
+        margin-bottom: 2rem;
+    }
+
+    .featured-item {
+        padding: 0 0.5rem;
+    }
+
+    .slick-slide {
+        padding: 0.5rem;
+    }
+
+    .slick-prev:before,
+    .slick-next:before {
+        color: lightsalmon;
+        font-size: 24px;
+        font-size: 1.5rem;
+        opacity: 0.8;
+        transition: color 0.3s ease;
+    }
+
+    .slick-dots li button:before {
+        font-size: 10px;
+        color: #9b9d9f;
+        opacity: 0.5;
+        transition: color 0.3s ease;
+    }
+
+    .slick-dots li.slick-active button:before {
+        color: rgb(254, 193, 168);
+        opacity: 1;
+        font-size: 12px;
+        transition: color 0.3s ease;
+    }
+
+    .see-more-wrapper {
+        margin-top: 2rem;
+
+        .see-more-btn {
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 999px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 1 4px 12px rgba(0, 0, 0, 0.1);
+            transition: background 0.3s ease;
+            background: linear-gradient(135deg, lightpink, $softorange);
+            color: rgb(255, 255, 255);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+
+            &:hover {
+                background: linear-gradient(0deg, get-color($primary, "200"), get-color($secondary, "100"));
+                color: get-color($accent, "100");
+                text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+
+            }
+            
+        }
+    }
+
+    @media (max-width: 768px) {
+        .featured-title {
+            font-size: 1.5rem;
+        }
+
+        .see-more-btn {
+            font-size: 0.9rem;
+            padding: 0.6rem 1.5rem;
+        }
+    }
+}

@@ -29,14 +29,26 @@ const AdminLogin = () => {
     try {
         const res = await AdminApiRequest.post('/auth/signin', { phone, password });
 
-        console.log(res);
-        if (res.status === 201) {
-            const data = res.data;
-            context.setToken(data.token);
+        // Lấy token và role từ đúng vị trí trong response
+        const token = res.data?.token;
+        const role = res.data?.user?.role;
 
-            localStorage.setItem('adminToken', data.token);
+        if ((res.status === 200 || res.status === 201) && token && role) {
+            context.setToken(token);
+            context.setRole(role);
 
-            navigate('/admin/dashboard');
+            localStorage.setItem('adminToken', token);
+            localStorage.setItem('token', token);
+            localStorage.setItem('role', role);
+
+            // Điều hướng theo role
+            if (role === "ROLE_ADMIN") navigate('/admin/dashboard');
+            else if (role === "ROLE_MANAGER") navigate('/manager/dashboard');
+            else if (role === "ROLE_STAFF") navigate('/staff/table-order');
+        } else {
+            alert('Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin đăng nhập.');
+            console.error('Đăng nhập thất bại:', res);
+            message.error('Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin đăng nhập.');
         }
     } catch (error) {
         message.error('Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin đăng nhập.');
@@ -44,12 +56,15 @@ const AdminLogin = () => {
     }
 };
 
-    useEffect(() => {
-        if (isLoggedIn && token) {
-            navigate('/admin/dashboard');
-        }
-    }
-    , [isLoggedIn, token, navigate]);
+//     useEffect(() => {
+//     if (isLoggedIn && token) {
+//         const role = localStorage.getItem('role');
+//         if (role === "ROLE_ADMIN") navigate('/admin/dashboard');
+//         else if (role === "ROLE_MANAGER") navigate('/manager/dashboard');
+//         else if (role === "ROLE_STAFF") navigate('/staff/table-order');
+//         else navigate('/');
+//     }
+// }, [isLoggedIn, token, navigate]);
 
 
     return (

@@ -18,7 +18,9 @@
     "bootstrap": "^5.3.3",
     "chart.js": "^4.4.7",
     "cors": "^2.8.5",
+    "css": "^3.0.0",
     "framer-motion": "^11.18.0",
+    "lucide-react": "^0.514.0",
     "moment": "^2.30.1",
     "npm": "^11.0.0",
     "react": "18.3.1",
@@ -33,6 +35,7 @@
     "react-scripts": "5.0.1",
     "react-signify": "1.5.1",
     "react-slick": "^0.30.3",
+    "react-toastify": "^11.0.5",
     "react-transition-group": "^4.4.5",
     "recharts": "^2.15.0",
     "slick-carousel": "^1.8.1",
@@ -61,8 +64,9 @@
     "@types/react-dom": "^19.0.2",
     "@types/react-image-gallery": "^1.2.4",
     "@types/react-slick": "^0.23.13",
+    "@types/react-toastify": "^4.1.0",
     "@types/xlsx": "^0.0.36",
-    "sass": "^1.81.1"
+    "sass": "^1.89.2"
   },
   "eslintConfig": {
     "extends": [

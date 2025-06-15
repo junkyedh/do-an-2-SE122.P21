@@ -1,100 +1,147 @@
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Home from '../pages/customer/Home/Home';
+import About from '../pages/customer/About/About';
+import Contact from '../pages/customer/Contact/Contact';
+import Login from '../pages/customer/Home/Login/Login';
+import AdminLogin from '../pages/AdminLogin/AdminLogin';
+import { AppSystemProvider } from '../hooks/useSystemContext';
+import ProtectedRoute from './ProtectedRoute';
+import AdminLayout from '../layouts/Layout/AdminLayout';
+import ManagerLayout from '../layouts/Layout/ManagerLayout';
+import StaffLayout from '../layouts/Layout/StaffLayout';
+import AdminBranchList from '@/pages/admin/AdminBranchList/AdminBranchList';
+import AdminMaterialList from '@/pages/admin/AdminMaterialList/AdminMaterialList';
+import AdminProductList from '@/pages/admin/AdminProduct/AdminProduct';
+import AdminOrderList from '@/pages/admin/AdminOrderList/AdminOrderList';
+import AdminStaffList from '@/pages/admin/AdminStaffList/AdminStaffList';
+import AdminCustomerList from '@/pages/admin/AdminCustomerList/AdminCustomerList';
+import AdminPromotion from '@/pages/admin/AdminPromotion/AdminPromotion';
+import { Rating } from '@mui/material';
+import Statistic from '@/pages/brands/Statistic/Statistic';
 import "@/App.scss";
-import { Navigate, Route, Routes, useLocation } from "react-router-dom";
-import PageNotFound from "@/layouts/PageNotFound";
-
-// Pages
-import Register from "@/pages/customer/Register/Register";
-import Home from "@/pages/customer/Home/Home";
-import About from "@/pages/customer/About/About";
-import Contact from "@/pages/customer/Contact/Contact";
-import Booking from "@/pages/customer/Booking/Booking";
-import HistoryBooking from "@/pages/customer/HistoryBooking/HistoryBooking";
-import Payment from "@/pages/customer/Payment/Payment";
-
-import TableOrder from "@/pages/brands/staff/TableOrder/TableOrder";
-import Statistic from "@/pages/brands/Statistic/Statistic";
-
-
-import { Rating } from "@mui/material";
-import AdminStaffList from "@/pages/admin/AdminStaffList/AdminStaffList";
-import AdminCustomerList from "@/pages/admin/AdminCustomerList/AdminCustomerList";
-import AdminPromotion from "@/pages/admin/AdminPromotion/AdminPromotion";
-import AdminOrderList from "@/pages/admin/AdminOrderList/AdminOrderList";
-import AdminProductList from "@/pages/admin/AdminProduct/AdminProduct";
-import Header from "@/components/Header/Header";
-import Footer from "@/components/Footer/Footer";
-import AdminBranchList from "@/pages/admin/AdminBranchList/AdminBranchList";
-import ManagerMaterialList from "@/pages/brands/ManagerMaterialList/ManagerMaterialList";
-import ManagerStaffList from "@/pages/brands/ManagerStaffList/ManagerStaffList";
-import ManagerOrderList from "@/pages/brands/ManagerOrderList/ManagerOrderList";
-import ManagerCustomerList from "@/pages/brands/ManagerCustomerList/ManagerCustomerList";
-import ManagerProductList from "@/pages/brands/ManagerProduct/ManagerProduct";
-import ManagerPromotion from "@/pages/brands/ManagerPromotion/ManagerPromotion";
-import AdminLogin from "@/pages/AdminLogin/AdminLogin";
-import Layout from "@/layouts/Layout/Layout";
-import AdminMaterialList from "@/pages/admin/AdminMaterialList/AdminMaterialList";
-
-export default function MainRoutes() {
-  const location = useLocation();
-  const isAuthPage = ["/register", "/admin-login"].includes(location.pathname);
-  const isAdminPage = location.pathname.startsWith("/admin");
-  const isManagerPage = location.pathname.startsWith("/manager");
-
+import ProductDetail from '@/pages/customer/ProductDetail/ProductDetail';
+const MainRoutes: React.FC = () => {
   return (
-    <>
-      {/* Hiện Header/Footer ở các trang public */}
-      {!isAuthPage && !isAdminPage && !isManagerPage && <Header />}
+    <AppSystemProvider>
+        <Routes>
+          {/* Customer routes */}
+          
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/product/:id" element={<ProductDetail />} />
 
-      <Routes>
-        {/* Public routes */}
-        <Route path="/" element={<Home />} />
-        <Route path="about-us" element={<About />} />
-        <Route path="contact-us" element={<Contact />} />
-        {/* <Route path="login" element={<Login />} /> */}
-        <Route path="register" element={<Register />} />
+  {/* if (role === "ROLE_ADMIN"){
+      routes = [
+        {title: "THỐNG KÊ", link: "/admin/dashboard", icon: "fa-solid fa-chart-line", roles: ["ROLE_ADMIN"]},
+        {title: "DANH SÁCH CHI NHÁNH", link: "/admin/branchlist", icon: "fa-solid fa-building", roles: ["ROLE_ADMIN"]},
+        {title: "DANH SÁCH NGUYÊN LIỆU", link: "/admin/materiallist", icon: "fa-solid fa-boxes-stacked", roles: ["ROLE_ADMIN"]},
+        {title: "DANH SÁCH SẢN PHẨM", link: "/admin/productlist", icon: "fa-solid fa-box", roles: ["ROLE_ADMIN"]},
+        {title: "DANH SÁCH ĐƠN HÀNG", link: "/admin/orderlist", icon: "fa-solid fa-receipt", roles: ["ROLE_ADMIN"]},
+        {title: "DANH SÁCH NHÂN VIÊN", link: "/admin/stafflist", icon: "fa-solid fa-users", roles: ["ROLE_ADMIN"]},
+        {title: "DANH SÁCH KHÁCH HÀNG", link: "/admin/customerlist", icon: "fa-solid fa-user", roles: ["ROLE_ADMIN"]},
+        {title: "DANH SÁCH KHUYẾN MÃI", link: "/admin/promote", icon: "fa-solid fa-ticket", roles: ["ROLE_ADMIN"]},
+        {title: "ĐÁNH GIÁ", link: "/admin/rating", icon: "fa-solid fa-star", roles: ["ROLE_ADMIN"]},
+      ];
+    } else if (role === "ROLE_MANAGER") {
+    routes = [
+      { title: "Thống kê", link: "/manager/dashboard", icon: "fa-solid fa-chart-line", roles: ["ROLE_MANAGER"] },
+      { title: "Nguyên liệu", link: "/manager/materiallist", icon: "fa-solid fa-boxes-stacked", roles: ["ROLE_MANAGER"] },
+      { title: "Sản phẩm", link: "/manager/productlist", icon: "fa-solid fa-box", roles: ["ROLE_MANAGER"] },
+      { title: "Đơn hàng", link: "/manager/orderlist", icon: "fa-solid fa-receipt", roles: ["ROLE_MANAGER"] },
+      { title: "Nhân viên", link: "/manager/stafflist", icon: "fa-solid fa-users", roles: ["ROLE_MANAGER"] },
+      { title: "Khách hàng", link: "/manager/customerlist", icon: "fa-solid fa-user", roles: ["ROLE_MANAGER"] },
+      { title: "Khuyến mãi", link: "/manager/promote", icon: "fa-solid fa-ticket", roles: ["ROLE_MANAGER"] },
+      { title: "Đánh giá", link: "/manager/rating", icon: "fa-solid fa-star", roles: ["ROLE_MANAGER"] },
+      { title: "Thông tin quán", link: "/manager/info", icon: "fa-solid fa-building", roles: ["ROLE_MANAGER"] },
+    ];
+  } else if (role === "ROLE_STAFF") {
+      routes = [
+        {title: "ĐẶT HÀNG", link: "/staff/order", icon: "fa-solid fa-cart-plus", roles: ["ROLE_STAFF"], 
+          children: [
+            {title: "Chọn bàn", link: "choose-table", icon: "fa-solid fa-mug-saucer", roles: ["ROLE_STAFF"]},
+            {title: "Gọi món", link: "place-order", icon: "fa-solid fa-cart-plus", roles: ["ROLE_STAFF"]},
+            {title: "Danh sách đơn hàng", link: "order-list", icon: "fa-solid fa-receipt", roles: ["ROLE_STAFF"]},
+        ]},
+        {title: "Danh sách khách hàng", link: "/staff/customer-list", icon: "fa-solid fa-users", roles: ["ROLE_STAFF"]},
+        {title: "Thông tin nhân viên", link: "/staff/info", icon: "fa-solid fa-user", roles: ["ROLE_STAFF"]},
+      ];
+    } else if (role === "ROLE_CUSTOMER") {
+        routes = [
+          { title: "Trang chủ", link: "/", icon: "fa-solid fa-house", roles: ["ROLE_CUSTOMER"] },
+          { title: "Giới thiệu", link: "/about-us", icon: "fa-solid fa-circle-info", roles: ["ROLE_CUSTOMER"] },
+          { title: "Liên hệ", link: "/contact-us", icon: "fa-solid fa-phone", roles: ["ROLE_CUSTOMER"] },
+          { title: "Đặt phòng", link: "/booking", icon: "fa-solid fa-calendar", roles: ["ROLE_CUSTOMER"] },
+          { title: "Lịch sử", link: "/history", icon: "fa-solid fa-clock-rotate-left", roles: ["ROLE_CUSTOMER"] },
+          { title: "Thông tin cá nhân", link: "/profile-user", icon: "fa-solid fa-user", roles: ["ROLE_CUSTOMER"] },
+        ];
+      } */}
 
-        {/* Redirect from /admin to /admin/dashboard */}
-        <Route path="admin-login" element={<AdminLogin />} />
+          {/* Admin routes */}
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute allowedRoles={['ROLE_ADMIN']}>
+                <AdminLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route path="dashboard" element={<Statistic />} />
+            {/* Thêm các route cho Admin */}
+            <Route path="branchlist" element={<AdminBranchList />} />
+            <Route path="materiallist" element={<AdminMaterialList />} />
+            <Route path="productlist" element={<AdminProductList />} />
+            <Route path="orderlist" element={<AdminOrderList />} />
+            <Route path="stafflist" element={<AdminStaffList />} />
+            <Route path="customerlist" element={<AdminCustomerList />} />
+            <Route path="promote" element={<AdminPromotion />} />
+            <Route path="rating" element={<Rating />} />
+          </Route>
 
-        {/* Admin System routes */}
-        <Route path="/admin" element={<Layout/>}>
-          <Route path="dashboard" element={<Statistic />} />
-          <Route path="branchlist" element={<AdminBranchList />} />
-          <Route path="orderlist" element={<AdminOrderList />} />
-          <Route path="stafflist" element={<AdminStaffList />} />
-          <Route path="customerlist" element={<AdminCustomerList />} />
-          <Route path="promote" element={<AdminPromotion />} />
-          <Route path="materiallist" element={<AdminMaterialList />} />
-          <Route path="productlist" element={<AdminProductList />} />
-          <Route path="rating" element={<Rating />} />
-        </Route>
+          {/* Manager routes */}
+          <Route
+            path="/manager"
+            element={
+              <ProtectedRoute allowedRoles={['ROLE_MANAGER']}>
+                <ManagerLayout />
+              </ProtectedRoute>
+            }
+          >
+            {/* Thêm các route cho Manager */}
+            <Route path="dashboard" element={<Statistic />} />
+            <Route path="materiallist" element={<AdminMaterialList />} />
+            <Route path="productlist" element={<AdminProductList />} />
+            <Route path="orderlist" element={<AdminOrderList />} />
+            <Route path="stafflist" element={<AdminStaffList />} />
+            <Route path="customerlist" element={<AdminCustomerList />} />
+            <Route path="promote" element={<AdminPromotion />} />
+            <Route path="rating" element={<Rating />} />
+            <Route path="statistic" element={<Statistic />} />
+          </Route>
 
-        {/* Admin Branch routes */}
-        <Route path="/manager" element={<Layout />}>
-          {/* <Route path="dashboard" element={<Statistic />} /> */}
-          <Route path="materiallist" element={<ManagerMaterialList />} />
-          <Route path="productlist" element={<ManagerProductList />} />
-          <Route path="orderlist" element={<ManagerOrderList />} />
-          <Route path="stafflist" element={<ManagerStaffList />} />
-          <Route path="customerlist" element={<ManagerCustomerList />} />
-          <Route path="promote" element={<ManagerPromotion />} />
-          <Route path="rating" element={<Rating />} />
-        </Route>
+          {/* Staff routes */}
+          <Route
+            path="/staff"
+            element={
+              <ProtectedRoute allowedRoles={['ROLE_STAFF']}>
+                <StaffLayout />
+              </ProtectedRoute>
+            }
+          >
+            {/* Thêm các route cho Staff */}
+            <Route path="order" element={<Statistic />} />
+            <Route path="choose-table" element={<Statistic />} />
+            <Route path="place-order" element={<Statistic />} />
+            <Route path="order-list" element={<Statistic />} />
+          </Route>
 
-        {/* Staff Brand routes */}
-        <Route path="staff/order/choose-table" element={<TableOrder />} />
-
-
-        {/* Customer routes */}
-        <Route path="booking" element={<Booking />} />
-        <Route path="history" element={<HistoryBooking />} />
-        <Route path="payment" element={<Payment />} />
-
-
-        <Route path="*" element={<PageNotFound />} />
-      </Routes>
-
-      {!isAuthPage && !isAdminPage &&!isManagerPage && <Footer />}
-    </>
+          {/* Authentication route */}
+          <Route path="/admin-login" element={<AdminLogin />} />
+        </Routes>
+    </AppSystemProvider>
   );
-}
+};
+
+export default MainRoutes;

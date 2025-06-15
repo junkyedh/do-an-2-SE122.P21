@@ -1,9 +1,11 @@
-import React, { createContext, useContext, useEffect } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 
 interface AppSystemContextValue {
     isLoggedIn: boolean;
     token: string;
-    setToken: React.Dispatch<React.SetStateAction<string>>;
+    role: string;
+    setToken: (token: string) => void;
+    setRole: (role: string) => void;
     logout: () => void;
 }
 
@@ -24,18 +26,33 @@ export const AppSystemProvider = ({ children }: any) => {
     // Add your app system state and methods here
     // For example:
     const [isLoggedIn, setIsLoggedIn] = React.useState(false);
-    const [token, setToken] = React.useState('');
+    const [token, setTokenState] = useState('');
+    const [role, setRoleState] = useState('');
+
+    const setToken = (token: string) => {
+        setTokenState(token);
+        localStorage.setItem('token', token); // Lưu token vào localStorage
+    };
+
+    const setRole = (role: string) => {
+        setRoleState(role);
+        localStorage.setItem('role', role); // Lưu role vào localStorage
+    };
 
     const logout = () => {
         setIsLoggedIn(false);
         setToken('');
+        setRole('');
         localStorage.removeItem('token');
+        localStorage.removeItem('role');
     };
 
     // Provide the app system context value to the children components
     const appSystemContextValue: AppSystemContextValue = {
         isLoggedIn,
         token,
+        role,
+        setRole,
         setToken,
         logout,
     };
@@ -43,7 +60,9 @@ export const AppSystemProvider = ({ children }: any) => {
     useEffect(() => {
         // Check if the user is logged in
         const token = localStorage.getItem('token');
-        if (token) {
+        const role = localStorage.getItem('role');
+        if (token && role) {
+            setRole(role);
             setToken(token);
             setIsLoggedIn(true);
         }

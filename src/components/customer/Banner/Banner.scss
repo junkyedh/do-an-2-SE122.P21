@@ -59,6 +59,7 @@
       transition: box-shadow 0.3ms;
       background: var(--primaryClr);
       opacity: 1;
+      
 
       &:hover {
         box-shadow: 0 0 0 1rem rgba(255, 255, 255, 0.267);
@@ -112,6 +113,17 @@
     .carousel-control-prev span,
     .carousel-control-next span {
       display: none;
+    }
+  }
+
+  .carousel-indicators {
+
+    button {
+      background-color: #cbbebe !important;
+
+      &.active {
+        background-color: var(--primaryClr);
+      }
     }
   }
 }

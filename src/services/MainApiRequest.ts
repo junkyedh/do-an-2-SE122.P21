@@ -3,7 +3,7 @@ import axios from 'axios';
 
 // Create an instance of Axios
 export const MainApiRequest = axios.create({
-    baseURL: 'https://doan2cafe.onrender.com/', // Replace with your desired base URL
+    baseURL: 'https://doan2cafe-production.up.railway.app/', // Replace with your desired base URL
     timeout: 60000, // Replace with your desired timeout in milliseconds
     headers: {
         'Content-Type': 'application/json', // Set the Content-Type header to JSON

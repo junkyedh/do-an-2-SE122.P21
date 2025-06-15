@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import './Sidebar.scss';
 import { comparePathname } from '@/utils/uri';
+import { useSystemContext } from '@/hooks/useSystemContext';
 
 
 type Route = {
@@ -21,15 +22,16 @@ const Sidebar: React.FC = () => {
   const [currentPath, setCurrentPath] = useState("");
   const [openSubRoutes, setOpenSubRoutes] = useState<SubRoutesState>({});
   const location = useLocation();
+  const { role } = useSystemContext();
 
-  useEffect(() => {
-    setCurrentPath(location.pathname);
-  }, [location]);
+  let routes: Route[] = [];
 
-  const role = localStorage.getItem('role');
+  // useEffect(() => {
+  //   setCurrentPath(location.pathname);
+  // }, [location]);
+
 
   
-  let routes: Route[] = [];
 
   if (role === "ROLE_ADMIN"){
       routes = [

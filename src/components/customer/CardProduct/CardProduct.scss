@@ -1,0 +1,234 @@
+@import "../../../scss/variables.scss";
+
+.cardProduct {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: linear-gradient(135deg, #fffaf5, get-color($background, "100"));
+  border-radius: 16px;
+  border: 1px solid get-color($neutral, "200");
+  box-shadow:rgba(0, 0, 0, 0.13) 0px 4px 12px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  height: 100%;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.13);
+    border: 1px solid get-color($neutral, "200");
+  }
+
+  .cardProductImageWrapper {
+    position: relative;
+    background: linear-gradient(145deg, #FFECEB, #FDF6F0);
+    aspect-ratio: 1 / 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    &:hover img {
+      transform: scale(1.05);
+    }
+  }
+
+  .cardProductBadge,
+  .cardProductDiscount {
+    position: absolute;
+    top: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 20px;
+    color: white;
+    z-index: 2;
+  }
+
+  .badgePopular {
+    left: 12px;
+    background: linear-gradient(135deg, #f6d365, #fda085);
+  }
+
+  .badgeNew {
+    left: 12px;
+    background: linear-gradient(135deg, #fbc2eb, #a6c1ee);
+  }
+
+  .cardProductDiscount {
+    right: 12px;
+    background: linear-gradient(135deg, #fca5a5, #f87171);
+  }
+
+  .favoriteButton {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    background-color: rgba(255, 255, 255, 0.9);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: get-color($neutral, "300");
+    transition: all 0.2s ease;
+    cursor: pointer;
+
+    &.active {
+      background-color: red;
+      color: white;
+    }
+
+    svg {
+      font-size: 1rem;
+    }
+  }
+
+  .cardProductContent {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    flex-grow: 1;
+  }
+
+  .cardProductHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .cardProductCategory {
+      font-size: 0.75rem;
+      background: linear-gradient(135deg, #ffe0c3, #ffd6e0); // pastel peach-pink gradient
+      color: #a14a2b; // deeper warm brown for better contrast
+      font-weight: 600;
+      border-radius: 20px;
+      padding: 4px 8px;
+    }
+
+    .cardProductRating {
+      display: flex;
+      align-items: center;
+      color: #fbbf24;
+      font-size: 0.875rem;
+      gap: 4px;
+
+      .ratingIcon {
+        color: #fbbf24;
+      }
+    }
+  }
+
+  .cardProductTitle {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: get-color($primary, "100");
+    cursor: pointer;
+    line-height: 1.4;
+
+    &:hover {
+      color: get-color($primary, "200");
+    }
+  }
+
+  .cardProductDescription {
+    font-size: 0.875rem;
+    color: get-color($neutral, "300");
+    line-height: 1.5;
+  }
+
+  .cardProductFooter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid get-color($neutral, "200");
+    padding-top: 0.75rem;
+    margin-top: auto;
+  }
+
+  .cardProductPriceGroup {
+    display: flex;
+    flex-direction: column;
+
+    .cardProductPrice {
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: get-color($accent, "200");
+    }
+
+    .cardProductOldPrice {
+      font-size: 0.75rem;
+      color: get-color($neutral, "300");
+      text-decoration: line-through;
+    }
+  }
+
+  .cardProductActions {
+    display: flex;
+    gap: 0.5rem;
+
+    .cardProductBtn {
+      padding: 0.5rem 1rem;
+      background: #c7e5fe;
+      color: steelblue;
+      font-weight: 500;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: 0.2s ease;
+
+      &:hover {
+        background-color: lightpink;
+        color: get-color($neutral, "100");
+      }
+    }
+
+    .cardProductCartBtn {
+      background-color: get-color($accent, "200");
+      color: white;
+      padding: 0.5rem 0.75rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      cursor: pointer;
+
+      &:hover {
+        background-color: get-color($primary, "200");
+      }
+
+      &:disabled {
+        background-color: get-color($neutral, "200");
+        cursor: not-allowed;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .cardProduct {
+    .cardProductFooter {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+
+    .cardProductActions {
+      width: 100%;
+      flex-direction: row;
+
+      .cardProductBtn {
+        flex: 1;
+      }
+    }
+  }
+}

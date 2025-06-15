@@ -5,7 +5,6 @@ import { m, motion } from 'framer-motion';
 import { useSystemContext } from '@/hooks/useSystemContext';
 import { FaPhoneAlt, FaLock } from 'react-icons/fa';
 import './Login.scss';
-import { log } from 'console';
 import { message } from 'antd';
 import { MainApiRequest } from '@/services/MainApiRequest';
 
