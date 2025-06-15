@@ -2,7 +2,7 @@
 
 .rooms_section {
   padding: 50px 0;
-  background: var(--secondaryClr);
+  background: get-color($background, "100");
 
   // Giới hạn chiều cao và chiều rộng của ảnh
   .slick-slide img {
@@ -32,7 +32,7 @@
 
 
 .call_us {
-  background: url("~@/assets/coffee1.jpg") no-repeat;
+  background: url("~@/assets/coffee2.jpg") no-repeat;
   padding: 88px 0;
   background-size: cover;
   background-position: center center;

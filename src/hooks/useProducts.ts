@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { MainApiRequest } from "@/services/MainApiRequest";
-import { CardProductProps } from "@/components/customer/CardProduct/CardProduct";
+import { Product } from "@/components/customer/CardProduct/CardProduct";
 
 const useProducts = () => {
-  const [products, setProducts] = useState<CardProductProps[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
@@ -19,7 +19,7 @@ const useProducts = () => {
           return;
         }
 
-        const mappedProducts: CardProductProps[] = rawProducts.map((item: any) => ({
+        const mappedProducts: Product[] = rawProducts.map((item: any) => ({
           id: item.id,
           name: item.name,
           category: item.category,

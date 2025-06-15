@@ -1,0 +1,120 @@
+@import "../../../scss/variables.scss";
+
+.product-list-item {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1rem;
+  gap: 1rem;
+  transition: background 0.2s;
+
+  &:hover {
+    background: #f9fafb;
+  }
+
+  /* Ảnh bên trái cố định 100×80 */
+  .pli__image {
+    position: relative;
+    flex-shrink: 0;
+    width: 100px;
+    height: 80px;
+    border-radius: var(--radius);
+    overflow: hidden;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .pli__fav-btn {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      background: rgba(255, 255, 255, 0.8);
+      border: none;
+      border-radius: 50%;
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+  }
+
+  /* Thông tin ở giữa */
+  .pli__info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+
+    .pli__badges {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 0.25rem;
+
+      .badge {
+        font-size: 0.75rem;
+        padding: 0.2rem 0.5rem;
+        border-radius: 999px;
+      }
+      .category {
+        background: #eef2f7;
+        color: var(--color-text);
+      }
+      .hot {
+        background: #fdecdc;
+        color: #c2410c;
+      }
+    }
+
+    .pli__title {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--color-text);
+      margin: 0;
+    }
+
+    .pli__desc {
+      font-size: 0.875rem;
+      color: #6b7280;
+      margin: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  /* Giá & nút bên phải */
+  .pli__actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5rem;
+
+    .pli__price {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--color-primary);
+      white-space: nowrap;
+    }
+
+    .pli__btn {
+      padding: 0.5rem 1rem;
+      background: var(--color-primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: background 0.2s;
+
+      &:hover {
+        background: var(--color-accent);
+      }
+    }
+  }
+}

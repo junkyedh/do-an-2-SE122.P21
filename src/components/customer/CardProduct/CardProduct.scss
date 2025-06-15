@@ -4,9 +4,9 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  background: linear-gradient(135deg, #fffaf5, get-color($background, "100"));
+  background: linear-gradient(135deg, #fffaf5, get-color($card, "default"));
   border-radius: 16px;
-  border: 1px solid get-color($neutral, "200");
+  border: 1px solid get-color($neutral, "100");
   box-shadow:rgba(0, 0, 0, 0.13) 0px 4px 12px;
   overflow: hidden;
   transition: all 0.3s ease;
@@ -15,15 +15,16 @@
   &:hover {
     transform: translateY(-4px);
     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.13);
-    border: 1px solid get-color($neutral, "200");
+    border: 1px solid get-color($neutral, "100");
   }
 
   .cardProductImageWrapper {
     position: relative;
-    background: linear-gradient(145deg, #FFECEB, #FDF6F0);
     aspect-ratio: 1 / 1;
     display: flex;
     align-items: center;
+    height: 250px;
+    width: 100%;
     justify-content: center;
 
     img {
@@ -46,7 +47,7 @@
     font-weight: 600;
     padding: 4px 12px;
     border-radius: 20px;
-    color: white;
+    color: get-color($primary, "foreground");
     z-index: 2;
   }
 
@@ -65,36 +66,36 @@
     background: linear-gradient(135deg, #fca5a5, #f87171);
   }
 
-  .favoriteButton {
-    position: absolute;
-    bottom: 12px;
-    right: 12px;
-    background-color: rgba(255, 255, 255, 0.9);
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: get-color($neutral, "300");
-    transition: all 0.2s ease;
-    cursor: pointer;
+  // .favoriteButton {
+  //   position: absolute;
+  //   bottom: 12px;
+  //   right: 12px;
+  //   background-color: rgba(255, 255, 255, 0.9);
+  //   width: 32px;
+  //   height: 32px;
+  //   border-radius: 50%;
+  //   display: flex;
+  //   align-items: center;
+  //   justify-content: center;
+  //   color: get-color($neutral, "300");
+  //   transition: all 0.2s ease;
+  //   cursor: pointer;
 
-    &.active {
-      background-color: red;
-      color: white;
-    }
+  //   &.active {
+  //     background-color: red;
+  //     color: white;
+  //   }
 
-    svg {
-      font-size: 1rem;
-    }
-  }
+  //   svg {
+  //     font-size: 1rem;
+  //   }
+  // }
 
   .cardProductContent {
     padding: 1rem;
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 0.25rem;
     flex-grow: 1;
   }
 
@@ -106,7 +107,7 @@
     .cardProductCategory {
       font-size: 0.75rem;
       background: linear-gradient(135deg, #ffe0c3, #ffd6e0); // pastel peach-pink gradient
-      color: #a14a2b; // deeper warm brown for better contrast
+      color: get-color($accent1, "700"); // deeper warm brown for better contrast
       font-weight: 600;
       border-radius: 20px;
       padding: 4px 8px;
@@ -128,12 +129,12 @@
   .cardProductTitle {
     font-size: 1.125rem;
     font-weight: 700;
-    color: get-color($primary, "100");
+    color: get-color($primary, "700");
     cursor: pointer;
     line-height: 1.4;
 
     &:hover {
-      color: get-color($primary, "200");
+      color: get-color($primary, "default");
     }
   }
 

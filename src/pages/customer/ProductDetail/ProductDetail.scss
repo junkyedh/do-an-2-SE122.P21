@@ -2,7 +2,7 @@
 :root {
   --color-primary: #c2410c;
   --color-accent: #f97316;
-  --color-bg: #f9fafb;
+  --color-bg: get-color($background, "100");
   --color-text: #374151;
   --radius: 1rem;
   --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -10,8 +10,9 @@
 
 .detailProduct {
   max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem;
+  margin: 2rem auto;
+  padding: 2rem 2rem;
+  border-radius: var(--radius);
   background: var(--color-bg);
   display: flex;
   gap: 2rem;

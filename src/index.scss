@@ -8,15 +8,15 @@
   --bgClr: #f8f9fd;
   --white: #ffffff;
   --black: black;
-  --textclr: #4f5e71;
+  --textclr: #2F4156;
 
   --smallText: 12px;
   --bodyText: 16px;
   --subTitle: 18px;
   --heading: 26px;
-  // --fontFamily: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  --fontFamily2: "Montserrat", sans-serif;
-  --fontFamily1: "Libre Baskerville", serif;
+
+  --fontFamily1: "Montserrat", sans-serif;
+  --fontFamily2: "Libre Baskerville", serif;
 }
 
 html, body, div, span, applet, object, iframe,
@@ -75,7 +75,7 @@ table {
   margin-right: auto;
   padding-left: 0.937rem;
   padding-right: 0.937rem;
-  max-width: 1200px;
+  max-width: 1400px;
 }
 
 .body-text, p {

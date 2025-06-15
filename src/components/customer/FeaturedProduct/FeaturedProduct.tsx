@@ -1,12 +1,13 @@
 import React from "react";
 import Slider from "react-slick";
 import "./FeaturedProduct.scss";
-import CardProduct, { CardProductProps } from "@/components/customer/CardProduct/CardProduct";
 import { useNavigate } from "react-router-dom";
+import CardProduct, { Product as ProductType } from "../CardProduct/CardProduct";
+
 
 interface FeaturedListProps {
   title?: string;
-  products: CardProductProps[];
+  products: ProductType[];
   onAddToCart?: (productId: string, size: any, temperature?: string) => void;
   onProductClick?: (productId: string) => void;
 }
@@ -21,7 +22,7 @@ const FeaturedList: React.FC<FeaturedListProps> = ({
     dots: false,
     infinite: true,
     autoplay: true,
-    slidesToShow: 4,
+    slidesToShow: 5,
     slidesToScroll: 1,
     responsive: [
       { breakpoint: 1024, settings: { slidesToShow: 3, slidesToScroll: 1 } },
@@ -31,36 +32,34 @@ const FeaturedList: React.FC<FeaturedListProps> = ({
   };
 
   const popularProducts = products.filter((p) => p.isPopular);
-const navigate = useNavigate();
+  const navigate = useNavigate();
 
-const handleShowMore = () => {
-  navigate("/menu"); 
-};
+  const handleShowMore = () => {
+    navigate("/menu"); 
+  };
   console.log("Popular products:", popularProducts);
   return (
-    <section className="featured-list">
-        <div className="container">
-            <h2 className="featured-title text-center mb-4">{title}</h2>
-            <Slider {...sliderSettings}>
-            {popularProducts.map((product) => (
-                <div key={product.id} className="featured-item">
+      <section className="featured-list">
+        <h2 className="featured-title text-center mb-4">{title}</h2>
+        <Slider {...sliderSettings}>
+          {popularProducts.map((product) => (
+              <div key={product.id} className="featured-item">
                 <CardProduct
-                    {...product}
+                    product={product}
                     onAddToCart={onAddToCart}
                     onProductClick={onProductClick}
                 />
-                </div>
-            ))}
-            </Slider>
+              </div>
+          ))}
+          </Slider>
 
-            {/* Nút Xem Thêm */}
-            <div className="see-more-wrapper text-center mt-4">
-                <button className="see-more-btn" onClick={handleShowMore}>
-                    Xem thêm
-                </button>
-            </div>
-        </div>
-    </section>
+          {/* Nút Xem Thêm */}
+          <div className="see-more-wrapper text-center mt-3">
+              <button className="see-more-btn" onClick={handleShowMore}>
+                  Xem thêm
+              </button>
+          </div>
+      </section>
   );
 };
 

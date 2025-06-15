@@ -89,18 +89,17 @@ const DetailProduct: React.FC = () => {
         if (!ratingData) return [];
         let list = ratingData.ratings;
 
-         //1) Filter by star rating
+        // 1) Filter by star rating
         if (filterStar !== "all") {
             list = list.filter(r => r.star.toString() === filterStar);
         }
 
-         //2) Sort by date
+        // 2) Sort by date
         if (sortOption === "newest") {
-            list.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+            list = [...list].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
         } else {
-            list.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+            list = [...list].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
         }
-
         return list;
     }, [ratingData, filterStar, sortOption]);
 
@@ -189,7 +188,8 @@ const DetailProduct: React.FC = () => {
                         <label>Lọc:</label>
                         <select
                         value={filterStar}
-                        onChange={(e) => setFilterStar(e.target.value as "5" | "4" | "3" | "2" | "1" | "all")}
+                        onChange={(e) => setFilterStar(e.target.value as "5" | "4" | "3" | "2" | "1" | "all")
+                        }
                         >
                         <option value="">Tất cả</option>
                         <option value="5">5 sao</option>
@@ -211,7 +211,7 @@ const DetailProduct: React.FC = () => {
                         </select>
                     </div>
                     </div>
-                    {ratingData?.ratings.map(r => (
+                    {displayedRatings.map(r => (
                         <div key={r.id} className="review-item">
                         <div className="avatar">
                             {r.customer.name.charAt(0)}

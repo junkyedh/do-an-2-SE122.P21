@@ -21,6 +21,7 @@ import { Rating } from '@mui/material';
 import Statistic from '@/pages/brands/Statistic/Statistic';
 import "@/App.scss";
 import ProductDetail from '@/pages/customer/ProductDetail/ProductDetail';
+import Menu from '@/pages/customer/Menu/Menu';
 const MainRoutes: React.FC = () => {
   return (
     <AppSystemProvider>
@@ -32,6 +33,7 @@ const MainRoutes: React.FC = () => {
           <Route path="/contact" element={<Contact />} />
           <Route path="/login" element={<Login />} />
           <Route path="/product/:id" element={<ProductDetail />} />
+          <Route path="/menu" element={<Menu />} />
 
   {/* if (role === "ROLE_ADMIN"){
       routes = [
