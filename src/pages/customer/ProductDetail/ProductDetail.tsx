@@ -1,11 +1,12 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { NavLink, useParams } from "react-router-dom";
+import { NavLink, useNavigate, useParams } from "react-router-dom";
 import { FaHeart, FaMinus, FaPlus, FaStar } from "react-icons/fa";
 import "./ProductDetail.scss";
 import { MainApiRequest } from "@/services/MainApiRequest";
 import Breadcrumbs from "@/components/Breadcrumbs/Breadcrumbs";
 import { yellow } from "@mui/material/colors";
 import ProductRating from "@/components/customer/RatingStar/ProductRating";
+import { useCart } from "@/hooks/cartContext";
 
 interface ProductSize {
   sizeName: string;
@@ -61,6 +62,8 @@ const DetailProduct: React.FC = () => {
     const [ratingData, setRatingData] = useState<RatingData | null>(null);
     const [filterStar, setFilterStar] = useState<"5" | "4" | "3" | "2" | "1" | "all">("all");
     const [sortOption, setSortOption] = useState<"newest" | "oldest">("newest");
+    const {addToCart} = useCart();
+    const navigate = useNavigate();
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -117,12 +120,49 @@ const DetailProduct: React.FC = () => {
         return sz?.price || 0;
     })();
 
+    const handleAddToCart = async () => {
+        try {
+            await MainApiRequest.post("/cart", {
+                productId: product.id,
+                size: selectedSize,
+                // temperature: needsTemp ? selectedTemp : undefined,
+                quantity,
+            });
+        } catch (error) {
+            console.error("Thêm vào giỏ hàng thất bại:", error);
+        }
+        addToCart(product.id, selectedSize, quantity);
+    }
+    const handleSizeChange = (size: string) => {
+        setSelectedSize(size);
+        if (isCake && size === "whole") {
+            setSelectedTemp("hot");
+        } else if (needsTemp) {
+            setSelectedTemp("hot");
+        }
+    };
+
+    const handlePlaceOrder = () => {
+        navigate(`/checkout`, {
+            state: {
+                initialItems: [{
+                    productId: product.id,
+                    size: selectedSize,
+                    temperature: needsTemp ? selectedTemp : undefined,
+                    quantity,
+                }],
+            }
+        });
+    };
+
     return (
         <>
         <Breadcrumbs
             title={product.name}
-            pagenames={<NavLink to="/menu">Menu</NavLink>}
-            childpagename={product.name}
+            items={[
+                { label: "Trang chủ", to: "/" },
+                { label: product.category, to: `/category/${product.category}` },
+                { label: product.name}]}
         />
 
         <div className="detailProduct">
@@ -403,8 +443,8 @@ const DetailProduct: React.FC = () => {
                 <span>{(currentPrice * quantity).toLocaleString("vi-VN")}₫</span>
                 </div>
                 <div className="summary-actions">
-                <button className="btn add-cart">Thêm vào giỏ hàng</button>
-                <button className="btn buy-now">Mua ngay</button>
+                <button className="btn add-cart" onClick={handleAddToCart}>Thêm vào giỏ hàng</button>
+                <button className="btn buy-now" onClick={handlePlaceOrder}>Mua ngay</button>
                 </div>
             </div>
 

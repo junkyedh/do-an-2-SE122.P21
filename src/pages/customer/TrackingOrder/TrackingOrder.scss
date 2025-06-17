@@ -1,0 +1,218 @@
+.tracking-page {
+  max-width: 1200px;
+  margin: 2rem auto;
+  font-family: Arial, sans-serif;
+  color: #333;
+
+  .tracking-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+
+    .back-home {
+      background: none;
+      border: none;
+      color: #555;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 1.5rem;
+    }
+
+    .order-id {
+      margin: 0;
+      font-size: 0.9rem;
+      color: #666;
+    }
+  }
+
+  .tracking-content {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 1.5rem;
+  }
+
+  section.left-col,
+  aside.right-col {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .card {
+    background: #fff;
+    border-radius: 8px;
+    padding: 1.2rem 1.5rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+
+    h2 {
+      margin-top: 0;
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+    }
+  }
+
+  .status-card {
+    .status-current {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+
+      .icon-bg {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        &.orange { background: #f97316; color: #fff; }
+        &.blue   { background: #3b82f6; color: #fff; }
+        &.green  { background: #10b981; color: #fff; }
+        &.purple { background: #8b5cf6; color: #fff; }
+        &.red    { background: #ef4444; color: #fff; }
+        &.gray   { background: #9ca3af; color: #fff; }
+      }
+
+      .status-text {
+        h2 { margin: 0; }
+        p { margin: 0.25rem 0 0; color: #555; }
+      }
+    }
+
+    .status-timeline {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+
+      .timeline-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+
+        .marker {
+          width: 12px;
+          height: 12px;
+          border: 2px solid #ccc;
+          border-radius: 50%;
+          background: #fff;
+          margin-top: 4px;
+        }
+        .marker.done {
+          background: var(--color-primary);
+          border-color: var(--color-primary);
+        }
+        .marker.active {
+          background: #fff;
+          border-color: var(--color-primary);
+        }
+
+        .label-section {
+          .label {
+            font-weight: 500;
+            color: #555;
+          }
+          .label.done,
+          .label.active {
+            color: var(--color-primary);
+          }
+          .timestamp {
+            display: block;
+            font-size: 0.85rem;
+            color: #777;
+            margin-top: 0.25rem;
+          }
+        }
+      }
+    }
+  }
+
+  .info-card,
+  .payment-card {
+    .info-line {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+      font-size: 0.95rem;
+      color: #555;
+    }
+  }
+
+  .summary-card {
+    .order-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      .order-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+        img {
+          width: 56px;
+          height: 56px;
+          object-fit: cover;
+          border-radius: 6px;
+        }
+        .desc { flex: 1; }
+        .qty { color: #777; }
+        .price {
+          font-weight: 500;
+        }
+      }
+    }
+  }
+
+  .total-card {
+    .line {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+      font-size: 0.95rem;
+
+      &.discount {
+        color: #10b981;
+      }
+      &.total-line {
+        font-size: 1.1rem;
+        font-weight: 600;
+      }
+    }
+  }
+
+  .support-card {
+    p {
+      margin: 0 0 1rem;
+      color: #555;
+    }
+    .support-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      width: 100%;
+      padding: 0.6rem;
+      background: #f3f4f6;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      color: #111;
+      margin-bottom: 0.5rem;
+      cursor: pointer;
+    }
+  }
+
+  .empty {
+    text-align: center;
+    padding: 2rem;
+    color: #777;
+  }
+}

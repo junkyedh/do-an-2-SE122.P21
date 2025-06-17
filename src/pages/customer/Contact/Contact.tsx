@@ -11,7 +11,13 @@ const Contact = () => {
 
   return (
     <>
-      <Breadcrumbs title="Contact us" pagename="Contact us" />
+      <Breadcrumbs 
+        title="Liên hệ"
+        items={[
+          { label: "Trang chủ", to: "/" },
+          { label: "Liên hệ" }
+        ]}
+      />
       <section className="contact pt-5">
         <Container>
           <Row>

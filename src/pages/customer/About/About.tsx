@@ -21,7 +21,13 @@ const About = () => {
 
   return (
     <>
-      <Breadcrumbs title="Về Chúng Tôi" pagename="Về Chúng Tôi" />
+      <Breadcrumbs
+        title="Giới thiệu"
+        items={[
+          { label: "Trang chủ", to: "/" },
+          { label: "Giới thiệu" }
+        ]}
+      />
       <section className="about-section py-5">
         <Container>
           {/* Giới thiệu */}

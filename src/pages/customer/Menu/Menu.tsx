@@ -141,8 +141,10 @@ const Menu: React.FC = () => {
     <>
     <Breadcrumbs
         title="Menu"
-        pagenames={<NavLink to="/">Trang chủ</NavLink>}
-        childpagename="Menu"
+        items={[
+          { label: "Trang chủ", to: "/" },
+          { label: "Thực đơn", to: "/menu" },
+        ]}
     />
     <div className="menu-page">
       <header className="menu-page__header">

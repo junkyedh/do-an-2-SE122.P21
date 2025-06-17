@@ -1,7 +1,9 @@
+// src/components/customer/CardProduct.tsx
 import React, { useState } from "react";
-import { FaCartPlus, FaStar, FaRegHeart, FaHeart } from "react-icons/fa";
+import { FaCartPlus, FaStar } from "react-icons/fa";
 import "./CardProduct.scss";
 import { useNavigate } from "react-router-dom";
+import { useCart } from "@/hooks/cartContext";
 
 export interface ProductSize {
   name: string;
@@ -15,9 +17,8 @@ export interface Product {
   image: string;
   available: boolean;
   sizes: ProductSize[];
-  hot?: boolean;
-  cold?: boolean;
-  materials: { name: string }[];
+  hot?: boolean;   // nếu có nghĩa là mặc định “nóng”
+  cold?: boolean;  // nếu có nghĩa là mặc định “lạnh”
   description?: string;
   isPopular: boolean;
   isNew?: boolean;
@@ -27,17 +28,21 @@ export interface Product {
 
 interface Props {
   product: Product;
-  onAddToCart?: (productId: string, size: ProductSize, temperature?: string) => void;
   onProductClick?: (productId: string) => void;
 }
 
-const CardProduct: React.FC<Props> = ({product, onAddToCart, onProductClick}) => {
-  const [selectedSize] = useState(0);
-  const [isFavorite, setIsFavorite] = useState(false);
+const CardProduct: React.FC<Props> = ({ product, onProductClick }) => {
+  const [selectedSizeIndex, setSelectedSizeIndex] = useState(0);
   const navigate = useNavigate();
+  const { addToCart } = useCart();
 
-  const size = product.sizes[selectedSize];
+  const size = product.sizes[selectedSizeIndex];
   const finalPrice = size.price - (product.discount || 0);
+
+  // nếu là cà phê hoặc trà, mood mặc định hot/cold từ product.hot/product.cold
+  const defaultMood = ["Cà phê", "Trà"].includes(product.category)
+    ? product.hot ? "hot" : "cold"
+    : undefined;
 
   const handleCardClick = () => {
     if (onProductClick) {
@@ -50,12 +55,9 @@ const CardProduct: React.FC<Props> = ({product, onAddToCart, onProductClick}) =>
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (!product.available) return;
-    onAddToCart?.(product.id, size);
-  };
 
-  const toggleFavorite = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setIsFavorite(!isFavorite);
+    // quantity tạm cố định là 1
+    addToCart(product.id, size.name, 1, defaultMood);
   };
 
   return (
@@ -65,26 +67,23 @@ const CardProduct: React.FC<Props> = ({product, onAddToCart, onProductClick}) =>
       style={{ cursor: product.available ? "pointer" : "not-allowed" }}
     >
       <div className="cardProductImageWrapper">
-        {product.image && <img src={product.image} alt={product.name} className="cardProductImage" />}
+        <img src={product.image} alt={product.name} className="cardProductImage" />
         {(product.isPopular || product.isNew) && (
           <div className={`cardProductBadge ${product.isNew ? "badgeNew" : "badgePopular"}`}>
             {product.isNew ? "Mới" : "Phổ biến"}
           </div>
         )}
-        {typeof product.discount === "number" && product.discount > 0 && (
+        {/* {product.discount && product.discount > 0 && (
           <div className="cardProductDiscount">
             -{Math.round((product.discount / size.price) * 100)}%
           </div>
-        )}
-        {/* <div className={`favoriteButton ${isFavorite ? "active" : ""}`} onClick={toggleFavorite}>
-          {isFavorite ? <FaHeart /> : <FaRegHeart />}
-        </div> */}
+        )} */}
       </div>
 
       <div className="cardProductContent">
         <div className="cardProductHeader">
           <span className="cardProductCategory">{product.category}</span>
-          {typeof product.rating === "number" && product.rating > 0 && (
+          {product.rating != null && (
             <div className="cardProductRating">
               <FaStar className="ratingIcon" />
               <span>{product.rating.toFixed(1)}</span>
@@ -99,10 +98,14 @@ const CardProduct: React.FC<Props> = ({product, onAddToCart, onProductClick}) =>
 
         <div className="cardProductFooter">
           <div className="cardProductPriceGroup">
-            <span className="cardProductPrice">{finalPrice.toLocaleString("vi-VN")}₫</span>
-            {typeof product.discount === "number" && product.discount > 0 && (
-              <span className="cardProductOldPrice">{size.price.toLocaleString("vi-VN")}₫</span>
-            )}
+            <span className="cardProductPrice">
+              {finalPrice.toLocaleString("vi-VN")}₫
+            </span>
+            {/* {product.discount && (
+              <span className="cardProductOldPrice">
+                {size.price.toLocaleString("vi-VN")}₫
+              </span>
+            )} */}
           </div>
 
           <div className="cardProductActions">

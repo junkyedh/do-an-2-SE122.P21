@@ -31,10 +31,10 @@ const CATEGORY_CONFIG: Category[] = [
     },
     {
         id: "tea",
-        name: "Trà",
+        name: "Trà trái cây",
         description: "Thanh mát và thơm ngon",
         image: img2,
-        keyWords: ["Trà"],
+        keyWords: ["Trà trái cây"],
     },
     { id: "milk-tea",
         name: "Trà sữa",
@@ -50,11 +50,11 @@ const CATEGORY_CONFIG: Category[] = [
         keyWords: ["Nước ép"],
     },
     {
-        id: "soda",
-        name: "Nước ngọt",
-        description: "Sảng khoái tức thì",
+        id: "Smoothie",
+        name: "Sinh tố",
+        description: "Thơm ngon, bổ dưỡng",
         image: img5,
-        keyWords: ["Nước ngọt"],
+        keyWords: ["Sinh tố"],
     },
     {
         id: "cake",

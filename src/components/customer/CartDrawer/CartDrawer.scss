@@ -1,0 +1,120 @@
+.cart-trigger {
+  position: relative;
+  .badge {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background: var(--bs-danger);
+    color: white;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 0.75rem;
+  }
+}
+
+.cart-drawer {
+  .offcanvas-body {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    .empty-state {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: #777;
+
+      p {
+        margin: 1rem 0;
+      }
+    }
+
+    .items-list {
+      flex: 1;
+      overflow-y: auto;
+
+      .cart-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+
+        .thumb {
+          cursor: pointer;
+        }
+
+        .info {
+          flex: 1;
+
+          h5 {
+            margin: 0 0 0.25rem;
+            cursor: pointer;
+          }
+
+          .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+
+            .control-select {
+              min-width: 80px;
+              font-size: 0.875rem;
+            }
+
+            .qty-controls {
+              display: flex;
+              align-items: center;
+              gap: 0.25rem;
+
+              button {
+                padding: 0 6px;
+              }
+            }
+
+            .remove-btn {
+              color: #dc3545;
+
+              &:hover {
+                text-decoration: underline;
+              }
+            }
+          }
+        }
+
+        .price {
+          white-space: nowrap;
+          font-weight: 500;
+        }
+      }
+    }
+
+    .summary {
+      padding-top: 1rem;
+      border-top: 1px solid #eee;
+
+      .line {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+
+        &.total {
+          font-weight: 600;
+          font-size: 1.1rem;
+        }
+      }
+
+      .btn-checkout {
+        margin-top: 1rem;
+        background: var(--bs-primary);
+        border: none;
+
+        &:hover {
+          background: var(--bs-primary-dark);
+        }
+      }
+    }
+  }
+}

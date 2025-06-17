@@ -46,8 +46,6 @@ const FeaturedList: React.FC<FeaturedListProps> = ({
               <div key={product.id} className="featured-item">
                 <CardProduct
                     product={product}
-                    onAddToCart={onAddToCart}
-                    onProductClick={onProductClick}
                 />
               </div>
           ))}

@@ -1,61 +1,82 @@
-import React from "react";
-import { FaRegHeart, FaHeart } from "react-icons/fa";
+// src/components/customer/CardListView.tsx
+import React, { useState } from "react";
+import { FaShoppingCart } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import "./CardListView.scss";
+import { useCart } from "@/hooks/cartContext";
+
+export interface ProductSize {
+  name: string;
+  price: number;
+}
 
 export interface Product {
   id: string;
   name: string;
   category: string;
-  description?: string;
   image: string;
+  available: boolean;
+  sizes: ProductSize[];
+  hot?: boolean;
+  cold?: boolean;
+  description?: string;
   isPopular: boolean;
   isNew?: boolean;
-  sizes: { name: string; price: number }[];
+  rating?: number;
   discount?: number;
 }
 
 interface Props {
   product: Product;
-  onFavoriteToggle?: (id: string, fav: boolean) => void;
+  onProductClick?: (productId: string) => void;
 }
 
-const CardListView: React.FC<Props> = ({ product, onFavoriteToggle }) => {
+const CardListView: React.FC<Props> = ({ product, onProductClick }) => {
+  const [selectedSizeIndex] = useState(0);
   const navigate = useNavigate();
-  const [fav, setFav] = React.useState(false);
+  const { addToCart } = useCart();
 
-  const price = product.sizes[0].price - (product.discount || 0);
+  const size = product.sizes[selectedSizeIndex];
+  const finalPrice = (size.price - (product.discount || 0)).toLocaleString("vi-VN") + "₫";
 
-  const handleFav = (e: React.MouseEvent) => {
+  const defaultMood = ["Cà phê", "Trà"].includes(product.category)
+    ? product.hot
+      ? "hot"
+      : "cold"
+    : undefined;
+
+  const handleCardClick = () => {
+    if (onProductClick) {
+      onProductClick(product.id);
+    } else {
+      navigate(`/product/${product.id}`);
+    }
+  };
+
+  const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setFav(!fav);
-    onFavoriteToggle?.(product.id, !fav);
+    if (!product.available) return;
+    addToCart(product.id, size.name, 1, defaultMood);
   };
 
   return (
-    <div
-      className="product-list-item"
-      onClick={() => navigate(`/product/${product.id}`)}
-    >
+    <div className="product-list-item" onClick={handleCardClick}>
       <div className="pli__image">
         <img src={product.image} alt={product.name} />
-        {/* <button className="pli__fav-btn" onClick={handleFav}>
-          {fav ? <FaHeart /> : <FaRegHeart />}
-        </button> */}
       </div>
       <div className="pli__info">
         <h3 className="pli__title">{product.name}</h3>
-        {product.description && (
-          <p className="pli__desc">{product.description}</p>
-        )}
+        {product.description && <p className="pli__desc">{product.description}</p>}
         <div className="pli__badges">
           <span className="badge category">{product.category}</span>
           {product.isPopular && <span className="badge hot">Hot</span>}
         </div>
       </div>
       <div className="pli__actions">
-        <span className="pli__price">{price.toLocaleString("vi-VN")}₫</span>
-        <button className="pli__btn">Xem chi tiết</button>
+        <span className="pli__price">{finalPrice}</span>
+        <button className="pli__btn" onClick={handleAddToCart} disabled={!product.available}>
+          <FaShoppingCart size={16} color="#fff" />
+        </button>
       </div>
     </div>
   );

@@ -100,7 +100,13 @@ const Booking = () => {
         }}
         onCancel={() => setShowServiceModal(false)}
       />
-      <Breadcrumbs title="Booking" pagename="Booking" />
+      <Breadcrumbs 
+        title="Booking"
+        items={[
+          { label: "Home", to: "/" },
+          { label: "Booking" },
+        ]}
+        />
       <section className="booking-section py-5">
         <Container>
           <Row>

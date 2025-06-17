@@ -124,7 +124,13 @@ const Payment = () => {
 
     return (
         <LoadingOverlay active={isLoading} spinner>
-            <Breadcrumbs title="Payment" pagename="Payment" />
+            <Breadcrumbs  
+                title="Payment"
+                items={[
+                    { label: "Home", to: "/" },
+                    { label: "Payment" },
+                ]}
+            />
             <section className="payment-section py-5">
                 <Container>
                     <Row>

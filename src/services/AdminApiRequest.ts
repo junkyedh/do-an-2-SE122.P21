@@ -17,8 +17,9 @@ export const AdminApiRequest = axios.create({
 // Add request interceptor
 AdminApiRequest.interceptors.request.use(
     (config) => {
-        if (localStorage.getItem('adminToken')) {
-            config.headers['Authorization'] = `Bearer ${localStorage.getItem('adminToken')}`;
+        const tk = localStorage.getItem('token');
+        if (tk) {
+            config.headers!['Authorization'] = `Bearer ${tk}`;
         }
         return config;
     },

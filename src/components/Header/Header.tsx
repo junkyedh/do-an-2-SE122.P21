@@ -11,13 +11,13 @@ import { NavLink, useNavigate } from "react-router-dom";
 import "./Header.scss";
 import { useSystemContext } from "@/hooks/useSystemContext";
 import { MainApiRequest } from "@/services/MainApiRequest";
+import CartDrawer from "../customer/CartDrawer/CartDrawer";
 
 const Header = () => {
 
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
-  const context = useSystemContext();  // Get context for token or login state
-  const { token } = context;  // You can use token or isLoggedIn from context
+  const {token, logout} = useSystemContext(); // Get token from context
   const [userInfo, setUserInfo] = useState<any>(null);
 
   const toggleMenu = () => {
@@ -46,7 +46,7 @@ const Header = () => {
 
   const handleLogout = () => {
     // Clear token or any session-related info
-    context.setToken("");  // Reset token in context
+    logout();  // Call logout function from context
     localStorage.removeItem("token");  // Remove token from localStorage
     navigate("/");  // Redirect to home page or login page
   };
@@ -67,7 +67,7 @@ const Header = () => {
       setUserInfo(res.data.data); // Giả định API trả về thông tin người dùng
     } catch (error) {
       console.error("Failed to fetch user info:", error);
-      context.setToken(""); // Xóa token nếu không hợp lệ
+      logout(); // Nếu có lỗi, đăng xuất người dùng
       localStorage.removeItem("token");
       navigate("/login");
     }
@@ -108,7 +108,7 @@ const Header = () => {
                   <NavLink className="nav-link" to="/about-us" onClick={closeMenu}>
                     ABOUT US
                   </NavLink>
-                  <NavLink className="nav-link" to="/rooms" onClick={closeMenu}>
+                  <NavLink className="nav-link" to="/menu" onClick={closeMenu}>
                     MENU
                   </NavLink>
                   <NavLink className="nav-link" to="/contact-us" onClick={closeMenu}>
@@ -120,7 +120,7 @@ const Header = () => {
           </Navbar.Offcanvas>
 
           {/* Conditionally render Login or LogOut button */}
-          <div className="ms-md-4 ms-2 mt-2 mt-lg-0 flex-row d-flex">
+          <div className="ms-md-4 ms-2 mt-2 mt-lg-0 flex-row d-flex align-items-center">
             <Nav>
               {userInfo ? (
                 <>
@@ -135,7 +135,7 @@ const Header = () => {
 
                     <NavDropdown.Divider />
                     <NavDropdown.Item onClick={() => navigate("/history")}>
-                      mY Orders
+                      My Orders
                     </NavDropdown.Item>
 
                     <NavDropdown.Divider />
@@ -157,6 +157,7 @@ const Header = () => {
             <li className="d-inline-block d-lg-none toggle_btn pt-1">
               <i className={open ? "bi bi-x-lg" : "bi bi-list"} onClick={toggleMenu}></i>
             </li>
+            <CartDrawer />
           </div>
         </Navbar>
 

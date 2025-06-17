@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Form, Input, Button, Rate, message } from 'antd';
 import './FeedbackPage.scss';
+import img from '@/assets/bg2.jpg';
 import Breadcrumbs from '@/components/Breadcrumbs/Breadcrumbs';
 
 const FeedbackPage = () => {
@@ -25,7 +26,13 @@ const FeedbackPage = () => {
 
   return (
     <>
-      <Breadcrumbs title="Feedback" pagename="Feedback" />
+      <Breadcrumbs 
+        title="Feedback"
+        items={[
+          { label: 'Home', to: '/' },
+          { label: 'Feedback' }
+        ]}
+      />
       <section className="feedback-section py-5">
         <div className="container">
           <h2 className="mb-4">Feedback for Reservation: {reservationCode}</h2>

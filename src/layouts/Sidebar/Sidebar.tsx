@@ -26,11 +26,11 @@ const Sidebar: React.FC = () => {
 
   let routes: Route[] = [];
 
-  // useEffect(() => {
-  //   setCurrentPath(location.pathname);
-  // }, [location]);
+  useEffect(() => {
+    setCurrentPath(location.pathname);
+  }, [location]);
 
-
+  if (routes.length === 0) return null;
   
 
   if (role === "ROLE_ADMIN"){

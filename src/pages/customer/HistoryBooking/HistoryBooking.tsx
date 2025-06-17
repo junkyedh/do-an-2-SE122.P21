@@ -114,7 +114,13 @@ const HistoryBooking = () => {
 
   return (
     <>
-      <Breadcrumbs title="History Booking" pagename="History Booking" />
+      <Breadcrumbs  
+        title="Booking History"
+        items={[
+          { label: 'Home', to: '/' },
+          { label: 'Booking History' }
+        ]}
+      />
       <section className="history-section py-5">
         <div className='w-75 container-fluid'>
           <Form

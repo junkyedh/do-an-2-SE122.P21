@@ -1,71 +1,54 @@
-// import { LoadingOverlay } from 'react-loading-overlay';
-import React, { useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { m, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useSystemContext } from '@/hooks/useSystemContext';
 import { FaPhoneAlt, FaLock } from 'react-icons/fa';
 import './AdminLogin.scss';
 import { AdminApiRequest } from '@/services/AdminApiRequest';
-import { log } from 'console';
 import { message } from 'antd';
 
-const AdminLogin = () => {
-    const navigate = useNavigate();
-    const context = useSystemContext();
-    const {
-        isLoggedIn,
-        token
-    } = context;
-    const [phone, setPhone] = React.useState('');
-    const [password, setPassword] = React.useState('');
-    const [remember, setRemember] = React.useState(false);
+const AdminLogin: React.FC = () => {
+  const navigate = useNavigate();
+  const { setAuth, logout } = useSystemContext();
+  const [phone, setPhone] = useState('');
+  const [password, setPassword] = useState('');
+  const [remember, setRemember] = useState(false);
 
+  const handleRememberOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setRemember(e.target.checked);
+  };
 
-    const handleRememberOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setRemember(e.target.checked);
-    }
-
-    const handleLogin = async () => {
+  const handleLogin = async () => {
     try {
-        const res = await AdminApiRequest.post('/auth/signin', { phone, password });
-
-        // Lấy token và role từ đúng vị trí trong response
-        const token = res.data?.token;
-        const role = res.data?.user?.role;
-
-        if ((res.status === 200 || res.status === 201) && token && role) {
-            context.setToken(token);
-            context.setRole(role);
-
-            localStorage.setItem('adminToken', token);
-            localStorage.setItem('token', token);
-            localStorage.setItem('role', role);
-
-            // Điều hướng theo role
-            if (role === "ROLE_ADMIN") navigate('/admin/dashboard');
-            else if (role === "ROLE_MANAGER") navigate('/manager/dashboard');
-            else if (role === "ROLE_STAFF") navigate('/staff/table-order');
-        } else {
-            alert('Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin đăng nhập.');
-            console.error('Đăng nhập thất bại:', res);
-            message.error('Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin đăng nhập.');
-        }
-    } catch (error) {
+      const res = await AdminApiRequest.post('/auth/signin', { phone, password });
+      const token = res.data?.token;
+      const role = res.data?.user?.role;
+      if ((res.status === 200 || res.status === 201) && token && role) {
+        // Lưu token và role vào context
+        setAuth(token, role);
+        // Điều hướng theo role
+        switch (role) {
+            case 'ROLE_ADMIN':
+                navigate('/admin/dashboard');
+                break;
+            case 'ROLE_MANAGER':
+                navigate('/manager/dashboard');
+                break;
+            case 'ROLE_STAFF':
+                navigate('/staff/dashboard');
+                break;
+            default:
+                message.error('Bạn không có quyền truy cập vào hệ thống quản trị.');
+                logout();
+                break;
+            }
+      } else {
         message.error('Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin đăng nhập.');
-        console.error('Đăng nhập thất bại:', error);
+      }
+    } catch (error) {
+      message.error('Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin đăng nhập.');
     }
-};
-
-//     useEffect(() => {
-//     if (isLoggedIn && token) {
-//         const role = localStorage.getItem('role');
-//         if (role === "ROLE_ADMIN") navigate('/admin/dashboard');
-//         else if (role === "ROLE_MANAGER") navigate('/manager/dashboard');
-//         else if (role === "ROLE_STAFF") navigate('/staff/table-order');
-//         else navigate('/');
-//     }
-// }, [isLoggedIn, token, navigate]);
-
+  };
 
     return (
         <div className="bg-login">

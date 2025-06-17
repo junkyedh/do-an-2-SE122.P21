@@ -116,7 +116,13 @@ const ProfileUser = () => {
 
   return (
     <>
-      <Breadcrumbs title="Profile User" pagename="Profile User" />
+      <Breadcrumbs 
+        title="My Profile"
+        items={[
+          { label: "Home", to: "/" },
+          { label: "Profile" }
+        ]}
+      />
       <section className="profile-section py-5 d-flex justify-content-center align-items-center">
         <Card className="shadow-sm p-4 w-50 ">
           <Card.Header className="border-bottom pb-3">

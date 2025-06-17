@@ -1,14 +1,20 @@
 @import '../../scss/variables.scss';
+
+.header-section {
+  overflow: visible !important;
+  z-index: 1000;
+}
 .is-sticky {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
+  overflow: visible !important;
   animation: smothScroll 1s forwards;
   background: transparentize($color: #dac5be, $amount: 0.3);
   backdrop-filter: blur(10px);
   box-shadow: var(--bs-box-shadow-sm) !important;
-  z-index: 999;
+  z-index: 1000;
   backdrop-filter: blur(10px);
   transition: background-color 0.3s ease-in-out;
   border-radius: 0 0 10px 10px;
@@ -40,6 +46,7 @@ header {
   z-index: 999;
   padding: 12px 0;
   width: 100%;
+
 
   .navbar {
     .navbar-brand a {
