@@ -21,6 +21,11 @@ import Menu from '@/pages/customer/Menu/Menu';
 import PublicLayout from '@/layouts/Layout/PublicLayout';
 import Layout from '@/layouts/Layout/Layout';
 import ManagerCustomerList from '@/pages/brands/ManagerCustomerList/ManagerCustomerList';
+import ManagerProductList from '@/pages/brands/ManagerProduct/ManagerProduct';
+import ManagerMaterialList from '@/pages/brands/ManagerMaterialList/ManagerMaterialList';
+import ManagerOrderList from '@/pages/brands/ManagerOrderList/ManagerOrderList';
+import ManagerPromotion from '@/pages/brands/ManagerPromotion/ManagerPromotion';
+import ManagerStaffList from '@/pages/brands/ManagerStaffList/ManagerStaffList';
 import { Checkout } from '@/pages/customer/Checkout/Checkout';
 import { TrackingOrder } from '@/pages/customer/TrackingOrder/TrackingOrder';
 
@@ -45,21 +50,28 @@ const MainRoutes: React.FC = () => {
 
           <Route element=
             {<ProtectedRoute 
-              allowedRoles={['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_STAFF']}>
+              allowedRoles={['ADMIN_SYSTEM', 'ADMIN_BRAND', 'STAFF']}>
               <Layout />
             </ProtectedRoute>
             }
           >
             {/* Các route chung cho Admin, Manager, Staff */}
             <Route path="/admin/dashboard" element={<AdminBranchList />} />
-            <Route path="/admin/branches" element={<AdminBranchList />} />
-            <Route path="/admin/materials" element={<AdminMaterialList />} />
-            <Route path="/admin/products" element={<AdminProductList />} />
-            <Route path="/admin/orders" element={<AdminOrderList />} />
-            <Route path="/admin/staffs" element={<AdminStaffList />} />
-            <Route path="/admin/customers" element={<AdminCustomerList />} />
-            <Route path="/admin/promotions" element={<AdminPromotion />} />
+            <Route path="/admin/branchlist" element={<AdminBranchList />} />
+            <Route path="/admin/materiallist" element={<AdminMaterialList />} />
+            <Route path="/admin/productlist" element={<AdminProductList />} />
+            <Route path="/admin/orderlist" element={<AdminOrderList />} />
+            <Route path="/admin/stafflist" element={<AdminStaffList />} />
+            <Route path="/admin/customerlist" element={<AdminCustomerList />} />
+            <Route path="/admin/promote" element={<AdminPromotion />} />
+
             <Route path="/manager/dashboard" element={<ManagerCustomerList />} />
+            <Route path="/manager/productlist" element={<ManagerProductList />} />
+            <Route path="/manager/materiallist" element={<ManagerMaterialList />} />
+            <Route path="/manager/stafflist" element={<ManagerStaffList />} />
+            <Route path="/manager/customerlist" element={<ManagerCustomerList />} />
+            <Route path="/manager/orderlist" element={<ManagerOrderList />} />
+            <Route path="/manager/promote" element={<ManagerPromotion />} />
           </Route>
             <Route path="/404" element={<h1>Page Not Found</h1>} />
             <Route path="*" element={<h1>404 Not Found</h1>} />

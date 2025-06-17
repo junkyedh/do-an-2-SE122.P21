@@ -49,7 +49,7 @@ const ManagerProductList = () => {
 
     // Hàm lấy danh sách sản phẩm
     const fetchManagerProductList = async () => {
-        const res = await AdminApiRequest.get('/product/list');
+        const res = await AdminApiRequest.get('/product-branch/list');
         setManagerProductList(res.data);
     };
 
