@@ -4,6 +4,7 @@ interface ContextValue {
   isLoggedIn: boolean;
   token: string;
   role: string;
+  isInitialized: boolean;
   setAuth: (token: string, role: string) => void;
   logout: () => void;
 }
@@ -19,6 +20,7 @@ export const AppSystemProvider: React.FC<React.PropsWithChildren<{}>> = ({ child
   const [token, setToken] = useState('');
   const [role, setRole] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   const setAuth = (newToken: string, newRole: string) => {
     setToken(newToken);
@@ -45,10 +47,11 @@ export const AppSystemProvider: React.FC<React.PropsWithChildren<{}>> = ({ child
       setRole(r);
       setIsLoggedIn(true);
     }
+    setIsInitialized(true);
   }, []);
 
   return (
-    <AppContext.Provider value={{ isLoggedIn, token, role, setAuth, logout }}>
+    <AppContext.Provider value={{ isLoggedIn, token, role, setAuth, logout, isInitialized }}>
       {children}
     </AppContext.Provider>
   );

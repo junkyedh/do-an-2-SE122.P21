@@ -28,13 +28,13 @@ const AdminLogin: React.FC = () => {
         setAuth(token, role);
         // Điều hướng theo role
         switch (role) {
-            case 'ROLE_ADMIN':
+            case 'ADMIN_SYSTEM':
                 navigate('/admin/dashboard');
                 break;
-            case 'ROLE_MANAGER':
+            case 'ADMIN_BRAND':
                 navigate('/manager/dashboard');
                 break;
-            case 'ROLE_STAFF':
+            case 'STAFF':
                 navigate('/staff/dashboard');
                 break;
             default:
