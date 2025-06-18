@@ -1,3 +1,4 @@
+@import "../../../scss/variables.scss";
 .slider {
   z-index: 99;
 
@@ -57,7 +58,7 @@
       display: block;
       border-radius: 100%;
       transition: box-shadow 0.3ms;
-      background: var(--primaryClr);
+      background: get-color($accent1, "500");
       opacity: 1;
       
 
@@ -122,7 +123,7 @@
       background-color: #cbbebe !important;
 
       &.active {
-        background-color: var(--primaryClr);
+        background-color: get-color($accent1, "400") !important;
       }
     }
   }

@@ -127,7 +127,6 @@ export const Checkout: React.FC = () => {
         title="Thanh toán"
         items={[
             { label: 'Trang chủ', to: '/' },
-            { label: 'Giỏ hàng', to: '/cart' },
             { label: 'Thanh toán' }
         ]}
     />

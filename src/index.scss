@@ -3,12 +3,14 @@
 @import 'bootstrap/dist/css/bootstrap.min.css';
 @import "./scss/variables.scss";
 :root {
-  --primaryClr: #fe4e37;
-  --secondaryClr: #fffaf9;
+  --primaryClr: #FF6F61;
+  --secondaryClr: #2F4156;
   --bgClr: #f8f9fd;
   --white: #ffffff;
   --black: black;
-  --textclr: #2F4156;
+  --primaryText: #2F4156;
+  --textclr: #1F2B3B;
+  --subTextClr: #5A5450;
 
   --smallText: 12px;
   --bodyText: 16px;

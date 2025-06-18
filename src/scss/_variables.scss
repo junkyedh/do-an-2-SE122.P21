@@ -1,6 +1,6 @@
 //---------------- COLORS -----------------------
 
-
+//Navy lạnh: màu thương hiệu chính, header, nút chính (primary button), link
 $primary: (
   "default": #2F4156,
   "foreground": #FFFFFF,
@@ -15,21 +15,38 @@ $primary: (
   "800": #2F4156,
   "900": #1F2B3B
 );
-
-$secondary: (
-  "default": #C8D9E6,
-  "foreground": #2F4156,
-  "50": #F8FBFD,
-  "100": #F0F6FA,
-  "200": #E1EDF5,
-  "300": #C8D9E6,
-  "400": #A8C4D7,
-  "500": #88AFC8,
-  "600": #6B9AB9,
-  "700": #557C8D,
-  "800": #456571,
-  "900": #2F4156
+// Steel Blue: màu chính, dùng cho các nút chính (primary button), link, viền, border
+$primary2: (
+  "default": #4682B4,         // Steel Blue gốc
+  "foreground": #FFFFFF,      // Trắng cho độ tương phản cao
+  "50":  #F3F8FB,
+  "100": #c7e5fe,
+  "200": #BFD9EC,
+  "300": #97C1DF,
+  "400": #6FA5CE,
+  "500": #4682B4,             // gốc steel blue
+  "600": #3A719E,
+  "700": #2F5E84,
+  "800": #254A6B,
+  "900": #1A354D
 );
+
+//Pastel xanh: màu phụ, dùng cho các nút phụ (secondary button), viền, border, placeholder text
+$secondary: (
+  "default": #A4DAD4,
+  "foreground": #2F4156,
+  "50": #F4FBFA,
+  "100": #E2F5F3,
+  "200": #C8ECE9,
+  "300": #A4DAD4,
+  "400": #83C5BE,
+  "500": #66B2AC,
+  "600": #509B95,
+  "700": #3D7F7B,
+  "800": #2F6461,
+  "900": #214845
+);
+
 
 // Accent 1: coral tone
 $accent: (
@@ -47,6 +64,7 @@ $accent: (
   "900": #8A342A
 );
 
+// Coral ấm: Call to action, highlight quan trọng, error nhẹ, badge nổi bật
 $accent1: (
   "default": #FF6F61,
   "foreground": #FFFFFF,
@@ -62,76 +80,90 @@ $accent1: (
   "900": #8A342A
 );
 
-// Accent 2: rose-lavender tone
+// Lavender xanh ấm: thông tin phụ quan trọng, tag, trạng thái info, hover nhẹ
 $accent2: (
-  "default": #B392AC,
-  "foreground": #FFFFFF,
-  "50": #FAF8F9,
-  "100": #F5F0F3,
-  "200": #EBE1E7,
-  "300": #DDD0D6,
-  "400": #C9B1C0,
-  "500": #B392AC,
-  "600": #9D7A96,
-  "700": #87647F,
-  "800": #6F5268,
-  "900": #5A4354
+  "default": #CABBE9,
+  "foreground": #2F4156,
+  "50": #FAF9FD,
+  "100": #F3F1FA,
+  "200": #E4DBF5,
+  "300": #D6C7F0,
+  "400": #CABBE9,
+  "500": #B8A5E0,
+  "600": #9B88C7,
+  "700": #8370AC,
+  "800": #6C5C91,
+  "900": #54466D
 );
 
-// Các hệ màu hỗ trợ
+// Xám lạnh trung tính: văn bản, icon, đường viền, nền tổng thể
 $neutral: (
-  "default": #E4E7EB,
-  "foreground": #4A4A4A,
-  "50": #FAFBFC,
-  "100": #F5F6F8,
-  "200": #E4E7EB,
-  "300": #D1D5DB,
-  "400": #9CA3AF,
-  "500": #6B7280,
-  "600": #4B5563,
-  "700": #374151,
-  "800": #1F2937,
-  "900": #111827
+  "default": #D6DEE5,
+  "foreground": #2F4156,       // xám lạnh đậm, rõ ràng
+  "50": #F7F9FA,
+  "100": #EDF2F5,
+  "200": #D6DEE5,
+  "300": #B8C7D3,
+  "400": #9BAFBE,
+  "500": #7D96A8,
+  "600": #607A8C,
+  "700": #495E6E,
+  "800": #354552,
+  "900": #24323C
+);
+
+//Xám ấm: nền phụ, card, section mềm mại hơn neutral gốc
+$neutral2: (
+  "default": #D8CFC8,
+  "foreground": #3F3A37,
+  "50": #FAF9F8,
+  "100": #F3F1EF,
+  "200": #E7E2DE,
+  "300": #D8CFC8,
+  "400": #C3B9B2,
+  "500": #AEA39D,
+  "600": #958B86,
+  "700": #776F6A,
+  "800": #5A5450,
+  "900": #3F3A37
 );
 
 $muted: (
-  "default": #F0F4F8,
-  "foreground": #4F5E71
+  "default": #F5F3F2,         
+  "foreground": #6B6A68       
 );
 
 $destructive: (
-  "default": #FF6F61,
+  "default": #E55A4A,         
   "foreground": #FFFFFF
 );
 
 $popover: (
   "default": #FFFFFF,
-  "foreground": #4F5E71
+  "foreground": #3F3A37       
 );
 
 $card: (
-  "default": #f7f6f5,
-  "foreground": #4F5E71
+  "default": #F8F6F5,         
+  "foreground": #54466D       
 );
 
-// 🎨 Custom solid color variables
-$softorange: #F8D8C1;
-$lightblue: #B5D7E6;
-$green: #419798;
-$brown: #8E4917;
-$softpurple: #DDE0F9;
-$purple: #9290FE;
+// 🎨 Custom solid color variables (đồng bộ tone pastel mới)
+$softorange: #F8D8C1;         
+$lightblue: #B5D7E6;         
+$green: #419798;              
+$brown: #8E4917;              
+$softpurple: #E0DAF5;         
+$purple: #9C94F6;             
 $white: #ffffff;
 $black: #000000;
-$textclr: #4F5E71;
+$textclr: #3F3A37;            
 
-
-
-// Background map (có thể tùy biến thêm nếu cần)
+// 🎨 Background map
 $background: (
-  "default": #F0F4F8
-
+  "default": #F9F8F7          
 );
+
 
 // Function to get color value from color map
 @function get-color($colors, $key) {

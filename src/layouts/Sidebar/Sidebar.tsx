@@ -105,10 +105,10 @@ const Sidebar: React.FC = () => {
       const isOpen = openSubRoutes[route.link ?? ""];
 
       return (
-        <li key={index} className={`nav-item ${hasChildren ? "dropdown" : ""}`}>
+        <li key={index} className={`side-item ${hasChildren ? "dropdown" : ""}`}>
           <Link
             to={hasChildren ? "#" : route.link ?? "#"}
-            className={`nav-link ${isActive ? "nav-link-active" : ""}`}
+            className={`side-link ${isActive ? "side-link-active" : ""}`}
             onClick={
               hasChildren
                 ? (e) => {
@@ -133,19 +133,19 @@ const Sidebar: React.FC = () => {
             )}
           </Link>
           {hasChildren && isOpen && (
-            <ul className="nav-children nav nav-pills">
+            <ul className="side-children side side-pills">
               {route.children?.map((subRoute, subIndex) => {
                 if (!subRoute.roles) return null;
                 if (localStorage.getItem("role") && !subRoute.roles.includes(localStorage.getItem("role") || "")) return null;
                 return (
-                  <li key={subIndex} className="nav-item">
+                  <li key={subIndex} className="side-item">
                     <Link
                       to={`${route.link}/${subRoute.link}`}
-                      className={`nav-link ${comparePathname(
+                      className={`side-link ${comparePathname(
                         `${route.link}/${subRoute.link}`,
                         currentPath
                       )
-                        ? "nav-link-active"
+                        ? "side-link-active"
                         : ""
                         }`}
                     >

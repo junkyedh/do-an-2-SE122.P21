@@ -1,175 +1,265 @@
 @import '../../scss/variables.scss';
 
 .header-section {
-  overflow: visible !important;
+  height: 80px;
+  background: linear-gradient(
+    180deg,
+    get-color($secondary, "100"),
+    get-color($accent1, "300")
+  );
+  backdrop-filter: blur(12px);
+  position: relative;
   z-index: 1000;
-}
-.is-sticky {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  overflow: visible !important;
-  animation: smothScroll 1s forwards;
-  background: transparentize($color: #dac5be, $amount: 0.3);
-  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.5rem;
   box-shadow: var(--bs-box-shadow-sm) !important;
-  z-index: 1000;
-  backdrop-filter: blur(10px);
-  transition: background-color 0.3s ease-in-out;
-  border-radius: 0 0 10px 10px;
-  .navbar {
-    .navbar-brand a,
-    .offcanvas-body a {
-      color: get-color($primary, "100") !important;
-      
-    }
+  transition: background 0.3s ease;
 
-    .toggle_btn {
-      color: var(--primaryClr) !important;
+  &.is-sticky {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    background: linear-gradient(
+      170deg,
+      rgba(get-color($secondary, "100"), 0.5),
+      rgba(get-color($accent1, "300"), 0.85)
+      transparent
+    );
+    z-index: 1000;
+    backdrop-filter: blur(14px);
+    box-shadow: var(--bs-box-shadow-sm) !important;
+    border-radius: 0 0 10px 10px;
+    transition: background 0.3s ease;
+
+    .logo a {
+      color: get-color($accent1, "default") !important;
     }
   }
-}
 
-@keyframes smothScroll {
-  0% {
-    transform: translateY(-40px);
+  .logo a {
+    font-size: 24px;
+    color: get-color($primary, "800");
+    font-weight: bold;
+    text-decoration: none;
+    margin-left: 2.5rem;
   }
-  100% {
-    transform: translateY(0px);
-  }
-}
 
-header {
-  position: absolute;
-  top: 0;
-  z-index: 999;
-  padding: 12px 0;
-  width: 100%;
+  .toggle-btn {
+    background: transparent;
+    border: 1.5px solid get-color($primary, "600");
+    border-radius: 6px;
+    padding: 6px;
+    color: get-color($primary, "700");
+    cursor: pointer;
+    transition: background 0.3s ease;
 
-
-  .navbar {
-    .navbar-brand a {
-      font-size: 22px;
-      color: var(--white);
-      line-height: 150%;
-      font-family: var(--fontFamily1);
-      font-weight: bold;
-      text-transform: capitalize;
-      text-decoration: none;
+    &:hover {
+      background: get-color($primary, "100");
+      color: get-color($primary, "600");
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+      border: 2px solid get-color($primary, "500");
     }
 
-    .offcanvas-body a {
-      font-size: 14px;
-      color: var(--white) !important;
-      line-height: 150%;
-      width: max-content;
-      font-family: var(--fontFamily);
-      font-weight: bold;
+    i {
+      font-size: 20px;
+    }
+  }
+
+  .right-column {
+    gap: calc(2.5rem + 1.5vw);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0 1.5rem;
+
+    .desktop-nav .nav-link {
+      font-size: 0.875rem;
+      color: --textClr;
+      font-weight: 600;
       text-transform: uppercase;
-      align-self: center;
-      gap: 10px;
+      padding: 0.5rem 0.75rem;
+      transition: color 0.3s;
 
-      &:hover {
-        color: var(--primaryClr) !important;
+      &:hover,
+      &.active {
+        color: get-color($accent1, "default");
+        text-shadow: 0 0px 2px rgba(255, 111, 97, 0.3);
+      }
+
+      &.dropdown-toggle {
+        width: 100%;
+        justify-content: space-between;
+        padding: 0.5rem 0.75rem;
+        border-radius: 8px;
+        color: get-color($primary, "900");
+        background: transparent;
+        border-bottom: 1px solid get-color($primary, "400");
+
+        &:hover {
+          background: get-color($primary, "50");
+          color: get-color($accent1, "default");
+        }
+
+        &:active {
+          background: get-color($primary, "100");
+          color: get-color($accent1, "default");
+        }
+
+        .dropdown-icon {
+          margin-left: auto;
+          font-size: 0.875rem;
+          color: get-color($primary, "500");
+          transition: transform 0.3s;
+          transform: rotate(0deg);
+
+          &.open {
+            transform: rotate(180deg);
+          }
+        }
+      }
+    }
+  }
+
+  .login-btn {
+    background: get-color($primary, "800");
+    color: #FFF !important;
+    padding: 0.5rem 1rem;
+    border-radius: 25px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.3s;
+
+    &:hover {
+      background: get-color($primary, "900");
+    }
+  }
+}
+
+// === Offcanvas slide-out menu (mobile chỉ) ===
+.offcanvas-menu-panel {
+  width: 280px;
+  background: #ffffff;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+
+  .offcanvas-menu-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid #E4E7EB;
+
+    .offcanvas-logo {
+      display: flex;
+      align-items: center;
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: #2F4156;
+
+      i {
+        font-size: 1.25rem;
+        color: #FF6F61; // accent.default
       }
     }
 
-    .offcanvas-body .dropdown-menu a {
-      color: black !important;
-    }
+    .offcanvas-close-btn {
+      background: none;
+      border: none;
+      padding: 0.25rem;
+      border-radius: 4px;
+      transition: background 0.2s;
 
-    .offcanvas-body .dropdown-menu {
-      min-width: 12rem;
-    }
+      &:hover {
+        background: #F0F4F8;
+      }
 
-    .offcanvas-body .dropdown-menu .dropdown-item {
-      color: var(--black) !important;
-    }
-  }
-}
-.user-menu {
-  position: relative;
-  display: inline-block;
-
-  .user-icon {
-    font-size: 24px;
-    cursor: pointer;
-    color: var(--white);
-  }
-
-  .dropdown-menu {
-    position: absolute;
-    top: 40px;
-    right: 0;
-    background: white;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    padding: 10px;
-    display: none;
-    z-index: 10;
-  }
-
-  &:hover .dropdown-menu {
-    display: block;
-  }
-}
-
-
-@media only screen and (max-width: 991px) {
-  header .navbar .toggle_btn {
-    font-size: var(--bodyText);
-    color: var(--white);
-    border: 2px solid transparent;
-    padding: 7px 10px;
-    cursor: pointer;
-
-    .bi-list::before{
-      font-size: xx-large;
-    }
-    .bi-x-lg::before{
-      font-size:large;
-      padding: 5px 5px;
-    }
-    &:hover {
-      color: var(--primaryClr);
+      i {
+        font-size: 1.25rem;
+        color: #2F4156;
+      }
     }
   }
 
-  .is-sticky .navbar .toggle_btn {
-    //border: 2px solid var(--primaryClr);
+  .offcanvas-menu-body {
+    padding: 1rem 0.75rem;
+
+    .offcanvas-nav-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .offcanvas-nav-item {
+      display: flex;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      color: #4F5E71; // textclr
+      font-weight: 500;
+      text-decoration: none;
+      transition: background 0.3s, color 0.3s;
+
+      .offcanvas-nav-icon {
+        margin-right: 0.75rem;
+        font-size: 1.125rem;
+        color: #6F8FA4; // primary.500
+        transition: color 0.3s;
+      }
+
+      &:hover {
+        background: #F7F9FA; // primary.50
+        color: #2F4156;       // primary.default
+
+        .offcanvas-nav-icon {
+          color: #2F4156;
+        }
+      }
+    }
+
+    .offcanvas-user-section {
+      .offcanvas-user-dropdown {
+        .dropdown-toggle {
+          width: 40%;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 0.75rem 1rem;
+          border: 1px solid #E4E7EB;
+          border-radius: 8px;
+          background: #F7F9FA;
+          color: #2F4156;
+          font-weight: 500;
+          transition: background 0.2s;
+        }
+        .dropdown-menu {
+          margin-top: 0.5rem;
+          border-radius: 8px;
+          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        }
+        .dropdown-item {
+          padding: 0.5rem 1rem;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+      }
+      .offcanvas-login-btn {
+        background: #2F4156;
+        color: #ffffff;
+        padding: 0.75rem 1rem;
+        border-radius: 8px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: background 0.3s;
+
+        &:hover {
+          background: #1F2B3B; // primary.900
+        }
+      }
+    }
+
+    .offcanvas-cart-section {
+      /* nếu CartDrawer có wrapper, bạn có thể thêm margin/padding ở đây */
+    }
   }
-
-  .offcanvas-header {
-    border: 1px solid gainsboro;
-
-  }
-
-  .offcanvas-header .logo {
-    font-size: 26px;
-    color: var(--black) !important;
-    font-family: var(--fontFamily1);
-    font-weight: bold;
-    text-decoration: none;
-    
-
-  }
-
-  .offcanvas-body .nav-link {
-    padding: 12px 0;
-    color: var(--black);
-  }
-
-  .offcanvas-body .dropdown-item {
-    padding: 12px 10px;
-    color: var(--black);
-  }
-}
-.bi-x-lg::before {
-  cursor: pointer;
-}
-
-.primaryBtn{
-  padding: 5px 8px !important;
-  background-color: var(--primaryClr) !important;
 }

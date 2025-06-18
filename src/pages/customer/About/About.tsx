@@ -33,10 +33,10 @@ const About = () => {
           {/* Giới thiệu */}
           <Row className="mb-5">
             <Col md="12" className="text-center">
-              <CardTitle className="lead mt-3">Chào mừng đến với Cafe w Fen</CardTitle>
-              <p>
+              <h1 className="lead mt-3">CHÀO MỪNG ĐẾN VỚI QUÁN CÀ PHÊ CỦA CHÚNG TÔI</h1>
+              <p className="lead px-5">
                 Một không gian ấm cúng, sáng tạo và đậm chất nghệ thuật — nơi cà phê, con người và cảm xúc giao hòa.
-
+                <br />
                 Tại Cafe w Fen, chúng tôi không chỉ phục vụ cà phê — mà còn mang đến trải nghiệm độc đáo, kết nối cộng đồng và nuôi dưỡng cảm hứng sáng tạo.
               </p>
             </Col>

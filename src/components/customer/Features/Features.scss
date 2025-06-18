@@ -18,22 +18,21 @@
         display: block;
         margin: 0 auto;
         margin-bottom: 14px;
+        border-radius: 50%;
+        object-fit: cover;
       }
   
       .card-title {
         font-size: var(--subTitle);
-        padding: 12px 0;
         font-weight: bold;
+        color: var(--primaryText);
+
       }
   
       .card-text {
         font-size: var(--bodyText);
         line-height: 22px;
         color: var(--textclr);
-      }
-  
-      &:hover .card-title {
-        color: var(--primaryClr);
       }
     }
   }

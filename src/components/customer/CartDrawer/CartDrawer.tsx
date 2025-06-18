@@ -1,11 +1,14 @@
-import React, { useState, useEffect } from 'react'
-import { Offcanvas, Button, Form, Image } from 'react-bootstrap'
-import { useNavigate } from 'react-router-dom'
-import { useCart, CartItem } from '@/hooks/cartContext'
-import './CartDrawer.scss'
+import React from "react"
+import { useState } from "react"
+import { Offcanvas, Button, Form, Image, Row, Col, Badge } from "react-bootstrap"
+import { useNavigate } from "react-router-dom"
+import { useCart, type CartItem } from "@/hooks/cartContext"
+import { BiTrash, BiTrashAlt, BiShoppingBag, BiPlus, BiMinus, BiX, BiArrowToRight, BiChevronDown } from "react-icons/bi"
+import "./CartDrawer.scss"
+import emptyCart from "@/assets/empty-cart.png"
 
 const CartDrawer: React.FC = () => {
-  const { cart, totalItems, totalPrice, updateItem, removeItem } = useCart()
+  const { cart, totalItems, totalPrice, updateItem, removeItem, clearCart } = useCart()
   const [show, setShow] = useState(false)
   const navigate = useNavigate()
 
@@ -14,158 +17,301 @@ const CartDrawer: React.FC = () => {
 
   const handleCheckout = () => {
     close()
-    navigate('/checkout', {
+    navigate("/checkout", {
       state: {
-        initialItems: cart.map(i => ({
+        initialItems: cart.map((i) => ({
           productId: i.id,
           size: i.size,
           mood: i.mood,
           quantity: i.quantity,
-        }))
-      }
+        })),
+      },
     })
   }
 
   // helpers
   const isCake = (item: CartItem) => item.category === 'Bánh ngọt'
-  const isDrink = (item: CartItem) =>
-    ['Cà phê', 'Trà'].includes(item.category)
+  const isDrink = (item: CartItem) =>['Cà phê', 'Trà'].includes(item.category)
+
+  const deliveryFee = 10000
+  const finalTotal = totalPrice + deliveryFee
 
   return (
     <>
-      <Button variant="outline-secondary" onClick={open} className="cart-trigger">
-        🛒 <span className="badge">{totalItems}</span>
+      {/* Cart Trigger Button */}
+      <Button
+        variant="outline-light"
+        onClick={open}
+        className="cart-trigger position-relative"
+        aria-label={`Giỏ hàng (${totalItems} sản phẩm)`}
+      >
+        <BiShoppingBag className="cart-icon" />
+        {totalItems > 0 && (
+          <Badge bg="danger" className="cart-badge position-absolute" pill>
+            {totalItems > 99 ? "99+" : totalItems}
+          </Badge>
+        )}
       </Button>
 
-      <Offcanvas show={show} onHide={close} placement="end" className="cart-drawer">
-        <Offcanvas.Header closeButton>
-          <Offcanvas.Title>Giỏ hàng ({totalItems})</Offcanvas.Title>
+      {/* Cart Drawer */}
+      <Offcanvas show={show} onHide={close} placement="end" className="cart-drawer" backdrop="static">
+        {/* Header */}
+        <Offcanvas.Header className="cart-header border-0">
+          <div className="header-content w-100 d-flex align-items-center justify-content-between">
+            <div className="header-left d-flex align-items-center gap-3">
+              <div className="cart-icon-wrapper">
+                <BiShoppingBag className="header-cart-icon" />
+              </div>
+              <div>
+                <Offcanvas.Title className="cart-title mb-0">Giỏ hàng của bạn</Offcanvas.Title>
+                <small className="cart-subtitle text-muted">{totalItems} sản phẩm</small>
+              </div>
+            </div>
+
+            <div className="header-actions d-flex align-items-center gap-2">
+              {cart.length > 0 && (
+                <Button variant="ghost" size="sm" className="clear-all-btn" onClick={clearCart} title="Xóa tất cả">
+                  <BiTrash />
+                </Button>
+              )}
+              <Button variant="ghost" size="sm" className="close-btn" onClick={close} aria-label="Đóng giỏ hàng">
+                <BiX />
+              </Button>
+            </div>
+          </div>
         </Offcanvas.Header>
-        <Offcanvas.Body>
+
+        <Offcanvas.Body className="cart-body p-0">
           {cart.length === 0 ? (
-            <div className="empty-state">
-              <Image src="/placeholder-empty.svg" alt="empty" width={100} height={100} />
-              <p>Giỏ hàng trống</p>
-              <Button onClick={close}>Tiếp tục mua sắm</Button>
+            /* Empty State */
+            <div className="empty-state h-100 d-flex flex-column align-items-center justify-content-center text-center p-4">
+              <div className="empty-icon-wrapper mb-4">
+                <Image src={emptyCart || "/placeholder.svg"} width={120} height={100} className="empty-image" />
+              </div>
+              <h5 className="empty-title mb-2">Giỏ hàng trống</h5>
+              <p className="empty-subtitle text-muted mb-4">Hãy thêm những sản phẩm yêu thích vào giỏ hàng nhé!</p>
+              <Button variant="primary" className="continue-shopping-btn" onClick={close}>
+                <BiArrowToRight className="me-2" />
+                Tiếp tục mua sắm
+              </Button>
             </div>
           ) : (
-            <>
-              <div className="items-list">
-                {cart.map(item => (
-                  <div key={item.id + item.size + (item.mood||'')} className="cart-item">
+            <div className="cart-content h-100 d-flex flex-column">
+              {/* Items List */}
+              <div className="items-section flex-grow-1 overflow-auto px-3">
+                <div className="items-list">
+                  {cart.map((item: CartItem, index) => (
                     <div
-                      className="thumb"
-                      onClick={() => {
-                        close()
-                        navigate(`/product/${item.id}`)
-                      }}
+                      key={`${item.id}-${item.size}-${item.mood}`}
+                      className={`cart-item ${index === cart.length - 1 ? "last-item" : ""}`}
                     >
-                      <Image src={item.image} alt={item.name} width={80} height={80} />
+                      <Row className="g-3 align-items-center">
+                        {/* Product Image */}
+                        <Col xs={3}>
+                          <div className="product-image-wrapper">
+                            <Image
+                              src={item.image || "/placeholder.svg"}
+                              alt={item.name}
+                              className="product-image"
+                              onClick={() => {
+                                close()
+                                navigate(`/product/${item.id}`)
+                              }}
+                            />
+                            <div className="image-overlay">
+                              <Button
+                                variant="link"
+                                className="image-overlay-btn"
+                                onClick={() => {
+                                  close()
+                                  navigate(`/product/${item.id}`)
+                                }}    
+                              >
+                                <BiArrowToRight />
+                              </Button>
+                            </div>
+                          </div>
+                        </Col>
+
+                        {/* Product Info */}
+                        <Col xs={9}>
+                          <div className="product-info">
+                            {/* Product Header */}
+                            <div className="product-header d-flex justify-content-between align-items-start mb-2">
+                              <h6
+                                className="product-name mb-0"
+                                onClick={() => {
+                                  close()
+                                  navigate(`/product/${item.id}`)
+                                }}
+                              >
+                                {item.name}
+                              </h6>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="remove-btn"
+                                onClick={() => removeItem(item.id)}
+                                title="Xóa sản phẩm"
+                              >
+                                <BiTrashAlt />
+                              </Button>
+                            </div>
+
+                            {/* Product Options */}
+                            <div className="product-options d-flex flex-wrap gap-2 mb-3 position-relative">
+                              {/* Size Selector */}
+                              <div className="option-group position-relative">
+                              <label className="option-label">Size:</label>
+                              <div className="select-wrapper position-relative">
+                                <Form.Select
+                                  size="sm"
+                                  value={item.size}
+                                  onChange={(e) => updateItem(item.id, { size: e.target.value })}
+                                  className="option-select pe-4"
+                                  style={{ appearance: "none", WebkitAppearance: "none", MozAppearance: "none" }}
+                                  >
+                                    {isCake(item)
+                                      ? [
+                                          {name: 'piece', label: '1 miếng'},
+                                          {name: 'whole', label: 'Cả bánh'},
+                                      ].map((s) => (
+                                        <option key={s.name} value={s.name}>
+                                          {s.name}
+                                        </option>
+                                      )): item.availableSizes?.map((s) => (
+                                        <option key={s.name} value={s.name}>
+                                        {s.name}
+                                        </option>
+                                      ))}
+                                </Form.Select>
+                                  <span
+                                    className="dropdown-icon position-absolute"
+                                    style={{
+                                    right: "10px",
+                                    top: "50%",
+                                    transform: "translateY(-50%)",
+                                    pointerEvents: "none",
+                                    color: "#888",
+                                    fontSize: "1rem",
+                                  }}
+                                >
+                                <BiChevronDown />
+                                </span>
+                              </div>
+                              </div>
+
+                              {/* Temperature Selector */}
+                              {isDrink(item) && (
+                              <div className="option-group position-relative">
+                                <label className="option-label">Nhiệt độ:</label>
+                                <div className="select-wrapper position-relative">
+                                <Form.Select
+                                  size="sm"
+                                  value={item.mood}
+                                  onChange={(e) => updateItem(item.id, { mood: e.target.value })}
+                                  className="option-select pe-4"
+                                  style={{ appearance: "none", WebkitAppearance: "none", MozAppearance: "none" }}
+                                >
+                                  <option value="hot">🔥 Nóng</option>
+                                  <option value="cold">🧊 Đá</option>
+                                </Form.Select>
+                                <span
+                                  className="dropdown-icon position-absolute"
+                                  style={{
+                                  right: "10px",
+                                  top: "50%",
+                                  transform: "translateY(-50%)",
+                                  pointerEvents: "none",
+                                  color: "#888",
+                                  fontSize: "1rem",
+                                  }}
+                                >
+                                  <BiChevronDown />
+                                </span>
+                                </div>
+                              </div>
+                              )}
+                            </div>
+
+                            {/* Price and Quantity */}
+                            <div className="product-footer d-flex justify-content-between align-items-center">
+                              <div className="price-info">
+                                <span className="unit-price text-muted">
+                                  {item.price.toLocaleString("vi-VN")}₫ × {item.quantity}
+                                </span>
+                                <div className="total-price">
+                                  {(item.price * item.quantity).toLocaleString("vi-VN")}₫
+                                </div>
+                              </div>
+
+                              <div className="quantity-controls d-flex align-items-center">
+                                <Button
+                                  variant="outline-secondary"
+                                  size="sm"
+                                  className="qty-btn"
+                                  onClick={() => updateItem(item.id, { quantity: Math.max(1, item.quantity - 1) })}
+                                  disabled={item.quantity <= 1}
+                                >
+                                  <BiMinus />
+                                </Button>
+                                <span className="qty-display">{item.quantity}</span>
+                                <Button
+                                  variant="outline-secondary"
+                                  size="sm"
+                                  className="qty-btn"
+                                  onClick={() => updateItem(item.id, { quantity: item.quantity + 1 })}
+                                >
+                                  <BiPlus />
+                                </Button>
+                              </div>
+                            </div>
+                          </div>
+                        </Col>
+                      </Row>
                     </div>
-                    <div className="info">
-                      <h5
-                        onClick={() => {
-                          close()
-                          navigate(`/product/${item.id}`)
-                        }}
-                      >
-                        {item.name}
-                      </h5>
+                  ))}
+                </div>
+              </div>
 
-                      <div className="controls">
-                        {/* Size */}
-                        <Form.Select
-                          value={item.size}
-                          onChange={e => updateItem(item.id, { size: e.target.value })}
-                          className="control-select"
-                        >
-                          {isCake(item)
-                            ? [
-                                { name: 'piece', label: '1 miếng' },
-                                { name: 'whole', label: 'Cả bánh' }
-                              ].map(opt => (
-                                <option key={opt.name} value={opt.name}>
-                                  {opt.label}
-                                </option>
-                              ))
-                            : item.availableSizes?.map(s => (
-                                <option key={s.name} value={s.name}>
-                                  {s.name}
-                                </option>
-                              ))}
-                        </Form.Select>
-
-                        {/* Mood (nếu cà phê/trà) */}
-                        {isDrink(item) && (
-                          <Form.Select
-                            value={item.mood}
-                            onChange={e => updateItem(item.id, { mood: e.target.value })}
-                            className="control-select"
-                          >
-                            <option value="hot">🔥 Nóng</option>
-                            <option value="cold">🧊 Đá</option>
-                          </Form.Select>
-                        )}
-
-                        {/* Quantity */}
-                        <div className="qty-controls">
-                          <Button
-                            size="sm"
-                            onClick={() =>
-                              updateItem(item.id, {
-                                quantity: Math.max(1, item.quantity - 1)
-                              })
-                            }
-                          >
-                            −
-                          </Button>
-                          <span>{item.quantity}</span>
-                          <Button
-                            size="sm"
-                            onClick={() =>
-                              updateItem(item.id, { quantity: item.quantity + 1 })
-                            }
-                          >
-                            ＋
-                          </Button>
-                        </div>
-
-                        {/* Remove */}
-                        <Button
-                          variant="link"
-                          size="sm"
-                          className="remove-btn"
-                          onClick={() => removeItem(item.id)}
-                        >
-                          Xóa
-                        </Button>
-                      </div>
+              {/* Cart Summary */}
+              <div className="summary-section border-top bg-light">
+                <div className="summary-content p-3">
+                  {/* Price Breakdown */}
+                  <div className="price-breakdown mb-3">
+                    <div className="price-row d-flex justify-content-between">
+                      <span className="price-label">Tạm tính ({totalItems} món)</span>
+                      <span className="price-value">{totalPrice.toLocaleString("vi-VN")}₫</span>
                     </div>
-                    <div className="price">
-                      {(item.price * item.quantity).toLocaleString('vi-VN')}₫
+                    <div className="price-row d-flex justify-content-between">
+                      <span className="price-label">Phí giao hàng</span>
+                      <span className="price-value">{deliveryFee.toLocaleString("vi-VN")}₫</span>
+                    </div>
+                    <hr className="my-2" />
+                    <div className="price-row total-row d-flex justify-content-between">
+                      <span className="price-label total-label">Tổng cộng</span>
+                      <span className="price-value total-value">{finalTotal.toLocaleString("vi-VN")}₫</span>
                     </div>
                   </div>
-                ))}
-              </div>
 
-              <div className="summary">
-                <div className="line">
-                  <span>Tạm tính</span>
-                  <span>{totalPrice.toLocaleString('vi-VN')}₫</span>
+                  {/* Action Buttons */}
+                  <div className="action-buttons d-flex gap-2">
+                    <Button variant="outline-primary" className="continue-btn flex-fill" onClick={close}>
+                      Tiếp tục mua
+                    </Button>
+                    <Button variant="primary" className="checkout-btn flex-fill" onClick={handleCheckout}>
+                      <BiArrowToRight className="me-2" onClick={handleCheckout} />
+                      Thanh toán
+                    </Button>
+                  </div>
+
+                  {/* Additional Info */}
+                  <div className="additional-info text-center mt-3">
+                    <small className="text-muted">🚚 Miễn phí giao hàng cho đơn từ 200.000₫</small>
+                  </div>
                 </div>
-                <div className="line">
-                  <span>Phí giao hàng</span>
-                  <span>15.000₫</span>
-                </div>
-                <div className="line total">
-                  <strong>Tổng cộng</strong>
-                  <strong>{(totalPrice + 15000).toLocaleString('vi-VN')}₫</strong>
-                </div>
-                <Button className="w-100 btn-checkout" onClick={handleCheckout}>
-                  Thanh toán
-                </Button>
               </div>
-            </>
+            </div>
           )}
         </Offcanvas.Body>
       </Offcanvas>

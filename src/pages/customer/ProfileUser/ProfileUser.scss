@@ -1,47 +1,45 @@
-.profile-section {
-    background-color: #f4f6f9; /* Tùy chọn màu nền */
-    padding: 20px;
-    
-    
-    .profile-card {
-      width: 60%;
-      margin-left: 30px;
-      
-      max-width: 900px; /* Giới hạn chiều rộng của card */
-      margin: 0 15px; /* Thêm margin nếu cần */
-    }
-    
-    .profile-img-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin-bottom: 20px;
-      
-      .profile-img {
+.user-profile {
+  padding: 40px 0;
+
+  .loading {
+    text-align: center;
+    padding: 100px 0;
+    font-size: 18px;
+  }
+
+  .profile-card {
+    .avatar-section {
+      text-align: center;
+      margin-bottom: 24px;
+      position: relative;
+
+      .avatar-img {
         width: 120px;
         height: 120px;
-        object-fit: cover;
         border-radius: 50%;
-        margin-bottom: 15px;
+        object-fit: cover;
+        border: 2px solid #1890ff;
       }
-  
-      .image-upload {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-  
-        .upload-btn {
-          margin-top: 10px;
-        }
+
+      .rank-tag {
+        position: absolute;
+        bottom: -8px;
+        right: 50%;
+        transform: translateX(50%);
+        background: #ffd666;
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-weight: bold;
       }
     }
-  
-    .form-group {
-      margin-bottom: 20px;
+
+    .ant-form-item-label > label {
+      font-weight: 600;
     }
-  
-    .primaryBtn {
-      width: 100%;
+
+    .ant-btn {
+      background-color: #1890ff;
+      border-color: #1890ff;
     }
   }
-  
+}
