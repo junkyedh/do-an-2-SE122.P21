@@ -9,15 +9,17 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowedRoles }) => {
   const { isLoggedIn, role, isInitialized } = useSystemContext();
+  console.log('--- ProtectedRoute ---');
+  console.log('isLoggedIn:', isLoggedIn);
   console.log('role:', role);
-  console.log('Allowed roles:', allowedRoles);
+  console.log('isInitialized:', isInitialized);
 
   if (!isInitialized) {
     return null; // hoặc <LoadingSpinner />
   }
 
   if (!isLoggedIn) {
-    return <Navigate to="/admin-login" />; // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
+    return <Navigate to="/login" />; // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
   }
 
   if (!allowedRoles.includes(role)) {

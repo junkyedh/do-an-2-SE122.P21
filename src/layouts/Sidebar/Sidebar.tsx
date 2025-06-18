@@ -67,14 +67,14 @@ const Sidebar: React.FC = () => {
       { title: "Danh sách khách hàng", link: "/staff/customer-list", icon: "fa-solid fa-users", roles: ["STAFF"] },
       { title: "Thông tin nhân viên", link: "/staff/info", icon: "fa-solid fa-user", roles: ["STAFF"] },
     ];
-  } else if (role === "ROLE_CUSTOMER") {
+  } else if (role === "CUSTOMER") {
     routes = [
-      { title: "Trang chủ", link: "/", icon: "fa-solid fa-house", roles: ["ROLE_CUSTOMER"] },
-      { title: "Giới thiệu", link: "/about-us", icon: "fa-solid fa-circle-info", roles: ["ROLE_CUSTOMER"] },
-      { title: "Liên hệ", link: "/contact-us", icon: "fa-solid fa-phone", roles: ["ROLE_CUSTOMER"] },
-      { title: "Đặt phòng", link: "/booking", icon: "fa-solid fa-calendar", roles: ["ROLE_CUSTOMER"] },
-      { title: "Lịch sử", link: "/history", icon: "fa-solid fa-clock-rotate-left", roles: ["ROLE_CUSTOMER"] },
-      { title: "Thông tin cá nhân", link: "/profile-user", icon: "fa-solid fa-user", roles: ["ROLE_CUSTOMER"] },
+      { title: "Trang chủ", link: "/", icon: "fa-solid fa-house", roles: ["CUSTOMER"] },
+      { title: "Giới thiệu", link: "/about-us", icon: "fa-solid fa-circle-info", roles: ["CUSTOMER"] },
+      { title: "Liên hệ", link: "/contact-us", icon: "fa-solid fa-phone", roles: ["CUSTOMER"] },
+      { title: "Đặt phòng", link: "/booking", icon: "fa-solid fa-calendar", roles: ["CUSTOMER"] },
+      { title: "Lịch sử", link: "/history", icon: "fa-solid fa-clock-rotate-left", roles: ["CUSTOMER"] },
+      { title: "Thông tin cá nhân", link: "/profile-user", icon: "fa-solid fa-user", roles: ["CUSTOMER"] },
     ];
   }
   if (routes.length === 0) return null;
