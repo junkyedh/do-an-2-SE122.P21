@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Home from '../pages/customer/Home/Home';
 import About from '../pages/customer/About/About';
 import Contact from '../pages/customer/Contact/Contact';
-import Login from '../pages/customer/Home/Login/Login';
 import AdminLogin from '../pages/AdminLogin/AdminLogin';
 import ProtectedRoute from './ProtectedRoute';
 import AdminBranchList from '@/pages/admin/AdminBranchList/AdminBranchList';
@@ -28,41 +27,24 @@ import ManagerPromotion from '@/pages/brands/ManagerPromotion/ManagerPromotion';
 import ManagerStaffList from '@/pages/brands/ManagerStaffList/ManagerStaffList';
 import { Checkout } from '@/pages/customer/Checkout/Checkout';
 import { TrackingOrder } from '@/pages/customer/TrackingOrder/TrackingOrder';
-import HistoryOrder from '@/pages/customer/HistoryOrder/HistoryOrder';
 import ProfileUser from '@/pages/customer/ProfileUser/ProfileUser';
 
 
 const MainRoutes: React.FC = () => {
   return (
-<<<<<<< Updated upstream
-    <Routes>
-      {/* PUBLIC: ai cũng dùng được */}
-      <Route element={<PublicLayout />}>
-        <Route path="/" element={<Home />} />
-        <Route path="/about-us" element={<About />} />
-        <Route path="/contact-us" element={<Contact />} />
-        <Route path="/product/:id" element={<ProductDetail />} />
-        <Route path="/menu" element={<Menu />} />
-        <Route path="/login" element={<AdminLogin />} />
-        <Route path="/checkout" element={<Checkout />} />
-        <Route path="/tracking-order/:id" element={<TrackingOrder />} />
-      </Route>
-=======
       <Routes>
           {/* Customer routes */}
           <Route element={<PublicLayout />}>
             <Route path="/" element={<Home />} />
+            <Route path="/login" element={<AdminLogin />} />
             <Route path="/about-us" element={<About />} />
             <Route path="/contact-us" element={<Contact />} />
             <Route path="/product/:id" element={<ProductDetail />} />
             <Route path="/menu" element={<Menu />} />
-            <Route path="/history" element={<HistoryOrder />} />
             <Route path="/profile-user" element={<ProfileUser />}/>
-            <Route path="/login" element={<Login />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="tracking-order/:id" element={<TrackingOrder />} />
           </Route>
->>>>>>> Stashed changes
 
       <Route element=
         {<ProtectedRoute
