@@ -1,0 +1,70 @@
+.history-order {
+  padding: 40px 0;
+
+  .ant-table {
+    background: #fff;
+    border-radius: 8px;
+
+    .ant-table-thead > tr > th {
+      background: #f0f5ff;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .ant-table-tbody > tr > td {
+      text-align: center;
+      vertical-align: middle;
+    }
+  }
+
+  .order-details {
+    padding: 16px;
+
+    .detail-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      border-bottom: 1px solid #f0f0f0;
+      padding: 12px 0;
+
+      img {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 4px;
+      }
+
+      .info {
+        flex: 1;
+        text-align: left;
+
+        .name {
+          font-weight: 600;
+          margin-bottom: 6px;
+        }
+
+        div {
+          margin: 2px 0;
+        }
+      }
+
+      button {
+        margin-left: auto;
+      }
+    }
+  }
+
+  .ant-modal {
+    .ant-modal-header {
+      background: #f0f5ff;
+    }
+    .ant-modal-title {
+      color: #1890ff;
+    }
+    .ant-modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+  }
+}
