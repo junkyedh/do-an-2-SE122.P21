@@ -18,7 +18,7 @@ const Header: React.FC = () => {
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState<any>(null);
 
-  const toggleMenu = () => setOpen(o => !o);
+  const toggleMenu = () => setOpen(!open);
   const isSticky = (e: any) => {
     const header = document.querySelector('.header-section');
     if (!header) return;
@@ -149,13 +149,13 @@ const Header: React.FC = () => {
                       <i className="bi bi-clock-history me-2"></i> My Orders
                     </NavDropdown.Item>
                     <NavDropdown.Divider />
-                    <NavDropdown.Item onClick={() => { closeMenu(); logout(); }}>
+                    <NavDropdown.Item onClick={() => { handleLogout(); }}>
                       <i className="bi bi-box-arrow-right me-2"></i> Logout
                     </NavDropdown.Item>
                   </NavDropdown>
                 ) : (
                   <NavLink
-                    to="/admin-login"
+                    to="/login"
                     className="offcanvas-login-btn d-block text-center"
                     onClick={closeMenu}
                   >
@@ -201,7 +201,7 @@ const Header: React.FC = () => {
                     My Orders
                   </NavDropdown.Item>
                   <NavDropdown.Divider />
-                  <NavDropdown.Item onClick={logout}>
+                  <NavDropdown.Item onClick={handleLogout}>
                     Logout
                   </NavDropdown.Item>
                 </NavDropdown>

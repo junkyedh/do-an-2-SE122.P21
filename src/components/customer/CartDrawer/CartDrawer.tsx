@@ -299,7 +299,7 @@ const CartDrawer: React.FC = () => {
                     <Button variant="outline-primary" className="continue-btn flex-fill" onClick={close}>
                       Tiếp tục mua
                     </Button>
-                    <Button variant="primary" className="checkout-btn flex-fill" onClick={handleCheckout}>
+                    <Button variant="primary" className="checkout-btn flex-fill" >
                       <BiArrowToRight className="me-2" onClick={handleCheckout} />
                       Thanh toán
                     </Button>
