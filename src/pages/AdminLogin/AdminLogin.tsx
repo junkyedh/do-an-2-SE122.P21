@@ -5,50 +5,55 @@ import { useSystemContext } from '@/hooks/useSystemContext';
 import { FaPhoneAlt, FaLock } from 'react-icons/fa';
 import './AdminLogin.scss';
 import { AdminApiRequest } from '@/services/AdminApiRequest';
-import { message } from 'antd';
+import { message, Select } from 'antd';
 
 const AdminLogin: React.FC = () => {
-  const navigate = useNavigate();
-  const { setAuth, logout } = useSystemContext();
-  const [phone, setPhone] = useState('');
-  const [password, setPassword] = useState('');
-  const [remember, setRemember] = useState(false);
+    const navigate = useNavigate();
+    const { setAuth, logout } = useSystemContext();
+    const [phone, setPhone] = useState('');
+    const [password, setPassword] = useState('');
+    const [remember, setRemember] = useState(false);
+    const [userType, setUserType] = useState<'staff' | 'customer'>('customer');
 
-  const handleRememberOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setRemember(e.target.checked);
-  };
+    const handleLogin = async () => {
+        try {
+            const res = await AdminApiRequest.post('/auth/signin', {
+                phone,
+                password,
+                userType,
+            });
 
-  const handleLogin = async () => {
-    try {
-      const res = await AdminApiRequest.post('/auth/signin', { phone, password });
-      const token = res.data?.token;
-      const role = res.data?.user?.role;
-      if ((res.status === 200 || res.status === 201) && token && role) {
-        // Lưu token và role vào context
-        setAuth(token, role);
-        // Điều hướng theo role
-        switch (role) {
-            case 'ADMIN_SYSTEM':
-                navigate('/admin/dashboard');
-                break;
-            case 'ADMIN_BRAND':
-                navigate('/manager/dashboard');
-                break;
-            case 'STAFF':
-                navigate('/staff/dashboard');
-                break;
-            default:
-                message.error('Bạn không có quyền truy cập vào hệ thống quản trị.');
-                logout();
-                break;
+            const token = res.data?.token;
+            const role = res.data?.user?.role;
+
+            if ((res.status === 200 || res.status === 201) && token && role) {
+                setAuth(token, role);
+                console.log('Đăng nhập thành công:', { token, role });
+                switch (role) {
+                    case 'ADMIN_SYSTEM':
+                        navigate('/admin/dashboard');
+                        break;
+                    case 'ADMIN_BRAND':
+                        navigate('/manager/dashboard');
+                        break;
+                    case 'STAFF':
+                        navigate('/staff/dashboard');
+                        break;
+                    case 'CUSTOMER':
+                        navigate('/');
+                        break;
+                    default:
+                        message.error('Bạn không có quyền truy cập vào hệ thống quản trị.');
+                        logout();
+                        break;
+                }
+            } else {
+                message.error('Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin đăng nhập.');
             }
-      } else {
-        message.error('Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin đăng nhập.');
-      }
-    } catch (error) {
-      message.error('Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin đăng nhập.');
-    }
-  };
+        } catch (error) {
+            message.error('Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin đăng nhập.');
+        }
+    };
 
     return (
         <div className="bg-login">
@@ -59,6 +64,26 @@ const AdminLogin: React.FC = () => {
                 transition={{ duration: 0.5 }}
             >
                 <h1>Đăng nhập</h1>
+
+                <div className="mb-3">
+                    <label className="form-label">Loại người dùng:</label>
+                    <div className="d-flex">
+                        <input
+                            type="text"
+                            className="form-control"
+                            value={userType === 'staff' ? 'Nhân viên / Quản trị' : 'Khách hàng'}
+                            readOnly
+                        />
+                        <button
+                            type="button"
+                            className="btn btn-outline-secondary ms-2"
+                            onClick={() => setUserType(prev => (prev === 'staff' ? 'customer' : 'staff'))}
+                        >
+                            Đổi
+                        </button>
+                    </div>
+                </div>
+
                 <form method="POST" className="needs-validation">
                     <div className="my-3">
                         <label htmlFor="phone" className="form-label">
@@ -74,7 +99,6 @@ const AdminLogin: React.FC = () => {
                             required
                             onChange={(e) => setPhone(e.target.value)}
                         />
-                        <div className="invalid-feedback">Số điện thoại không hợp lệ</div>
                     </div>
                     <div className="mb-4">
                         <label htmlFor="password" className="form-label">
@@ -90,11 +114,10 @@ const AdminLogin: React.FC = () => {
                             required
                             onChange={(e) => setPassword(e.target.value)}
                         />
-                        <div className="invalid-feedback">Mật khẩu không hợp lệ</div>
                     </div>
                     <div className="d-flex align-items-center justify-content-between mb-3">
                         <div>
-                            <input type="checkbox" id="remember" className="form-check-input" onChange={handleRememberOnChange} />
+                            <input type="checkbox" id="remember" className="form-check-input" onChange={(e) => setRemember(e.target.checked)} />
                             <label htmlFor="remember" className="form-check-label ms-2 mt-1">
                                 Ghi nhớ đăng nhập
                             </label>
@@ -103,8 +126,8 @@ const AdminLogin: React.FC = () => {
                             Quên mật khẩu?
                         </a>
                     </div>
-                    <button 
-                        type="button" 
+                    <button
+                        type="button"
                         className="btn btn-primary w-100"
                         onClick={handleLogin}
                     >
