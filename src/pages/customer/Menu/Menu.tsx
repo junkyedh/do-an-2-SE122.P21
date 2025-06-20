@@ -11,8 +11,24 @@ import ViewToggle from "@/components/customer/ViewToggle/ViewToggle";
 import { view } from "framer-motion";
 import CardListView from "@/components/customer/CardProduct/CardListView";
 import Breadcrumbs from "@/components/Breadcrumbs/Breadcrumbs";
-import { NavLink } from "react-router-dom";
 
+interface RawProduct {
+  id: string;
+  name: string;
+  category: string;
+  description?: string;
+  image: string;
+  available: boolean;
+  hot: boolean;
+  cold: boolean;
+  isPopular: boolean;
+  isNew: boolean;
+  sizes: { sizeName: string; price: number }[];
+  materials: { name: string }[];
+  rating?: number;
+  discount?: number;
+}
+//Kiểu UI dùng trong component (CardProduct, CardListView)
 export interface Product {
   id: string;
   name: string;
@@ -24,7 +40,7 @@ export interface Product {
   cold?: boolean;
   isPopular: boolean;
   isNew?: boolean;
-  sizes: { name: string; price: number }[];
+  sizes: { sizeName: string; price: number }[];
   materials: { name: string }[];
   rating?: number;
   discount?: number;
@@ -47,8 +63,15 @@ const Menu: React.FC = () => {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
   useEffect(() => {
-    MainApiRequest.get<Product[]>("/product/list")
-      .then((res) => setProducts(res.data))
+    MainApiRequest.get<RawProduct[]>("/product/list")
+      .then((res) => {
+        //mapping dữ liệu từ RawProduct sang Product, chuyển sizeName -> name
+        const mapped: Product[] = res.data.map((p) => ({
+          ...p,
+          sizes: p.sizes.map((s) => ({sizeName: s.sizeName, price: s.price})),
+        }));
+        setProducts(mapped);
+      })
       .catch(console.error);
   }, []);
 
@@ -67,7 +90,7 @@ const Menu: React.FC = () => {
         icon:
           cat === "Cà phê"
             ? "☕"
-            : cat === "Trà"
+            : cat === "Trà trái cây"
             ? "🍃"
             : cat === "Trà sữa"
             ? "🧋"

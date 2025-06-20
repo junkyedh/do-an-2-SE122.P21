@@ -7,6 +7,7 @@ import Breadcrumbs from "@/components/Breadcrumbs/Breadcrumbs";
 import { yellow } from "@mui/material/colors";
 import ProductRating from "@/components/customer/RatingStar/ProductRating";
 import { useCart } from "@/hooks/cartContext";
+import { message } from "antd";
 
 interface ProductSize {
   sizeName: string;
@@ -94,9 +95,8 @@ const DetailProduct: React.FC = () => {
 
         // 1) Filter by star rating
         if (filterStar !== "all") {
-            list = list.filter(r => r.star.toString() === filterStar);
+            list = list.filter((r) => r.star.toString() === filterStar);
         }
-
         // 2) Sort by date
         if (sortOption === "newest") {
             list = [...list].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
@@ -108,13 +108,13 @@ const DetailProduct: React.FC = () => {
 
     if (!product) return <div className="loading">Đang tải...</div>
     const isCake = product.category === "Bánh ngọt";
-    const needsTemp = ["Cà phê", "Trà"].includes(product.category);
+    const needsTemp = ["Cà phê", "Trà trái cây"].includes(product.category);
 
 
     const currentPrice = (() => {
         if (isCake) {
-        const base = product.sizes[0].price;
-        return selectedSize === "whole" ? base * 8 : base;
+            const base = product.sizes[0].price;
+            return selectedSize === "whole" ? base * 8 : base;
         }
         const sz = product.sizes.find((s) => s.sizeName === selectedSize);
         return sz?.price || 0;
@@ -122,33 +122,31 @@ const DetailProduct: React.FC = () => {
 
     const handleAddToCart = async () => {
         try {
-            await MainApiRequest.post("/cart", {
-                productId: product.id,
-                size: selectedSize,
-                // temperature: needsTemp ? selectedTemp : undefined,
-                quantity,
-            });
+            //addToCart tự động xử lý sessionId và phoneCustomer
+            await addToCart(String(product.id), selectedSize, quantity, needsTemp ? selectedTemp : undefined);
+            message.success("Đã thêm vào giỏ hàng!");
         } catch (error) {
             console.error("Thêm vào giỏ hàng thất bại:", error);
+            message.error("Thêm vào giỏ hàng thất bại. Vui lòng thử lại sau.");
         }
-        addToCart(product.id, selectedSize, quantity);
     }
-    const handleSizeChange = (size: string) => {
-        setSelectedSize(size);
-        if (isCake && size === "whole") {
-            setSelectedTemp("hot");
-        } else if (needsTemp) {
-            setSelectedTemp("hot");
-        }
-    };
+    // const handleSizeChange = (size: string) => {
+    //     setSelectedSize(size);
+    //     if (isCake && size === "whole") {
+    //         setSelectedTemp("hot");
+    //     } else if (needsTemp) {
+    //         setSelectedTemp("hot");
+    //     }
+    // };
 
     const handlePlaceOrder = () => {
+        if (!product.available) return message.error("Sản phẩm đang hết hàng.");
         navigate(`/checkout`, {
             state: {
                 initialItems: [{
                     productId: product.id,
                     size: selectedSize,
-                    temperature: needsTemp ? selectedTemp : undefined,
+                    mood: needsTemp ? selectedTemp : undefined,
                     quantity,
                 }],
             }
@@ -227,16 +225,16 @@ const DetailProduct: React.FC = () => {
                     <div className="filter-group">
                         <label>Lọc:</label>
                         <select
-                        value={filterStar}
-                        onChange={(e) => setFilterStar(e.target.value as "5" | "4" | "3" | "2" | "1" | "all")
-                        }
-                        >
-                        <option value="">Tất cả</option>
-                        <option value="5">5 sao</option>
-                        <option value="4">4 sao</option>
-                        <option value="3">3 sao</option>
-                        <option value="2">2 sao</option>
-                        <option value="1">1 sao</option>
+                            value={filterStar}
+                            onChange={(e) => setFilterStar(e.target.value as "5" | "4" | "3" | "2" | "1" | "all")
+                            }
+                            >
+                            <option value="">Tất cả</option>
+                            <option value="5">5 sao</option>
+                            <option value="4">4 sao</option>
+                            <option value="3">3 sao</option>
+                            <option value="2">2 sao</option>
+                            <option value="1">1 sao</option>
                         </select>
                     </div>
                     <div className="filter-group">

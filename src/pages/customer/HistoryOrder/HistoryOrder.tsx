@@ -8,11 +8,10 @@ import { Clock, CheckCircle, Truck } from 'lucide-react';
 
 interface OrderSummary {
   id: number;
-  phoneCustomer: string;
   serviceType: 'TAKE AWAY' | 'DINE IN';
-  totalPrice: number;
   orderDate: string;
   status: string;
+  productIDs: (number| null)[];
 }
 
 interface OrderDetail {
@@ -23,6 +22,27 @@ interface OrderDetail {
   mood?: string;
   quantity: number;
   price: number;
+}
+
+interface OrderItem {
+  productId: number;
+  name: string;
+  image: string;
+  size: string;
+  mood?: string;
+  quantity: number;
+  price: number;
+}
+
+
+interface ProductDetail {
+  id: number;
+  name: string;
+  image: string;
+  sizes: { 
+    sizeName: string; 
+    price: number }[];
+    
 }
 
 const statusMap: Record<
@@ -51,27 +71,56 @@ const HistoryOrder: React.FC = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
 
-  // 1) Load phoneCustomer
+  // 1) Load phoneCustomer 
   useEffect(() => {
-    MainApiRequest.get<{ phoneCustomer: string }>('/auth/callback')
+    MainApiRequest.get<{ msg: string; data: {phone:string} }>('/auth/callback')
       .then(r => {
-        setPhone(r.data.phoneCustomer);
+        const phone = r.data.data.phone;
+        setPhone(phone);
         // 2) Lấy đơn hàng của khách
-        return MainApiRequest.get<OrderSummary[]>(`/order/customer/${encodeURIComponent(r.data.phoneCustomer)}`);
+        return MainApiRequest.get<OrderSummary[]>(`/order/customer/${encodeURIComponent(phone)}`);
       })
-      .then(r => setOrders(r.data))
+      .then(r => {
+        setOrders(r.data)
+        // 3) Lấy chi tiết đơn hàng
+        r.data.forEach(order => fetchDetails(order.id))
+      })
       .catch(err => {
         console.error(err);
         message.error('Không tải được lịch sử đơn hàng');
       });
   }, []);
 
-  // Lấy chi tiết order nếu cần
+  // Lấy chi tiết order qua /order/customer/{phone}/{orderId}, rồi enrich qua /product/{productId}
   const fetchDetails = async (orderId: number) => {
     if (details[orderId]) return;
     try {
-      const res = await MainApiRequest.get<OrderDetail[]>(`/order/detail/${orderId}`);
-      setDetails(d => ({ ...d, [orderId]: res.data }));
+      // 1) Lấy raw order
+      const res = await MainApiRequest.get<{ order_details: any[]}>(
+        `/order/customer/${encodeURIComponent(phone)}/${orderId}`
+      );
+      const rawDetails = res.data.order_details;
+
+
+      // 2) Enrich từng item qua /product/{productId}
+      const enriched = await Promise.all(
+        rawDetails.map(async (d) => {
+          const {data: p} = await MainApiRequest.get<ProductDetail>(`/product/${d.productId}`);
+          // Lấy giá cho từng size
+          const sz = p.sizes.find(s => s.sizeName === d.size) || { sizeName: d.size, price: 0 };
+          return {
+            productId: p.id,
+            name: p.name,
+            image: p.image,
+            size: sz.sizeName,
+            mood: d.mood,
+            quantity: d.quantity,
+            price: sz.price
+          } as OrderItem;
+        })
+      );
+      // 4) Lưu chi tiết vào state
+      setDetails(prev => ({ ...prev, [orderId]: enriched }));
     } catch (err) {
       console.error(err);
       message.error('Không tải được chi tiết đơn');
@@ -89,14 +138,27 @@ const HistoryOrder: React.FC = () => {
       title: 'Ngày',
       dataIndex: 'orderDate',
       key: 'orderDate',
-      render: (d: string) => new Date(d).toLocaleString('vi-VN')
+      render: (d?: string) => (d ? new Date(d).toLocaleDateString('vi-VN') : '-'),
+    },
+    {
+      title: 'Chi nhánh',
+      dataIndex: 'branchId',
+      key: 'branchId'
     },
     {
       title: 'Tổng tiền',
       dataIndex: 'totalPrice',
       key: 'totalPrice',
-      render: (p: number) => p.toLocaleString('vi-VN') + '₫',
-      sorter: (a: OrderSummary, b: OrderSummary) => a.totalPrice - b.totalPrice
+      render: (_: any, record: OrderSummary) => {
+        const total = (details[record.id] || []).reduce(
+          (sum, item) => sum + item.price * item.quantity, 0);
+        return total.toLocaleString('vi-VN') + '₫';
+      },
+      sorter: (a: OrderSummary, b: OrderSummary) => {
+        const totalA = (details[a.id] || []).reduce((sum, item) => sum + item.price * item.quantity, 0);
+        const totalB = (details[b.id] || []).reduce((sum, item) => sum + item.price * item.quantity, 0);
+        return totalA - totalB;
+      }
     },
     {
       title: 'Trạng thái',
@@ -156,7 +218,9 @@ const HistoryOrder: React.FC = () => {
                     <img src={prod.image} alt={prod.name} />
                     <div className="info">
                       <div className="name">{prod.name}</div>
-                      <div>Size: {prod.size}{prod.mood?`, ${prod.mood==='hot'?'Nóng':'Lạnh'}`:''}</div>
+                      <div>Size: {prod.size}
+                        {prod.mood?`, ${prod.mood==='hot'?'Nóng':'Lạnh'}`:''}
+                      </div>
                       <div>Số lượng: {prod.quantity}</div>
                       <div>Giá: {(prod.price*prod.quantity).toLocaleString('vi-VN')}₫</div>
                     </div>

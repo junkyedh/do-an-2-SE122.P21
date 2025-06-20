@@ -20,7 +20,7 @@ const CartDrawer: React.FC = () => {
     navigate("/checkout", {
       state: {
         initialItems: cart.map((i) => ({
-          productId: i.id,
+          productId: i.productId,
           size: i.size,
           mood: i.mood,
           quantity: i.quantity,
@@ -29,9 +29,9 @@ const CartDrawer: React.FC = () => {
     })
   }
 
-  // helpers
+  // Helper functions to determine item type
   const isCake = (item: CartItem) => item.category === 'Bánh ngọt'
-  const isDrink = (item: CartItem) =>['Cà phê', 'Trà'].includes(item.category)
+  const isDrink = (item: CartItem) =>['Cà phê', 'Trà trái cây'].includes(item.category)
 
   const deliveryFee = 10000
   const finalTotal = totalPrice + deliveryFee
@@ -54,7 +54,7 @@ const CartDrawer: React.FC = () => {
       </Button>
 
       {/* Cart Drawer */}
-      <Offcanvas show={show} onHide={close} placement="end" className="cart-drawer" backdrop="static">
+      <Offcanvas show={show} onHide={close} placement="end" className="cart-drawer">
         {/* Header */}
         <Offcanvas.Header className="cart-header border-0">
           <div className="header-content w-100 d-flex align-items-center justify-content-between">
@@ -86,7 +86,7 @@ const CartDrawer: React.FC = () => {
             /* Empty State */
             <div className="empty-state h-100 d-flex flex-column align-items-center justify-content-center text-center p-4">
               <div className="empty-icon-wrapper mb-4">
-                <Image src={emptyCart || "/placeholder.svg"} width={120} height={100} className="empty-image" />
+                <Image src={emptyCart} width={120} height={100} className="empty-image" />
               </div>
               <h5 className="empty-title mb-2">Giỏ hàng trống</h5>
               <p className="empty-subtitle text-muted mb-4">Hãy thêm những sản phẩm yêu thích vào giỏ hàng nhé!</p>
@@ -184,7 +184,38 @@ const CartDrawer: React.FC = () => {
                                         {s.name}
                                         </option>
                                       ))}
-                                </Form.Select>
+                                  </Form.Select>
+                                    <span
+                                      className="dropdown-icon position-absolute"
+                                      style={{
+                                      right: "10px",
+                                      top: "50%",
+                                      transform: "translateY(-50%)",
+                                      pointerEvents: "none",
+                                      color: "#888",
+                                      fontSize: "1rem",
+                                    }}
+                                  >
+                                  <BiChevronDown />
+                                  </span>
+                                </div>
+                              </div>
+
+                              {/* Temperature Selector */}
+                              {isDrink(item) && (
+                                <div className="option-group position-relative">
+                                  <label className="option-label">Nhiệt độ:</label>
+                                  <div className="select-wrapper position-relative">
+                                  <Form.Select
+                                    size="sm"
+                                    value={item.mood}
+                                    onChange={(e) => updateItem(item.id, { mood: e.target.value })}
+                                    className="option-select pe-4"
+                                    style={{ appearance: "none", WebkitAppearance: "none", MozAppearance: "none" }}
+                                  >
+                                    <option value="hot">🔥 Nóng</option>
+                                    <option value="cold">🧊 Đá</option>
+                                  </Form.Select>
                                   <span
                                     className="dropdown-icon position-absolute"
                                     style={{
@@ -194,43 +225,12 @@ const CartDrawer: React.FC = () => {
                                     pointerEvents: "none",
                                     color: "#888",
                                     fontSize: "1rem",
-                                  }}
-                                >
-                                <BiChevronDown />
-                                </span>
-                              </div>
-                              </div>
-
-                              {/* Temperature Selector */}
-                              {isDrink(item) && (
-                              <div className="option-group position-relative">
-                                <label className="option-label">Nhiệt độ:</label>
-                                <div className="select-wrapper position-relative">
-                                <Form.Select
-                                  size="sm"
-                                  value={item.mood}
-                                  onChange={(e) => updateItem(item.id, { mood: e.target.value })}
-                                  className="option-select pe-4"
-                                  style={{ appearance: "none", WebkitAppearance: "none", MozAppearance: "none" }}
-                                >
-                                  <option value="hot">🔥 Nóng</option>
-                                  <option value="cold">🧊 Đá</option>
-                                </Form.Select>
-                                <span
-                                  className="dropdown-icon position-absolute"
-                                  style={{
-                                  right: "10px",
-                                  top: "50%",
-                                  transform: "translateY(-50%)",
-                                  pointerEvents: "none",
-                                  color: "#888",
-                                  fontSize: "1rem",
-                                  }}
-                                >
-                                  <BiChevronDown />
-                                </span>
+                                    }}
+                                  >
+                                    <BiChevronDown />
+                                  </span>
+                                  </div>
                                 </div>
-                              </div>
                               )}
                             </div>
 
@@ -299,8 +299,8 @@ const CartDrawer: React.FC = () => {
                     <Button variant="outline-primary" className="continue-btn flex-fill" onClick={close}>
                       Tiếp tục mua
                     </Button>
-                    <Button variant="primary" className="checkout-btn flex-fill" >
-                      <BiArrowToRight className="me-2" onClick={handleCheckout} />
+                    <Button variant="primary" className="checkout-btn flex-fill"  onClick={handleCheckout}>
+                      <BiArrowToRight className="me-2"/>
                       Thanh toán
                     </Button>
                   </div>

@@ -1,8 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, use } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './Checkout.scss';
 import { MainApiRequest } from '@/services/MainApiRequest';
 import Breadcrumbs from '@/components/Breadcrumbs/Breadcrumbs';
+import { message } from 'antd';
+import { CartItem, useCart } from '@/hooks/cartContext';
+import { set } from 'react-datepicker/dist/date_utils';
+import { clear } from 'console';
+import { m } from 'framer-motion';
 
 interface LocationStateItem {
   productId: string;
@@ -18,11 +23,14 @@ interface ProductDetail {
   sizes: { sizeName: string; price: number }[];
 }
 
-interface OrderItem extends ProductDetail {
-  quantity: number;
-  size: string;
-  price: number;
-  mood?: string;
+interface OrderItem {
+    productId: string;
+    name: string;
+    image: string;
+    quantity: number;
+    size: string;
+    price: number;
+    mood?: string;
 }
 
 interface Coupon {
@@ -31,95 +39,225 @@ interface Coupon {
   description: string;
 }
 
+interface  Brach {
+    id: number;
+    name: string;
+    address: string;
+    phone: string;
+}
+
+interface Membership {
+    id: number;
+    rank: string;
+    mPrice: number;
+    discount: number;
+}
+
 export const Checkout: React.FC = () => {
-  const { state } = useLocation();
-  const navigate = useNavigate();
+    const { state } = useLocation();
+    const navigate = useNavigate();
 
-  // Order items
-  const [items, setItems] = useState<OrderItem[]>([]);
-  // Customer info
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [email, setEmail] = useState('');
-  const [address, setAddress] = useState('');
-  const [note, setNote] = useState('');
-  // Methods
-  const [deliveryMethod, setDeliveryMethod] = useState<'delivery' | 'pickup'>('delivery');
-  const [paymentMethod, setPaymentMethod] = useState<'cash' | 'transfer'>('cash');
-  // Coupons
-  const [couponCode, setCouponCode] = useState('');
-  const [appliedCoupon, setAppliedCoupon] = useState<Coupon | null>(null);
-  const availableCoupons: Coupon[] = [
-    { code: 'WELCOME10', discount: 10000, description: 'Giảm 10k cho đơn hàng đầu tiên' },
-    { code: 'FREESHIP', discount: 15000, description: 'Miễn phí giao hàng' },
-    { code: 'SAVE20', discount: 20000, description: 'Giảm 20k cho đơn hàng từ 100k' },
-  ];
+    const {cart, fetchCart} = useCart();
+    const {clearCart} = useCart();
+    // Order items
+    const [items, setItems] = useState<(OrderItem | CartItem)[]>([]);
+    // Customer info
+    const [name, setName] = useState('');
+    const [phone, setPhone] = useState('');
+    const [email, setEmail] = useState('');
+    const [address, setAddress] = useState('');
+    const [note, setNote] = useState('');
+    // Methods
+    const [deliveryMethod, setDeliveryMethod] = useState<'delivery' | 'pickup'>('delivery');
+    const [paymentMethod, setPaymentMethod] = useState<'cash' | 'transfer'>('cash');
+    // Coupons
+    const [couponCode, setCouponCode] = useState('');
+    const [appliedCoupon, setAppliedCoupon] = useState<Coupon | null>(null);
+    const [availableCoupons, setAvailableCoupons] = useState<Coupon[]>([]);
+    // Branches
+    const [branches, setBranches] = useState<Brach[]>([]);
+    const [selectedBranch, setSelectedBranch] = useState<number | null>(null);
+    // Membership
+    const [membershipList, setMembershipList] = useState<Membership[]>([]);
+    const [membershipDiscount, setMembershipDiscount] = useState(0);
 
-  // Load items from state
-  useEffect(() => {
-    (async () => {
-      const list = state?.initialItems || [];
-    const data: OrderItem[] = await Promise.all(
-      list.map(async (it: LocationStateItem): Promise<OrderItem> => {
-        const res = await MainApiRequest.get<ProductDetail>(`/product/${it.productId}`);
-        const sizeObj = res.data.sizes.find((s: { sizeName: string; price: number }) => s.sizeName === it.size);
-        return {
-        ...res.data,
-        quantity: it.quantity,
-        size: it.size,
-        mood: it.mood,
-        price: sizeObj?.price ?? 0,
-        };
-      })
-    );
-      setItems(data);
-    })();
-  }, [state]);
+  
+    useEffect(() => {
+        MainApiRequest.get<Coupon[]>('/promote/coupon/list')
+        .then(res => setAvailableCoupons(res.data))
+        .catch(err => console.error('Failed to fetch coupons:', err));
+    }, []);
+    
+    useEffect(() => {
+        MainApiRequest.get<Membership[]>('/membership/list')
+        .then(res =>  setMembershipList(res.data))
+        .catch(err => console.error('Failed to fetch membership:', err));
+    }, []);
 
-  // Try to auto-fill phone (logged-in)
-  useEffect(() => {
-    (async () => {
-      try {
-        const res = await MainApiRequest.get<{ phoneCustomer: string }>('/auth/callback');
-        if (res.data.phoneCustomer) {
-          setPhone(res.data.phoneCustomer);
+
+    // Nếu đến từ "Mua ngay" thì lấy items từ state (state.initialItems); nếu không thì fetch từ giỏ hàng
+    useEffect(() => {
+        (async () => {
+            if (state?.initialItems) {
+            const mapped = await Promise.all(
+                (state.initialItems as LocationStateItem[]).map(async (it) => {
+                    const {data: res} = await MainApiRequest.get<ProductDetail>(`/product/${it.productId}`);
+                    const sz = res.sizes.find((s) => s.sizeName === it.size || { sizeName: it.size, price: 0 });
+                    return {
+                        productId: res.id,
+                        name: res.name,
+                        image: res.image,
+                        size: it.size,
+                        mood: it.mood,
+                        quantity: it.quantity,
+                        price: sz?.price || 0, // nếu không tìm thấy size thì giá là 0
+                    } as OrderItem;
+                })
+            );
+            setItems(mapped);
+            } else {
+                //fallback: lấy từ giỏ hàng
+                await fetchCart()
+                setItems(
+                    cart.map((it) => ({
+                        productId: it.productId,
+                        name: it.name,
+                        image: it.image,
+                        size: it.size,
+                        mood: it.mood,
+                        quantity: it.quantity,
+                        price: it.price,
+                    }))
+                );
+            }
+        })()
+    }, [state, cart])
+
+    // Try to auto-fill phone (logged-in)
+    useEffect(() => {
+        try {
+            // Lấy thông tin người dùng từ API
+            MainApiRequest.get<{
+                data: {
+                    phone: string;
+                    name?: string;
+                    email?: string;
+                    address?: string;
+                }
+            }>('/auth/callback')
+            .then ((res) => {
+                const profile = res.data.data;
+                if (profile.phone) setPhone(profile.phone);
+                if (profile.name) setName(profile.name);
+                if (profile.email) setEmail(profile.email);
+                if (profile.address) setAddress(profile.address);
+            }) 
+            .catch ((err) => {
+                console.error('Failed to fetch user profile:', err);
+            });
+        } catch (err) {
+            console.error('Error fetching user profile:', err);
         }
-      } catch {}
-    })();
-  }, []);
+    }, []);
 
-  const deliveryFee = deliveryMethod === 'delivery' ? 15000 : 0;
-  const subtotal = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
-  const discount = appliedCoupon?.discount ?? 0;
-  const total = subtotal + deliveryFee - discount;
+    //Khi items đã load, fetch available-branches cho từng sản phẩm rồi lấy intersection
+    useEffect(() => {
+        if (!items.length) return;
+        (async () => {
+            const lists = await Promise.all(
+                items.map(it =>
+                    MainApiRequest.get<Brach[]>(`/product/available-branches/${it.productId}`)
+                    .then (res => res.data)
+                    .catch (() => [])
+                )
+            );
+            // intersect theo id
+            const common = lists.reduce((prev, curr) => 
+                prev.filter(b => curr.some(c => c.id === b.id))
+            );
+            setBranches(common);
+            if (common.length && selectedBranch === null) setSelectedBranch(common[0].id);
+        })();
+    }, [items]);
 
-  const handleApplyCoupon = () => {
-    const c = availableCoupons.find(c => c.code === couponCode.toUpperCase());
-    if (c) setAppliedCoupon(c);
-    else alert('Mã giảm giá không hợp lệ!');
-  };
+    // Tính membership discount dựa vào rank customer (auth callback trả về data.rank)
+    useEffect(() => {
+        (async () => {
+            try {
+                const res = await MainApiRequest.get<{ msg: string; data: { rank: string } }>('/auth/callback');
+                const rank = res.data.data.rank;
+                const tier = membershipList.find(m => m.rank === rank);
+                if (tier) {
+                    setMembershipDiscount(tier.discount);
+                    console.log(`Membership discount for ${rank}: ${tier.discount.toLocaleString('vi-VN')}₫`);
+                }} catch (err) {
+                    console.error('Failed to fetch membership rank:', err);
+                }
+            })();
+        }, [membershipList]);
 
-  const handlePlaceOrder = async () => {
-    if (!name.trim() || !phone.trim()) {
-      alert('Vui lòng nhập đầy đủ họ tên và số điện thoại');
-      return;
-    }
-    try {
-      const payload = {
-        phoneCustomer: phone,
-        serviceType: deliveryMethod === 'delivery' ? 'DINE IN' : 'TAKE AWAY',
-        orderDate: new Date().toISOString(),
-        status: 'PENDING',
-        productIDs: items.map(i => parseInt(i.id, 10)),
-        branchId: 1,
-      };
-      const res = await MainApiRequest.post<{ id: number }>('/order', payload);
-      navigate(`/tracking-order/${res.data.id}`, { replace: true });
-    } catch (err) {
-      console.error(err);
-      alert('Đặt hàng thất bại, vui lòng thử lại.');
-    }
-  };
+    const deliveryFee = deliveryMethod === 'delivery' ? 10000 : 0;
+    const discount = appliedCoupon ? appliedCoupon.discount : 0;
+    const subtotal = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
+    //nếu đã dùng voucher thì không tính membership discount
+    const membershipApplied = appliedCoupon ? 0 : membershipDiscount;
+    const totalBeforeMembership = subtotal + deliveryFee - discount;
+    const finalTotal = totalBeforeMembership - membershipApplied;
+
+    const handleApplyCoupon = () => {
+        const code = couponCode.trim().toUpperCase();
+        const c = availableCoupons.find((x) => x.code.toUpperCase() === code);
+        if (c) {
+            setAppliedCoupon(c);
+            message.success(`Áp dụng mã giảm giá thành công: ${c.code} - Giảm ${c.discount.toLocaleString('vi-VN')}₫`);
+        } else alert('Mã giảm giá không hợp lệ!');
+    };
+
+    const handlePlaceOrder = async () => {
+        if (!name.trim() || !phone.trim()) {
+            message.error('Vui lòng nhập đầy đủ họ tên và số điện thoại.');
+            return;
+        }
+        if (!selectedBranch) {
+            message.error('Vui lòng chọn chi nhánh.');
+            return;
+        }
+        if (deliveryMethod === 'delivery' && !address.trim()) {
+            message.error('Vui lòng nhập địa chỉ giao hàng.');
+            return;
+        }
+        try {
+            const {data: o} = await MainApiRequest.post<{ id: number }>('/order', {
+                phoneCustomer: phone,
+                serviceType: deliveryMethod === 'delivery' ? 'DINE IN' : 'TAKE AWAY',
+                orderDate: new Date().toISOString(),
+                status: 'PENDING',
+                productIDs: items.map((it) => Number((it as any).productId)),
+                branchId: selectedBranch!,
+            });
+            const orderId = o.id;
+
+            // 2) Tạo order details
+            await Promise.all(
+                items.map((it) => {
+                    MainApiRequest.post(`/order/detail/${orderId}`, {
+                        productId: Number(it.productId),
+                        size: it.size,
+                        mood: it.mood,
+                        quantity: it.quantity,
+                    });
+                })
+            );
+
+            // 3) Xoá giỏ hàng va chuyển sang trang theo dõi đơn hàng
+            clearCart();
+            message.success('Đặt hàng thành công!');
+            navigate(`/tracking-order/${orderId}`, { replace: true });
+            } catch (err) {
+                console.error(err);
+                alert('Đặt hàng thất bại, vui lòng thử lại.');
+            }
+        };
 
   return (
     <>
@@ -131,48 +269,63 @@ export const Checkout: React.FC = () => {
         ]}
     />
     <div className="checkout-grid">
-      {/* ==== CỘT TRÁI ==== */}
-      <div className="left-col">
-        <div className="card">
-          <h2>Thông tin khách hàng</h2>
-          <div className="row">
-            <div className="field">
-              <label>Họ và tên *</label>
-              <input value={name} onChange={e => setName(e.target.value)} placeholder="Nhập họ và tên" />
+        {/* ==== CỘT TRÁI ==== */}
+        <div className="left-col">
+            <div className="card">
+            <h2>Thông tin khách hàng</h2>
+            <div className="row">
+                <div className="field">
+                <label>Họ và tên *</label>
+                <input value={name} onChange={e => setName(e.target.value)} placeholder="Nhập họ và tên" />
+                </div>
+                <div className="field">
+                <label>Số điện thoại *</label>
+                <input value={phone} onChange={e => setPhone(e.target.value)} placeholder="Nhập số điện thoại" />
+                </div>
             </div>
-            <div className="field">
-              <label>Số điện thoại *</label>
-              <input value={phone} onChange={e => setPhone(e.target.value)} placeholder="Nhập số điện thoại" />
-            </div>
-          </div>
-          <div className="field full">
-            <label>Email</label>
-            <input value={email} onChange={e => setEmail(e.target.value)} placeholder="Nhập email (tùy chọn)" />
-          </div>
-        </div>
-
-        <div className="card">
-          <h2>Phương thức nhận hàng</h2>
-          <div className="option" onClick={() => setDeliveryMethod('delivery')}>
-            <input type="radio" checked={deliveryMethod==='delivery'} readOnly />
-            <div className="info">
-              <div className="title">Giao hàng tận nơi</div>
-              <div className="desc">Phí giao hàng: 15,000₫</div>
-            </div>
-          </div>
-          <div className="option" onClick={() => setDeliveryMethod('pickup')}>
-            <input type="radio" checked={deliveryMethod==='pickup'} readOnly />
-            <div className="info">
-              <div className="title">Nhận tại cửa hàng</div>
-              <div className="desc">Miễn phí – Sẵn sàng sau 15 phút</div>
-            </div>
-          </div>
-          {deliveryMethod==='delivery' && (
             <div className="field full">
-              <label>Địa chỉ giao hàng *</label>
-              <textarea value={address} onChange={e=>setAddress(e.target.value)} placeholder="Nhập địa chỉ chi tiết"/>
+                <label>Email</label>
+                <input value={email} onChange={e => setEmail(e.target.value)} placeholder="Nhập email (tùy chọn)" />
             </div>
-          )}
+            </div>
+
+            <div className="card">
+            <h2>Phương thức nhận hàng</h2>
+            <div className="option" onClick={() => setDeliveryMethod('delivery')}>
+                <input type="radio" checked={deliveryMethod==='delivery'} readOnly />
+                <div className="info">
+                <div className="title">Giao hàng tận nơi</div>
+                <div className="desc">Phí giao hàng: 10,000₫</div>
+                </div>
+            </div>
+            <div className="option" onClick={() => setDeliveryMethod('pickup')}>
+                <input type="radio" checked={deliveryMethod==='pickup'} readOnly />
+                <div className="info">
+                <div className="title">Nhận tại cửa hàng</div>
+                <div className="desc">Miễn phí – Sẵn sàng sau 15 phút</div>
+                </div>
+            </div>
+            
+            {deliveryMethod==='delivery' && (
+                <div className="field full">
+                    <label>Địa chỉ giao hàng *</label>
+                    <input value={address} onChange={e => setAddress(e.target.value)} placeholder="Nhập địa chỉ giao hàng" />
+                </div>
+            )}  
+            <div className="field full">
+                <label>Chọn chi nhánh</label>
+                <select 
+                    value={selectedBranch ?? ''}
+                    onChange={e => setSelectedBranch(parseInt(e.target.value, 10))}
+                >
+                    <option value="" disabled>-- Chọn chi nhánh --</option>
+                    {branches.map(b => (
+                        <option key={b.id} value={b.id}>
+                            {b.name} - {b.address}
+                        </option>
+                    ))}
+                </select>
+            </div>
         </div>
 
         <div className="card">
@@ -202,44 +355,44 @@ export const Checkout: React.FC = () => {
       {/* ==== CỘT PHẢI ==== */}
       <aside className="right-col">
         <div className="card summary-order">
-          <h2>Đơn hàng của bạn</h2>
-          {items.map(i=>(
-            <div key={i.id} className="item">
-              <img src={i.image} alt={i.name}/>
-              <div className="info">
-                {i.name} ({i.size}{i.mood?`, ${i.mood}`:''}) x{i.quantity}
-              </div>
-              <div className="price">{(i.price*i.quantity).toLocaleString('vi-VN')}₫</div>
-            </div>
-          ))}
+            <h2>Đơn hàng của bạn</h2>
+            {items.map(i=>(
+                <div key={i.productId} className="item">
+                <img src={i.image} alt={i.name}/>
+                <div className="info">
+                    {i.name} ({i.size}{i.mood?`, ${i.mood}`:''}) x{i.quantity}
+                </div>
+                <div className="price">{(i.price*i.quantity).toLocaleString('vi-VN')}₫</div>
+                </div>
+            ))}
         </div>
 
         <div className="card coupon">
-          <h2>Mã giảm giá</h2>
-          <div className="apply">
-            <input value={couponCode} onChange={e=>setCouponCode(e.target.value)} placeholder="Nhập mã giảm giá"/>
+            <input 
+                value={couponCode} 
+                onChange={e=> setCouponCode(e.target.value)} 
+                placeholder="Nhập mã giảm giá"/>
             <button onClick={handleApplyCoupon}>Áp dụng</button>
-          </div>
-          <div className="available">
-            <div className="label">Mã giảm giá có sẵn:</div>
-            {availableCoupons.map(c=>(
-              <div key={c.code} className="code" onClick={()=>setCouponCode(c.code)}>
-                <div>
-                  <div className="code-name">{c.code}</div>
-                  <div className="code-desc">{c.description}</div>
-                </div>
-                <div className="code-discount">-{c.discount.toLocaleString('vi-VN')}₫</div>
-              </div>
-            ))}
-          </div>
         </div>
 
         <div className="card total">
-          <h2>Tổng cộng</h2>
-          <div className="line"><span>Tạm tính</span><span>{subtotal.toLocaleString('vi-VN')}₫</span></div>
-          <div className="line"><span>Phí giao hàng</span><span>{deliveryFee.toLocaleString('vi-VN')}₫</span></div>
-          {discount>0 && <div className="line discount"><span>Giảm giá</span><span>-{discount.toLocaleString('vi-VN')}₫</span></div>}
-          <div className="line total-line"><strong>Tổng cộng</strong><strong>{total.toLocaleString('vi-VN')}₫</strong></div>
+            <h2>Tổng cộng</h2>
+            <div className="line"><span>Tạm tính</span><span>{subtotal.toLocaleString('vi-VN')}₫</span></div>
+            <div className="line"><span>Phí giao hàng</span><span>{deliveryFee.toLocaleString('vi-VN')}₫</span></div>
+            {discount > 0 && (
+                <div className="line discount">
+                    <span>Giảm giá voucher</span>-<span>{discount.toLocaleString('vi-VN')}₫</span>
+                </div>
+            )}
+            {membershipApplied > 0 && (
+                <div className="line discount">
+                    <span>Giảm giá thành viên</span>-<span>{membershipApplied.toLocaleString('vi-VN')}₫</span>
+                </div>
+            )}
+            <div className="line total-line">
+                <strong>Tổng cộng</strong><strong>{finalTotal.toLocaleString('vi-VN')}₫</strong>
+            </div>
+          
           <button className="place-order" onClick={handlePlaceOrder}>Đặt hàng</button>
           <div className="note-small">Bằng cách đặt hàng, bạn đồng ý với <a href="/terms">Điều khoản dịch vụ</a></div>
         </div>

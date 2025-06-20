@@ -4,9 +4,10 @@ import { FaCartPlus, FaStar } from "react-icons/fa";
 import "./CardProduct.scss";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "@/hooks/cartContext";
+import { message } from "antd";
 
 export interface ProductSize {
-  name: string;
+  sizeName: string;
   price: number;
 }
 
@@ -40,7 +41,7 @@ const CardProduct: React.FC<Props> = ({ product, onProductClick }) => {
   const finalPrice = size.price - (product.discount || 0);
 
   // nếu là cà phê hoặc trà, mood mặc định hot/cold từ product.hot/product.cold
-  const defaultMood = ["Cà phê", "Trà"].includes(product.category)
+  const defaultMood = ["Cà phê", "Trà trái cây"].includes(product.category)
     ? product.hot ? "hot" : "cold"
     : undefined;
 
@@ -55,9 +56,9 @@ const CardProduct: React.FC<Props> = ({ product, onProductClick }) => {
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (!product.available) return;
-
-    // quantity tạm cố định là 1
-    addToCart(product.id, size.name, 1, defaultMood);
+    addToCart(product.id, size.sizeName, 1, defaultMood)
+      .then(() => message.success("Đã thêm vào giỏ hàng"))
+      .catch(() => message.error("Không thể thêm vào giỏ hàng"));
   };
 
   return (

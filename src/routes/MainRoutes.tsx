@@ -28,6 +28,7 @@ import ManagerStaffList from '@/pages/brands/ManagerStaffList/ManagerStaffList';
 import { Checkout } from '@/pages/customer/Checkout/Checkout';
 import { TrackingOrder } from '@/pages/customer/TrackingOrder/TrackingOrder';
 import ProfileUser from '@/pages/customer/ProfileUser/ProfileUser';
+import HistoryOrder from '@/pages/customer/HistoryOrder/HistoryOrder';
 
 
 const MainRoutes: React.FC = () => {
@@ -44,6 +45,7 @@ const MainRoutes: React.FC = () => {
             <Route path="/profile-user" element={<ProfileUser />}/>
             <Route path="/checkout" element={<Checkout />} />
             <Route path="tracking-order/:id" element={<TrackingOrder />} />
+            <Route path="/history" element={<HistoryOrder />} />
           </Route>
 
       <Route element=

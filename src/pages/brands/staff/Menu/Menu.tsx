@@ -4,26 +4,31 @@ import { Button, Input, Modal, Select, Card, message, Pagination, AutoComplete, 
 import './Menu.scss';
 import { MainApiRequest } from '@/services/MainApiRequest';
 import { useNavigate } from "react-router-dom";
+import { stringify } from 'querystring';
 
-const categories = ['All', 'Cafe', 'Trà', 'Trà sữa', 'Nước ép', 'Bánh'];
+const categories = ['All', 'Cafe', 'Trà trái cây', 'Trà sữa', 'Nước ép', 'Bánh ngọt'];
 const options = [
     { label: 'Mang đi', value: 'Mang đi' },
     { label: 'Tại chỗ', value: 'Tại chỗ' },
 ];
 
+interface ProductSize {
+    sizeName: string;
+    price: number;
+}
+
 interface Product {
     id: string;
     name: string;
     category: string;
+    description?: string;
     image: string;
     available: boolean;
-    price: number;
-    upsize: number;
-    sizes: boolean; // true nếu có size S
-    sizem: boolean; // true nếu có size M
-    sizel: boolean; // true nếu có size L
-    hot: boolean;
-    cold: boolean;
+    hot?: boolean;
+    cold?: boolean;
+    isPopular?: boolean;
+    isNew?: boolean;
+    sizes: ProductSize[];
 }
 
 interface Coupon {
@@ -31,40 +36,37 @@ interface Coupon {
     code: string;
     status: string;
     promote: {
-        id: number;
-        name: string;
-        description: string;
         discount: number;
         promoteType: string;
-        startAt: string;
-        endAt: string;
     };
 }
 
 const Menu = () => {
-    const [menuList, setMenuList] = useState<any[]>([]);
-    const [filteredMenuList, setFilteredMenuList] = useState<any[]>([]);
+    const [menuList, setMenuList] = useState<Product[]>([]);
     const [selectedCategory, setSelectedCategory] = useState<string>('All');
     const [search, setSearch] = useState<string>('');
-    const [loading, setLoading] = useState<boolean>(false);
-    const [order, setOrder] = useState<{ [key: string]: { size: string; mood: string; quantity: number; price: number } }>({});
-    const [selectedSizes, setSelectedSizes] = useState<{ [key: string]: string }>({});
-    const [selectedMoods, setSelectedMoods] = useState<{ [key: string]: string }>({});
-    const [currentProductId, setCurrentProductId] = useState<string | null>(null);
-    const [orderInfo, setOrderInfo] = useState<any | null>(null);
-    const [phone, setPhone] = useState("");
-    const [name, setName] = useState('');
-    const [isModalVisible, setIsModalVisible] = useState(false);
-    const [form] = Form.useForm();
-    const [suggestions, setSuggestions] = useState<{ phone: string, name: string }[]>([]);
+    const [selectedSizes, setSelectedSizes] = useState<Record<string, string>>({});
+    const [selectedMoods, setSelectedMoods] = useState<Record<string, string>>({});
+    const [order, setOrder] = useState<Record<string, {size: string; mood: string; quantity: number; price: number}>>({});
     const [currentPage, setCurrentPage] = useState(1);
     const [couponCode, setCouponCode] = useState('');
     const [discountAmount, setDiscountAmount] = useState(0);
+    const [orderInfo, setOrderInfo] = useState<any>(null);
+    const [phone, setPhone] = useState('');
+    const [name, setName] = useState('');
+    const [suggestions, setSuggestions] = useState<{ phone: string, name: string }[]>([]);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+
+    const pageSize = 6;
+    const navigate = useNavigate();
+    const [form] = Form.useForm();
+    
+    const [filteredMenuList, setFilteredMenuList] = useState<any[]>([]);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [currentProductId, setCurrentProductId] = useState<string | null>(null);
     const [totalPrice, setTotalPrice] = useState(
         Object.values(order).reduce((total, item) => total + item.price * item.quantity, 0)
     );
-    const pageSize = 6;
-    const navigate = useNavigate();
 
     const fetchInvoiceTemplate = async () => {
         const response = await fetch("/invoiceTemplate.html");
@@ -74,7 +76,7 @@ const Menu = () => {
     const fetchMenuList = async () => {
         try {
             setLoading(true);
-            const res = await MainApiRequest.get("/product/list");
+            const res = await MainApiRequest.get<Product[]>("/product/list");
             setMenuList(res.data);
             setFilteredMenuList(res.data);
         } catch (error) {
@@ -93,7 +95,7 @@ const Menu = () => {
         const fetchOrderInfo = async () => {
             try {
                 const response = await MainApiRequest.get('/order/new');
-                if (response?.data?.length > 0) {
+                if (Array.isArray(response.data) && response?.data?.length > 0) {
                     setOrderInfo(response.data[0]); // Lấy đối tượng đầu tiên trong mảng
                 }
             } catch (error) {
@@ -113,11 +115,58 @@ const Menu = () => {
         calculateTotalPrice();
     }, [order]);
 
-    const filteredProducts = menuList.filter((product) =>
-        selectedCategory === 'All' || product.category === selectedCategory
-    ).filter((product) =>
-        product.name.toLowerCase().includes(search.toLowerCase())
-    );
+    const filteredProducts = menuList
+    .filter((product) =>
+        selectedCategory === 'All' || product.category === selectedCategory)
+    .filter((product) =>
+        product.name.toLowerCase().includes(search.toLowerCase()));
+
+    const currentProducts = filteredProducts.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+
+    const handleSelectSize = (id: string, sizeName: string) => {
+        if (currentProductId !== String(id)) {
+            setSelectedSizes({}); // Reset size khi chọn sản phẩm mới
+            setSelectedMoods({}); // Reset mood khi chọn sản phẩm mới
+        }
+        setCurrentProductId(String(id)); // Cập nhật sản phẩm hiện tại
+        setSelectedSizes(prev => ({...prev, [id]: sizeName })); // Cập nhật size đã chọn
+    }
+
+    const handleSelectMood = (id: string, mood: string) => {
+        // Nếu chọn sản phẩm mới, reset size và mood của sản phẩm khác
+        if (currentProductId !== String(id)) {
+            setSelectedSizes({});
+            setSelectedMoods({});
+        }
+        setCurrentProductId(String(id)); // Cập nhật sản phẩm hiện tại
+
+        // Cập nhật mood cho sản phẩm hiện tại
+        setSelectedMoods((prev) => ({...prev,[id]: mood,}));
+    };
+    
+    const handleAddToOrder = (id: number, size: string) => {
+        const product = menuList.find((p) => String(p.id) === String(id));
+        if (product && size) {
+            const mood = product.hot || product.cold ? selectedMoods[id] : ''; // Nếu không có mood thì mood là chuỗi rỗng
+            let price = product.sizes.find((s) => s.sizeName === size)?.price || 0;
+
+            const key = `${id}-${size}-${mood}`;
+            setOrder((prevOrder) => ({
+                ...prevOrder,
+                [key]: {
+                    size,
+                    mood,
+                    quantity: (prevOrder[key]?.quantity || 0) + 1,
+                    price,
+                },
+            }));
+
+            // Reset trạng thái size và mood
+            setSelectedSizes({});
+            setSelectedMoods({});
+            setCurrentProductId(null);
+        }
+    };
 
     const fetchCustomerSuggestions = async (value: string) => {
         if (value.length > 0) {  // Đảm bảo rằng chỉ gọi API khi có ít nhất một ký tự
@@ -140,64 +189,7 @@ const Menu = () => {
         setIsModalVisible(true);
     };
 
-    const handleSelectSize = (id: string, size: string) => {
-        // Nếu chọn sản phẩm mới, reset size và mood của sản phẩm khác
-        if (currentProductId !== id) {
-            setSelectedSizes({});
-            setSelectedMoods({});
-        }
-        setCurrentProductId(id);
 
-        // Cập nhật size cho sản phẩm hiện tại
-        setSelectedSizes((prev) => ({
-            ...prev,
-            [id]: size,
-        }));
-    };
-
-    const handleSelectMood = (id: string, mood: string) => {
-        // Nếu chọn sản phẩm mới, reset size và mood của sản phẩm khác
-        if (currentProductId !== id) {
-            setSelectedSizes({});
-            setSelectedMoods({});
-        }
-        setCurrentProductId(id);
-
-        // Cập nhật mood cho sản phẩm hiện tại
-        setSelectedMoods((prev) => ({
-            ...prev,
-            [id]: mood,
-        }));
-    };
-
-    const handleAddToOrder = (id: number, size: string) => {
-        const product = menuList.find((p) => p.id === id);
-        if (product && size) {
-            const mood = product.hot || product.cold ? selectedMoods[id] : ''; // Nếu không có mood thì mood là chuỗi rỗng
-            let price = product.price;
-            if (size === 'M') {
-                price += product.upsize;
-            } else if (size === 'L') {
-                price += product.upsize * 2;
-            }
-
-            const key = `${id}-${size}-${mood}`;
-            setOrder((prevOrder) => ({
-                ...prevOrder,
-                [key]: {
-                    size,
-                    mood,
-                    quantity: (prevOrder[key]?.quantity || 0) + 1,
-                    price,
-                },
-            }));
-
-            // Reset trạng thái size và mood
-            setSelectedSizes({});
-            setSelectedMoods({});
-            setCurrentProductId(null);
-        }
-    };
 
     const handleCloseModal = () => {
         setIsModalVisible(false);
@@ -241,8 +233,7 @@ const Menu = () => {
 
 
     const handleIncreaseQuantity = (id: string, size: string, mood: string) => {
-        const product = menuList.find((p) => String(p.id) === id);
-        const actualMood = product?.hot || product?.cold ? mood : ''; // Nếu không có mood, dùng chuỗi rỗng
+        const actualMood = mood === '' ? 'none' : mood; // Đảm bảo 'mood' rỗng được thay bằng 'none'
         const key = `${id}-${size}-${actualMood}`;
 
         setOrder((prevOrder) => ({
@@ -255,13 +246,10 @@ const Menu = () => {
     };
 
     const handleDecreaseQuantity = (id: string, size: string, mood: string) => {
-        console.log('handleDecreaseQuantity called', { id, size, mood });
-        const product = menuList.find((p) => String(p.id) === id);
-        const actualMood = product?.hot || product?.cold ? mood : ''; // Nếu không có mood, dùng chuỗi rỗng
+        const actualMood = mood === '' ? 'none' : mood; // Đảm bảo 'mood' rỗng được thay bằng 'none'
         const key = `${id}-${size}-${actualMood}`;
 
         setOrder((prevOrder) => {
-            console.log('Current order before update:', prevOrder);
             const newOrder = { ...prevOrder };
             if (newOrder[key]?.quantity > 1) {
                 newOrder[key].quantity -= 1;
@@ -466,10 +454,7 @@ const Menu = () => {
         setCurrentPage(page);
     };
 
-    const currentProducts = filteredProducts.slice(
-        (currentPage - 1) * pageSize,
-        currentPage * pageSize
-    );
+
 
     return (
         <div className="menu-container">
@@ -504,40 +489,23 @@ const Menu = () => {
                                 {product.available ? (
                                     <>
                                         {/* Size Options */}
-                                        {product.sizes || product.sizem || product.sizel ? (
+                                        {product.sizes && product.sizes.length > 0 && (
                                             <div style={{ display: 'flex' }}>
                                                 <span style={{ marginRight: 4, alignSelf: 'center' }}>Size:</span>
                                                 <div className="size-options">
-                                                    {product.sizes && (
+                                                    {product.sizes.map((s) => (
                                                         <Button
-                                                            key="S"
-                                                            className={`size-button ${selectedSizes[product.id] === 'S' ? 'selected' : ''}`}
-                                                            onClick={() => handleSelectSize(product.id, 'S')}
+                                                            key= {s.sizeName}
+                                                            className={`size-button ${selectedSizes[product.id] === s.sizeName ? 'selected' : ''}`}
+                                                            onClick={() => handleSelectSize(product.id, s.sizeName)}
                                                         >
-                                                            S
+                                                            {s.sizeName}
                                                         </Button>
-                                                    )}
-                                                    {product.sizem && (
-                                                        <Button
-                                                            key="M"
-                                                            className={`size-button ${selectedSizes[product.id] === 'M' ? 'selected' : ''}`}
-                                                            onClick={() => handleSelectSize(product.id, 'M')}
-                                                        >
-                                                            M
-                                                        </Button>
-                                                    )}
-                                                    {product.sizel && (
-                                                        <Button
-                                                            key="L"
-                                                            className={`size-button ${selectedSizes[product.id] === 'L' ? 'selected' : ''}`}
-                                                            onClick={() => handleSelectSize(product.id, 'L')}
-                                                        >
-                                                            L
-                                                        </Button>
-                                                    )}
+                                                    ))}
+
                                                 </div>
                                             </div>
-                                        ) : null}
+                                        )}
 
                                         {/* Mood Options */}
                                         {product.hot && product.cold ? (
@@ -568,17 +536,16 @@ const Menu = () => {
                                         <div style={{ display: 'flex', marginTop: 10 }}>
                                             <div className="price">
                                                 <span>Giá:</span>
-                                                <span>
-                                                    {selectedSizes[product.id] === 'M'
-                                                        ? product.price + product.upsize
-                                                        : selectedSizes[product.id] === 'L'
-                                                            ? product.price + product.upsize * 2
-                                                            : product.price}
+                                                <span style={{ fontWeight: 'bold', marginLeft: 4 }}>
+                                                    {selectedSizes[product.id]
+                                                        ? product.sizes.find(s => s.sizeName === selectedSizes[product.id])?.price.toLocaleString() || '0'
+                                                        : product.sizes[0]?.price.toLocaleString()
+                                                    }₫
                                                 </span>
                                             </div>
                                             <Button
                                                 className="select-button"
-                                                onClick={() => handleAddToOrder(product.id, selectedSizes[product.id])}
+                                                onClick={() => handleAddToOrder(Number(product.id), selectedSizes[product.id])}
                                                 disabled={
                                                     !selectedSizes[product.id] ||
                                                     (product.hot && product.cold && !selectedMoods[product.id]) // Bắt buộc chọn mood nếu có cả hot và cold

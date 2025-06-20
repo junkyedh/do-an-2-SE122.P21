@@ -4,9 +4,10 @@ import { FaShoppingCart } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import "./CardListView.scss";
 import { useCart } from "@/hooks/cartContext";
+import { message } from "antd";
 
 export interface ProductSize {
-  name: string;
+  sizeName: string;
   price: number;
 }
 
@@ -39,7 +40,7 @@ const CardListView: React.FC<Props> = ({ product, onProductClick }) => {
   const size = product.sizes[selectedSizeIndex];
   const finalPrice = (size.price - (product.discount || 0)).toLocaleString("vi-VN") + "₫";
 
-  const defaultMood = ["Cà phê", "Trà"].includes(product.category)
+  const defaultMood = ["Cà phê", "Trà trái cây"].includes(product.category)
     ? product.hot
       ? "hot"
       : "cold"
@@ -56,7 +57,12 @@ const CardListView: React.FC<Props> = ({ product, onProductClick }) => {
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (!product.available) return;
-    addToCart(product.id, size.name, 1, defaultMood);
+    addToCart(product.id, size.sizeName, 1, defaultMood)
+      .then(() => message.success("Đã thêm vào giỏ hàng"))
+      .catch((err) => {
+        console.error("Error adding to cart:", err);
+        message.error("Không thể thêm vào giỏ hàng");
+      });
   };
 
   return (
