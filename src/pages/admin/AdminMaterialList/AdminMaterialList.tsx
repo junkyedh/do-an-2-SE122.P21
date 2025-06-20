@@ -34,12 +34,12 @@ const AdminMaterialList = () => {
             const exportData = materialList.map((material) => ({
                 'ID': material.id,
                 'Tên nguyên liệu': material.name,
-                'Số lượng nhập': material.quantityImported,
-                'Số lượng tồn': material.quantityStock,
+                // 'Số lượng nhập': material.quantityImported,
+                // 'Số lượng tồn': material.quantityStock,
                 'Giá': new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(material.price),
                 'Loại bảo quản': material.storageType,
-                'Ngày nhập': moment(material.importDate).format('YYYY-MM-DD HH:mm:ss'),
-                'Ngày hết hạn': moment(material.expiryDate).format('YYYY-MM-DD HH:mm:ss'),
+                // 'Ngày nhập': moment(material.importDate).format('YYYY-MM-DD HH:mm:ss'),
+                // 'Ngày hết hạn': moment(material.expiryDate).format('YYYY-MM-DD HH:mm:ss'),
             }));
     
             const worksheet = XLSX.utils.json_to_sheet(exportData);
@@ -52,11 +52,10 @@ const AdminMaterialList = () => {
     const onOpenCreateMaterialModal = (record: any = null) => {
         setEditingMaterial(record); // Gán record vào trạng thái đang chỉnh sửa
         if (record) {
+            const price = Number(record.price);
             form.setFieldsValue({
                 ...record,
-                price: record.price.toFixed(0),
-                importDate: moment(record.importDate), 
-                expiryDate: moment(record.expiryDate), 
+                price: isNaN(price) ? '' : price.toFixed(0),
             });
         }
         setOpenCreateMaterialModal(true);
@@ -66,18 +65,18 @@ const AdminMaterialList = () => {
     const onOKCreateMaterial = async () => {
         try {
             const data = form.getFieldsValue();
-            if (data.importDate) {
-                data.importDate = data.importDate.toISOString();
-            } else {
-                message.error('Vui lòng chọn ngày nhập!');
-                return;
-            }
-            if (data.expiryDate) {
-                data.expiryDate = data.expiryDate.toISOString();
-            } else {
-                message.error('Vui lòng chọn ngày hết hạn!');
-                return;
-            }
+            // if (data.importDate) {
+            //     data.importDate = data.importDate.toISOString();
+            // } else {
+            //     message.error('Vui lòng chọn ngày nhập!');
+            //     return;
+            // }
+            // if (data.expiryDate) {
+            //     data.expiryDate = data.expiryDate.toISOString();
+            // } else {
+            //     message.error('Vui lòng chọn ngày hết hạn!');
+            //     return;
+            // }
 
             if (editingMaterial) {
                 const { id, ...rest } = data;
@@ -183,7 +182,7 @@ const AdminMaterialList = () => {
                         component='input'
                         rules={[{ required: true, message: 'Tên nguyên liệu là bắt buộc' }]}
                     />
-                    <div className='grid-2'>
+                    {/* <div className='grid-2'>
                         <FloatingLabelInput
                             name="quantityImported"
                             label="Số lượng nhập"
@@ -198,7 +197,7 @@ const AdminMaterialList = () => {
                             type='number'
                             rules={[{ required: true, message: 'Số lượng tồn là bắt buộc' }]}
                         />
-                    </div>
+                    </div> */}
                     <div className='grid-2'>
                         <FloatingLabelInput
                             name="price"
@@ -213,12 +212,12 @@ const AdminMaterialList = () => {
                             component='select'
                             rules={[{ required: true, message: 'Loại bảo quản là bắt buộc' }]}
                             options={[
-                                { value: 'Cấp đông', label: 'Cấp đông' },
-                                { value: 'Để ngoài', label: 'Để ngoài' },
+                                { value: 'CẤP ĐÔNG', label: 'Cấp đông' },
+                                { value: 'ĐỂ NGOÀI', label: 'Để ngoài' },
                             ]}
                         />
                     </div>
-                    <div className='grid-2'>
+                    {/* <div className='grid-2'>
                         <FloatingLabelInput
                             name="importDate"
                             label="Ngày nhập"
@@ -231,7 +230,7 @@ const AdminMaterialList = () => {
                             component='date'
                             rules={[{ required: true, message: 'Ngày hết hạn là bắt buộc' }]}
                         />
-                    </div>
+                    </div> */}
                     <div className='modal-footer-custom d-flex justify-content-end align-items-center gap-3'>
                         <Button
                             type='default'
@@ -258,18 +257,18 @@ const AdminMaterialList = () => {
                 columns={[
                     { title: 'ID', dataIndex: 'id', key: 'id', sorter: (a, b) => a.id - b.id },
                     { title: 'Tên nguyên liệu', dataIndex: 'name', key: 'name', sorter: (a, b) => a.name.localeCompare(b.name) },
-                    { title: 'Số lượng nhập', dataIndex: 'quantityImported', key: 'quantityImported', sorter: (a, b) => a.quantityImported - b.quantityImported },
-                    { title: 'Số lượng tồn', dataIndex: 'quantityStock', key: 'quantityStock', sorter: (a, b) => a.quantityStock - b.quantityStock },
+                    // { title: 'Số lượng nhập', dataIndex: 'quantityImported', key: 'quantityImported', sorter: (a, b) => a.quantityImported - b.quantityImported },
+                    // { title: 'Số lượng tồn', dataIndex: 'quantityStock', key: 'quantityStock', sorter: (a, b) => a.quantityStock - b.quantityStock },
                     { title: 'Giá', dataIndex: 'price', key: 'price', sorter: (a, b) => a.price - b.price,
                         render: (price: number) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price)
                      },
                     { title: 'Loại bảo quản', dataIndex: 'storageType', key: 'storageType', sorter: (a, b) => a.storageType.localeCompare(b.storageType) },
-                    { title: 'Ngày nhập', dataIndex: 'importDate', key: 'importDate', sorter: (a, b) => moment(a.importDate).unix() - moment(b.importDate).unix(),
-                        render: (importDate: string) => moment(importDate).format('YYYY-MM-DD HH:mm:ss')
-                     },
-                    { title: 'Ngày hết hạn', dataIndex: 'expiryDate', key: 'expiryDate', sorter: (a, b) => moment(a.expiryDate).unix() - moment(b.expiryDate).unix(),
-                        render: (expiryDate: string) => moment(expiryDate).format('YYYY-MM-DD HH:mm:ss'),
-                     },
+                    // { title: 'Ngày nhập', dataIndex: 'importDate', key: 'importDate', sorter: (a, b) => moment(a.importDate).unix() - moment(b.importDate).unix(),
+                    //     render: (importDate: string) => moment(importDate).format('YYYY-MM-DD HH:mm:ss')
+                    //  },
+                    // { title: 'Ngày hết hạn', dataIndex: 'expiryDate', key: 'expiryDate', sorter: (a, b) => moment(a.expiryDate).unix() - moment(b.expiryDate).unix(),
+                    //     render: (expiryDate: string) => moment(expiryDate).format('YYYY-MM-DD HH:mm:ss'),
+                    //  },
                     { title: 'Hành động',
                         key: 'actions',
                         render: (_, record) => (

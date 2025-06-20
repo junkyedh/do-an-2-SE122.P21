@@ -3,7 +3,7 @@ import { Input, Select, DatePicker, InputNumber, Form } from 'antd';
 import { FormItemProps } from 'antd';
 import './FloatingLabelInput.scss';
 
-type ComponentType = 'input' | 'select' | 'date';
+type ComponentType = 'input' | 'select' | 'date' | 'textarea';
 
 interface FloatingLabelInputProps extends FormItemProps {
   label: string;
@@ -84,6 +84,14 @@ const FloatingLabelInput: React.FC<FloatingLabelInputProps> = ({
             placeholder=" "
             style={{ width: '100%' }}
           />
+        </Form.Item>
+      );
+    }
+
+    if (component === 'textarea') {
+      return (
+        <Form.Item name={name} noStyle>
+          <Input.TextArea {...commonProps} placeholder=" " autoSize />
         </Form.Item>
       );
     }

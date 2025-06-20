@@ -171,8 +171,9 @@ const AdminCustomerList = () => {
                 open={openCreateCustomerModal}
                 onOk={onOKCreateCustomer}
                 onCancel={onCancelCreateCustomer}
-                okText={editingCustomer ? 'Cập nhật' : 'Tạo mới'}
-                cancelText="Hủy"
+                footer={null}
+                // okText={editingCustomer ? 'Cập nhật' : 'Tạo mới'}
+                // cancelText="Hủy"
             >
                 <Form form={form} layout="vertical">
                     <div className="field-row">
@@ -231,6 +232,20 @@ const AdminCustomerList = () => {
                             </Select>
                         </Form.Item>
                     </div>
+                    <div className='modal-footer-custom d-flex justify-content-end align-items-center gap-3'>
+                        <Button
+                            type='default'
+                            onClick={onCancelCreateCustomer}
+                        >
+                            Hủy
+                        </Button>
+                        <Button
+                            type='primary'
+                            onClick={onOKCreateCustomer}
+                        >
+                            {editingCustomer ? "Lưu thay đổi" : "Tạo mới"}
+                        </Button>
+                    </div>
                 </Form>
             </Modal>
 
@@ -251,27 +266,27 @@ const AdminCustomerList = () => {
                     { title: 'Ngày đăng ký', dataIndex: 'registrationDate', key: 'registrationDate', sorter: (a, b) => moment(a.registrationDate).unix() - moment(b.registrationDate).unix(),
                         render: (registrationDate: string) => (registrationDate ? moment(registrationDate).format('DD-MM-YYYY HH:mm:ss') : '-')
                      },
-                    // {
-                    //     title: 'Hành động',
-                    //     key: 'actions',
-                    //     render: (_, record) => (
-                    //         <Space size="middle">
-                    //             <Button type="default" onClick={() => onEditCustomer(record)}>
-                    //                 <i className="fas fa-edit"></i>
-                    //             </Button>
-                    //             <Popconfirm
-                    //                 title="Bạn có chắc chắn muốn xóa khách hàng này không?"
-                    //                 onConfirm={() => onDeleteCustomer(record.id)}
-                    //                 okText="Có"
-                    //                 cancelText="Không"
-                    //             >
-                    //                 <Button className="ant-btn-danger">
-                    //                     <i className="fas fa-trash"></i>
-                    //                 </Button>
-                    //             </Popconfirm>
-                    //         </Space>
-                    //     ),
-                    // },
+                    {
+                        title: 'Hành động',
+                        key: 'actions',
+                        render: (_, record) => (
+                            <Space size="middle">
+                                <Button type="default" onClick={() => onEditCustomer(record)}>
+                                    <i className="fas fa-edit"></i>
+                                </Button>
+                                <Popconfirm
+                                    title="Bạn có chắc chắn muốn xóa khách hàng này không?"
+                                    onConfirm={() => onDeleteCustomer(record.id)}
+                                    okText="Có"
+                                    cancelText="Không"
+                                >
+                                    <Button className="ant-btn-danger">
+                                        <i className="fas fa-trash"></i>
+                                    </Button>
+                                </Popconfirm>
+                            </Space>
+                        ),
+                    },
                 ]}
             /> 
         </div>

@@ -29,6 +29,8 @@ import { Checkout } from '@/pages/customer/Checkout/Checkout';
 import { TrackingOrder } from '@/pages/customer/TrackingOrder/TrackingOrder';
 import ProfileUser from '@/pages/customer/ProfileUser/ProfileUser';
 import HistoryOrder from '@/pages/customer/HistoryOrder/HistoryOrder';
+import RegisterCustomer from '@/pages/AdminLogin/RegisterCustomer';
+import BranchStatistic from '@/pages/brands/Statistic/BranchStatistic';
 
 
 const MainRoutes: React.FC = () => {
@@ -46,6 +48,7 @@ const MainRoutes: React.FC = () => {
             <Route path="/checkout" element={<Checkout />} />
             <Route path="tracking-order/:id" element={<TrackingOrder />} />
             <Route path="/history" element={<HistoryOrder />} />
+            <Route path="/register" element={<RegisterCustomer />} />
           </Route>
 
       <Route element=
@@ -56,7 +59,7 @@ const MainRoutes: React.FC = () => {
         }
       >
         {/* Các route chung cho Admin, Manager, Staff */}
-        <Route path="/admin/dashboard" element={<AdminBranchList />} />
+        <Route path="/admin/dashboard" element={<Statistic />} />
         <Route path="/admin/branchlist" element={<AdminBranchList />} />
         <Route path="/admin/materiallist" element={<AdminMaterialList />} />
         <Route path="/admin/productlist" element={<AdminProductList />} />
@@ -65,7 +68,7 @@ const MainRoutes: React.FC = () => {
         <Route path="/admin/customerlist" element={<AdminCustomerList />} />
         <Route path="/admin/promote" element={<AdminPromotion />} />
 
-        <Route path="/manager/dashboard" element={<ManagerCustomerList />} />
+        <Route path="/manager/dashboard" element={<BranchStatistic />} />
         <Route path="/manager/productlist" element={<ManagerProductList />} />
         <Route path="/manager/materiallist" element={<ManagerMaterialList />} />
         <Route path="/manager/stafflist" element={<ManagerStaffList />} />

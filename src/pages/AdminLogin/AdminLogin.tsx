@@ -133,6 +133,16 @@ const AdminLogin: React.FC = () => {
                     >
                         Đăng nhập
                     </button>
+                    <div className="text-center mt-3">
+                        Chưa có tài khoản?{' '}
+                        <span
+                            className="text-primary"
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => navigate('/register')}
+                        >
+                            Đăng ký
+                        </span>
+                    </div>
                 </form>
             </motion.div>
         </div>
