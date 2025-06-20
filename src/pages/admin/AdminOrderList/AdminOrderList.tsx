@@ -31,10 +31,10 @@ export const AdminOrderList = () => {
     }
     const filtered = originalAdminOrderList.filter(order => {
       const id = String(order.id ?? '').toLowerCase();
-      const phone = (order.phone ?? '').toLowerCase();
+      const phoneCustomer = (order.phoneCustomer ?? '').toLowerCase();
       const staffName = (order.staffName ?? '').toLowerCase();
 
-      return id.includes(keyword) || phone.includes(keyword) || staffName.includes(keyword);
+      return id.includes(keyword) || phoneCustomer.includes(keyword) || staffName.includes(keyword);
     });
     setAdminOrderList(filtered);
   };
@@ -50,7 +50,7 @@ export const AdminOrderList = () => {
     const worksheet = XLSX.utils.json_to_sheet(
       adminOrderList.map(order => ({
         'Mã đơn': order.id,
-        'Số điện thoại': order.phone,
+        'Số điện thoại': order.phoneCustomer,
         'Loại phục vụ': order.serviceType,
         'Tổng tiền': order.totalPrice,
         'Ngày đặt': moment(order.orderDate).format('DD-MM-YYYY HH:mm:ss'),
@@ -104,8 +104,8 @@ export const AdminOrderList = () => {
           },
           {
             title: 'Số điện thoại',
-            dataIndex: 'phone',
-            key: 'phone'
+            dataIndex: 'phoneCustomer',
+            key: 'phoneCustomer'
           },
           {
             title: 'Loại phục vụ',
