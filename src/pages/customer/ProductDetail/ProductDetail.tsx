@@ -123,7 +123,7 @@ const DetailProduct: React.FC = () => {
     const handleAddToCart = async () => {
         try {
             //addToCart tự động xử lý sessionId và phoneCustomer
-            await addToCart(String(product.id), selectedSize, quantity, needsTemp ? selectedTemp : undefined);
+            await addToCart(Number(product.id), selectedSize, quantity, needsTemp ? selectedTemp : undefined);
             message.success("Đã thêm vào giỏ hàng!");
         } catch (error) {
             console.error("Thêm vào giỏ hàng thất bại:", error);

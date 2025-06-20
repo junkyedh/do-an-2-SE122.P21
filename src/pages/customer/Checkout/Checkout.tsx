@@ -10,7 +10,7 @@ import { clear } from 'console';
 import { m } from 'framer-motion';
 
 interface LocationStateItem {
-  productId: string;
+  productId: number;
   size: string;
   quantity: number;
   mood?: string;
@@ -24,7 +24,7 @@ interface ProductDetail {
 }
 
 interface OrderItem {
-    productId: string;
+    productId: number;
     name: string;
     image: string;
     quantity: number;
@@ -104,7 +104,7 @@ export const Checkout: React.FC = () => {
                     const {data: res} = await MainApiRequest.get<ProductDetail>(`/product/${it.productId}`);
                     const sz = res.sizes.find((s) => s.sizeName === it.size || { sizeName: it.size, price: 0 });
                     return {
-                        productId: res.id,
+                        productId: Number(res.id),
                         name: res.name,
                         image: res.image,
                         size: it.size,
@@ -120,7 +120,7 @@ export const Checkout: React.FC = () => {
                 await fetchCart()
                 setItems(
                     cart.map((it) => ({
-                        productId: it.productId,
+                        productId: Number(it.productId),
                         name: it.name,
                         image: it.image,
                         size: it.size,
@@ -229,7 +229,7 @@ export const Checkout: React.FC = () => {
         try {
             const {data: o} = await MainApiRequest.post<{ id: number }>('/order', {
                 phoneCustomer: phone,
-                serviceType: deliveryMethod === 'delivery' ? 'DINE IN' : 'TAKE AWAY',
+                serviceType: deliveryMethod === 'delivery' ? 'TAKE AWAY' : 'DINE IN',
                 orderDate: new Date().toISOString(),
                 status: 'PENDING',
                 productIDs: items.map((it) => Number((it as any).productId)),
@@ -240,14 +240,18 @@ export const Checkout: React.FC = () => {
             // 2) Tạo order details
             await Promise.all(
                 items.map((it) => {
-                    MainApiRequest.post(`/order/detail/${orderId}`, {
+                    //Trực tiếp return Promise từ MainApiRequest.post
+                    return MainApiRequest.post(`/order/detail/${orderId}`, {
                         productId: Number(it.productId),
                         size: it.size,
                         mood: it.mood,
                         quantity: it.quantity,
-                    });
+                    })
                 })
-            );
+            ).catch((err) => {
+                console.error('Failed to create order details:', err);
+                throw new Error('Không thể tạo chi tiết đơn hàng, vui lòng thử lại.');
+            });
 
             // 3) Xoá giỏ hàng va chuyển sang trang theo dõi đơn hàng
             clearCart();

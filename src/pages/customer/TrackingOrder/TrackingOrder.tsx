@@ -5,6 +5,7 @@ import { MainApiRequest } from '@/services/MainApiRequest';
 import Breadcrumbs from '@/components/Breadcrumbs/Breadcrumbs';
 import './TrackingOrder.scss';
 import { Clock, CheckCircle, Truck, MapPin, Phone, Mail } from 'lucide-react';
+import { set } from 'react-datepicker/dist/date_utils';
 
 interface RawOrder {
   id: number;
@@ -65,12 +66,14 @@ export const TrackingOrder: React.FC = () => {
       try {
         // 1) profile customer
         const prof = await MainApiRequest.get<{ data: { phone: string; name: string; address: string } }>('/auth/callback');
+        const phone = prof.data.data.phone;
         setCustName(prof.data.data.name);
         setCustAddress(prof.data.data.address);
 
         // 2) fetch full order with details
-        const { data: o } = await MainApiRequest.get<RawOrder>(`/order/${id}`);
-        setOrder(o);
+        const { data: o } = await MainApiRequest.get<RawOrder>(
+          `/order/customer/${encodeURIComponent(phone)}/${id}`);
+          setOrder(o);
 
         // 3) enrich each detail
         const enriched = await Promise.all(

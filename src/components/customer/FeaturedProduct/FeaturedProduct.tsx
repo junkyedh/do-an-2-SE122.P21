@@ -3,12 +3,13 @@ import Slider from "react-slick";
 import "./FeaturedProduct.scss";
 import { useNavigate } from "react-router-dom";
 import CardProduct, { Product as ProductType } from "../CardProduct/CardProduct";
+import { on } from "events";
 
 
 interface FeaturedListProps {
   title?: string;
   products: ProductType[];
-  onAddToCart?: (productId: string, size: any, temperature?: string) => void;
+  onAddToCart?: (productId: number , size: string, quantity: number, mood?: string ) => void;
   onProductClick?: (productId: string) => void;
 }
 
@@ -46,6 +47,9 @@ const FeaturedList: React.FC<FeaturedListProps> = ({
               <div key={product.id} className="featured-item">
                 <CardProduct
                     product={product}
+                    onAddToCart={(size, quantity, mood) => 
+                      onAddToCart?.(Number(product.id), size, quantity, mood)}
+                    onProductClick={onProductClick}
                 />
               </div>
           ))}

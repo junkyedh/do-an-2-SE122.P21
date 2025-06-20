@@ -37,7 +37,7 @@ interface Product {
 /** Kiểu sử dụng trong Context */
 export interface CartItem {
   id: string
-  productId: string
+  productId: number
   name: string
   image: string
   category: string
@@ -54,7 +54,7 @@ interface CartContextValue {
   totalPrice: number
   fetchCart: () => Promise<void>
   addToCart: (
-    productId: string | number,
+    productId: number ,
     size: string,
     quantity?: number,
     mood?: string,
@@ -136,7 +136,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
           return {
             id: ci.id,
-            productId: ci.productId,
+            productId: Number(ci.productId),
             name: p.name,
             image: p.image,
             category: p.category,
@@ -156,14 +156,14 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }
   // Thêm sản phẩm vào giỏ hàng
   const addToCart = async (
-    productId: string | number,
+    productId: number,
     size: string,
     quantity: number = 1,
     mood?: string
   ) => {
     const sid = sessionId()
     // Kiểm tra xem sản phẩm đã có trong giỏ hàng chưa
-    const productIdNumber = typeof productId === 'string' ? Number(productId) : productId
+    const productIdNumber = Number(productId)
     const existingItem = cart.find(
       (item) => Number(item.productId) === productIdNumber && item.size === size && item.mood === mood
     )
@@ -180,6 +180,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       quantity,
       sessionId: sid,
     }
+    console.log('Add to cart payload:', payload)
     // Nếu đã đăng nhập, lấy phone từ auth/callback
     try {
       const auth = await MainApiRequest.get<{ data: {phone: string}}>('/auth/callback')

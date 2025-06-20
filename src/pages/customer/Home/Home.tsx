@@ -10,26 +10,27 @@ import Features from "@/components/customer/Features/Features";
 import CategoryShowcase from "@/components/customer/Category/CategoryShowcase";
 import FeaturedList from "@/components/customer/FeaturedProduct/FeaturedProduct";
 import Gallery from "@/components/customer/Gallery/Gallery";
+import { useCart } from "@/hooks/cartContext";
+import { message } from "antd";
 
 const Home = () => {
   const navigate = useNavigate();
-  const { products: productList, isLoading } = useProducts();
-  const [cart, setCart] = useState<any[]>([]);
+  const { products: productList } = useProducts();
+  const { addToCart } = useCart();
 
-  const handleAddToCart = (productId: string, size: { name: string; price: number }, temperature?: string) => {
-    const product = productList.find((p) => p.id === productId);
-    if (product) {
-      const cartItem = {
-        id: `${productId}-${size.name}${temperature ? `-${temperature}` : ""}`,
-        productId,
-        name: product.name,
-        size: size.name,
-        temperature,
-        price: size.price,
-        quantity: 1
-      };
-      setCart((prev) => [...prev, cartItem]);
-      console.log("Cart updated:", cartItem);
+  //Dùng addToCart từ context
+  const handleAddToCart = async (
+    productId: number, 
+    size: string, 
+    quantity: number = 1, 
+    mood?: string
+  ) => {
+    try {
+      await addToCart(productId, size, quantity, mood)
+      message.success("Thêm vào giỏ hàng thành công!");
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+      message.error("Không thể thêm vào giỏ hàng. Vui lòng thử lại sau.");
     }
   };
 
@@ -38,9 +39,6 @@ const Home = () => {
     navigate(`/product/${productId}`);
   };
 
-  const handleShowMore = () => {
-    navigate("/menu");
-  };
 
   return (
     <>

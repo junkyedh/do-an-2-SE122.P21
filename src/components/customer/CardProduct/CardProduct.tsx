@@ -30,10 +30,13 @@ export interface Product {
 interface Props {
   product: Product;
   onProductClick?: (productId: string) => void;
+  onAddToCart?: (size:string, quantity: number, mood?: string) => void;
 }
 
-const CardProduct: React.FC<Props> = ({ product, onProductClick }) => {
+const CardProduct: React.FC<Props> = ({ product, onProductClick , onAddToCart}) => {
   const [selectedSizeIndex, setSelectedSizeIndex] = useState(0);
+  const [selectedTemp, setSelectedTemp] = useState<'hot' | 'cold'>('hot')
+  const [quantity, setQuantity] = useState(1)
   const navigate = useNavigate();
   const { addToCart } = useCart();
 
@@ -56,10 +59,16 @@ const CardProduct: React.FC<Props> = ({ product, onProductClick }) => {
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (!product.available) return;
-    addToCart(product.id, size.sizeName, 1, defaultMood)
-      .then(() => message.success("Đã thêm vào giỏ hàng"))
-      .catch(() => message.error("Không thể thêm vào giỏ hàng"));
+    const sizeName = product.sizes[selectedSizeIndex].sizeName;
+    const mood = defaultMood;
+    if (onAddToCart) {
+      onAddToCart(size.sizeName, quantity, mood);
+    } else {
+      addToCart(Number(product.id), size.sizeName, 1, mood)
+        .then(() => message.success("Đã thêm vào giỏ hàng"))
+        .catch(() => message.error("Không thể thêm vào giỏ hàng"));
   };
+}
 
   return (
     <div

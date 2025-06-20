@@ -57,7 +57,7 @@ const CardListView: React.FC<Props> = ({ product, onProductClick }) => {
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (!product.available) return;
-    addToCart(product.id, size.sizeName, 1, defaultMood)
+    addToCart(Number(product.id), size.sizeName, 1, defaultMood)
       .then(() => message.success("Đã thêm vào giỏ hàng"))
       .catch((err) => {
         console.error("Error adding to cart:", err);

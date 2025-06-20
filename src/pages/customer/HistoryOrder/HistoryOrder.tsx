@@ -96,8 +96,14 @@ const HistoryOrder: React.FC = () => {
     if (details[orderId]) return;
     try {
       // 1) Lấy raw order
-      const res = await MainApiRequest.get<{ order_details: any[]}>(
-        `/order/customer/${encodeURIComponent(phone)}/${orderId}`
+      const res = await MainApiRequest.get<{ 
+        order_details: {
+          productId: number;
+          size: string;
+          mood?: string;
+          quantity: number;
+        }[];
+        }>(`/order/customer/${encodeURIComponent(phone)}/${orderId}`
       );
       const rawDetails = res.data.order_details;
 
@@ -116,7 +122,7 @@ const HistoryOrder: React.FC = () => {
             mood: d.mood,
             quantity: d.quantity,
             price: sz.price
-          } as OrderItem;
+          } as OrderDetail;
         })
       );
       // 4) Lưu chi tiết vào state

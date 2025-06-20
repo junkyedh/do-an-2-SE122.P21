@@ -173,8 +173,8 @@ const CartDrawer: React.FC = () => {
                                   >
                                     {isCake(item)
                                       ? [
-                                          {name: 'piece', label: '1 miếng'},
-                                          {name: 'whole', label: 'Cả bánh'},
+                                          {name: '1 miếng', label: 'piece'},
+                                          {name: 'Cả bánh', label: 'whole'},
                                       ].map((s) => (
                                         <option key={s.name} value={s.name}>
                                           {s.name}
