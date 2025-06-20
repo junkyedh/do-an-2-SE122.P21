@@ -11,6 +11,8 @@ interface OrderSummary {
   serviceType: 'TAKE AWAY' | 'DINE IN';
   orderDate: string;
   status: string;
+  branchId: number;
+  branchName: string;
   productIDs: (number| null)[];
 }
 
@@ -71,25 +73,37 @@ const HistoryOrder: React.FC = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
 
-  // 1) Load phoneCustomer 
   useEffect(() => {
+    // 1) lấy số điện thoại trước
     MainApiRequest.get<{ msg: string; data: {phone:string} }>('/auth/callback')
-      .then(r => {
-        const phone = r.data.data.phone;
-        setPhone(phone);
-        // 2) Lấy đơn hàng của khách
-        return MainApiRequest.get<OrderSummary[]>(`/order/customer/${encodeURIComponent(phone)}`);
-      })
-      .then(r => {
-        setOrders(r.data)
-        // 3) Lấy chi tiết đơn hàng
-        r.data.forEach(order => fetchDetails(order.id))
-      })
+    .then(r => {
+      const phone = r.data.data.phone;
+      setPhone(phone);
+    })
+    .catch(err => {
+      console.error(err);
+      message.error('Không tải được thông tin người dùng');
+    })
+  }, []);
+
+  useEffect(() => {
+    // 2) Lấy đơn hàng của khách
+    if (!phone) return; // Chờ lấy phone trước
+    setLoading(true);
+    MainApiRequest.get<OrderSummary[]>(`/order/customer/${encodeURIComponent(phone)}`)
+      .then(r => setOrders(r.data))
       .catch(err => {
         console.error(err);
         message.error('Không tải được lịch sử đơn hàng');
       });
   }, []);
+
+  useEffect(() => {
+    // 3. Khi đã có orders, preload chi tiết từng đơn
+    if (!phone || !orders.length) return;
+    orders.forEach(order => fetchDetails(order.id));
+    // eslint-disable-next-line
+  }, [phone, orders]);
 
   // Lấy chi tiết order qua /order/customer/{phone}/{orderId}, rồi enrich qua /product/{productId}
   const fetchDetails = async (orderId: number) => {
@@ -148,8 +162,8 @@ const HistoryOrder: React.FC = () => {
     },
     {
       title: 'Chi nhánh',
-      dataIndex: 'branchId',
-      key: 'branchId'
+      dataIndex: 'branchName',
+      key: 'branchName',
     },
     {
       title: 'Tổng tiền',
@@ -239,7 +253,7 @@ const HistoryOrder: React.FC = () => {
                 ))}
               </div>
             ),
-            onExpand: (expanded, record) => expanded && fetchDetails(record.id)
+            // onExpand: (expanded, record) => expanded && fetchDetails(record.id)
           }}
         />
       </section>

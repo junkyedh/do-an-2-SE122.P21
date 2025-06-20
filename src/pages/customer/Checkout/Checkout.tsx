@@ -242,7 +242,8 @@ export const Checkout: React.FC = () => {
                 items.map((it) => {
                     //Trực tiếp return Promise từ MainApiRequest.post
                     return MainApiRequest.post(`/order/detail/${orderId}`, {
-                        productId: Number(it.productId),
+                        orderID: orderId,
+                        productID: Number(it.productId),
                         size: it.size,
                         mood: it.mood,
                         quantity: it.quantity,
