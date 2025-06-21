@@ -5,6 +5,7 @@ import Breadcrumbs from '@/components/Breadcrumbs/Breadcrumbs';
 import { MainApiRequest } from '@/services/MainApiRequest';
 import { useNavigate } from 'react-router-dom';
 import { Clock, CheckCircle, Truck } from 'lucide-react';
+import { set } from 'react-datepicker/dist/date_utils';
 
 interface OrderSummary {
   id: number;
@@ -12,7 +13,7 @@ interface OrderSummary {
   orderDate: string;
   status: string;
   branchId: number;
-  branchName: string;
+  branchName?: string;
   productIDs: (number| null)[];
 }
 
@@ -71,7 +72,7 @@ const HistoryOrder: React.FC = () => {
   const [comment, setComment] = useState('');
   const [phone, setPhone] = useState<string>('');
   const [form] = Form.useForm();
-  const navigate = useNavigate();
+  const [guestHistory, setGuestHistory] = useState<{ orderId: number, phone: string}[] | null >(null);
 
   useEffect(() => {
     // 1) lấy số điện thoại trước
@@ -79,31 +80,62 @@ const HistoryOrder: React.FC = () => {
     .then(r => {
       const phone = r.data.data.phone;
       setPhone(phone);
+      setGuestHistory(null); // reset guest history
     })
-    .catch(err => {
-      console.error(err);
-      message.error('Không tải được thông tin người dùng');
+    .catch(() => {
+      // Nếu không login, lấy từ localStorage
+      const history = JSON.parse(localStorage.getItem('guest_order_history') || '[]');
+      setGuestHistory(history);
+      if (history.length >0){
+        setPhone(history[0].phone); // lấy phone từ đơn đầu tiên
+      }
     })
   }, []);
 
   useEffect(() => {
     // 2) Lấy đơn hàng của khách
-    if (!phone) return; // Chờ lấy phone trước
-    setLoading(true);
-    MainApiRequest.get<OrderSummary[]>(`/order/customer/${encodeURIComponent(phone)}`)
-      .then(r => setOrders(r.data))
-      .catch(err => {
-        console.error(err);
-        message.error('Không tải được lịch sử đơn hàng');
-      });
-  }, []);
+    if (phone) {
+      // Đăng nhập: fetch từ server
+      setLoading(true);
+      MainApiRequest.get<OrderSummary[]>(`/order/customer/${encodeURIComponent(phone)}`)
+        .then(r => setOrders(r.data))
+        .catch(err => {
+          console.error(err);
+          message.error('Không tải được lịch sử đơn hàng');
+        });
+    } else if (guestHistory) {
+      // Khách: lấy từ localStorage
+      if (!guestHistory.length) return setOrders([]);
+      setLoading(true);
+      Promise.all(
+        guestHistory.map(async ({ orderId, phone }) => {
+          try {
+            const {data: order } = await MainApiRequest.get<any>(
+              `/order/customer/${encodeURIComponent(phone)}/${orderId}`
+            );
+            return {
+              id: order.id,
+              serviceType: order.serviceType,
+              orderDate: order.orderDate,
+              status: order.status,
+              branchId: order.branchId,
+              branchName: order.branchName,
+              productIDs: order.order_details?.map((d: any) => d.productId) || []
+            } as OrderSummary;
+          } catch {
+            return null; // nếu không tìm thấy đơn, trả về null
+          }
+        })
+      ).then( res => setOrders(res.filter(Boolean) as OrderSummary[]))
+    }
+  }, [phone, guestHistory]);
 
   useEffect(() => {
     // 3. Khi đã có orders, preload chi tiết từng đơn
-    if (!phone || !orders.length) return;
+    if (!orders.length) return;
     orders.forEach(order => fetchDetails(order.id));
     // eslint-disable-next-line
-  }, [phone, orders]);
+  }, [orders]);
 
   // Lấy chi tiết order qua /order/customer/{phone}/{orderId}, rồi enrich qua /product/{productId}
   const fetchDetails = async (orderId: number) => {
@@ -158,12 +190,23 @@ const HistoryOrder: React.FC = () => {
       title: 'Ngày',
       dataIndex: 'orderDate',
       key: 'orderDate',
-      render: (d?: string) => (d ? new Date(d).toLocaleDateString('vi-VN') : '-'),
+      render: (date: string) => {
+        const d = new Date(date);
+        return d.toLocaleDateString('vi-VN', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+      },
+      sorter: (a: OrderSummary, b: OrderSummary) => new Date(a.orderDate).getTime() - new Date(b.orderDate).getTime()
     },
     {
       title: 'Chi nhánh',
       dataIndex: 'branchName',
       key: 'branchName',
+      render: (name?: string) => name || '-',
     },
     {
       title: 'Tổng tiền',

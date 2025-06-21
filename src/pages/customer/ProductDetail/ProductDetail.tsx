@@ -59,7 +59,7 @@ const DetailProduct: React.FC = () => {
     const [product, setProduct] = useState<Product | null>(null);
     const [quantity, setQuantity] = useState(1);
     const [selectedSize, setSelectedSize] = useState<string>("");
-    const [selectedTemp, setSelectedTemp] = useState<"hot" | "cold">("hot");
+    const [selectedTemp, setSelectedTemp] = useState<"hot" | "cold">("cold");
     const [ratingData, setRatingData] = useState<RatingData | null>(null);
     const [filterStar, setFilterStar] = useState<"5" | "4" | "3" | "2" | "1" | "all">("all");
     const [sortOption, setSortOption] = useState<"newest" | "oldest">("newest");
@@ -108,8 +108,19 @@ const DetailProduct: React.FC = () => {
 
     if (!product) return <div className="loading">Đang tải...</div>
     const isCake = product.category === "Bánh ngọt";
-    const needsTemp = ["Cà phê", "Trà trái cây"].includes(product.category);
+    // const needsTemp = ["Cà phê", "Trà trái cây"].includes(product.category);
 
+    const drinkCategories = [
+        "Cà phê",
+        "Trà trái cây",
+        "Trà sữa",
+        "Nước ép",
+        "Sinh tố"
+    ];
+  // nếu là cà phê hoặc trà, mood mặc định hot/cold từ product.hot/product.cold
+  const needsTemp = drinkCategories.includes(product.category)
+    ? (product.hot ? "hot" : (product.cold ? "cold" : undefined))
+    : undefined;
 
     const currentPrice = (() => {
         if (isCake) {

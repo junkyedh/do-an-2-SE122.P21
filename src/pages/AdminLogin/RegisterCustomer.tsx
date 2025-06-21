@@ -24,8 +24,10 @@ const RegisterCustomer: React.FC = () => {
   const handleRegister = async () => {
     try {
       const res = await AdminApiRequest.post('/auth/register', form);
-
+    
       if (res.status === 201 || res.status === 200) {
+        // Xóa sessionId của guest
+        localStorage.removeItem('sessionId');
         message.success('Đăng ký thành công! Vui lòng đăng nhập.');
         navigate('/login');
       } else {

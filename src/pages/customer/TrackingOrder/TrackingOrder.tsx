@@ -58,21 +58,39 @@ export const TrackingOrder: React.FC = () => {
   const [order, setOrder] = useState<RawOrder | null>(null);
   const [items, setItems] = useState<OrderItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [custName, setCustName] = useState('');
+  const [customerName, setCustomerName] = useState('');
   const [custAddress, setCustAddress] = useState('');
 
   useEffect(() => {
     (async () => {
       try {
         // 1) profile customer
-        const prof = await MainApiRequest.get<{ data: { phone: string; name: string; address: string } }>('/auth/callback');
-        const phone = prof.data.data.phone;
-        setCustName(prof.data.data.name);
-        setCustAddress(prof.data.data.address);
-
+        let phoneNumber: string | undefined;
+        try {
+          const prof = await MainApiRequest.get<{ data: { phone: string; name?: string; address?: string} }>('/auth/callback');
+          phoneNumber = prof.data.data.phone;
+          setCustomerName(prof.data.data.name || '');
+          setCustAddress(prof.data.data.address || '');
+        } catch {
+          // GUEST: Tìm đúng orderID + phone trong guest_order_history
+          const history: Array<{ orderId: number; phone: string }> =
+            JSON.parse(localStorage.getItem('guest_order_history') || '[]');
+          const guestOrder = history.find(o => String(o.orderId) === String(id));
+          if (guestOrder) {
+            phoneNumber = guestOrder.phone;
+            setCustomerName('Khách vãng lai');
+            setCustAddress('');
+          }
+        }
+        if (!phoneNumber) {
+          setOrder(null);
+          setLoading(false);
+          return;
+        }
         // 2) fetch full order with details
         const { data: o } = await MainApiRequest.get<RawOrder>(
-          `/order/customer/${encodeURIComponent(phone)}/${id}`);
+          `/order/customer/${encodeURIComponent(phoneNumber)}/${id}`
+        );
           setOrder(o);
 
         // 3) enrich each detail
@@ -148,7 +166,7 @@ export const TrackingOrder: React.FC = () => {
               <Phone /> {order.phoneCustomer}
             </p>
             <p>
-              <Mail /> {custName}
+              <Mail /> {customerName}
             </p>
           </div>
         </aside>

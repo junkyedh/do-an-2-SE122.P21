@@ -5,9 +5,6 @@ import { MainApiRequest } from '@/services/MainApiRequest';
 import Breadcrumbs from '@/components/Breadcrumbs/Breadcrumbs';
 import { message } from 'antd';
 import { CartItem, useCart } from '@/hooks/cartContext';
-import { set } from 'react-datepicker/dist/date_utils';
-import { clear } from 'console';
-import { m } from 'framer-motion';
 
 interface LocationStateItem {
   productId: number;
@@ -56,9 +53,8 @@ interface Membership {
 export const Checkout: React.FC = () => {
     const { state } = useLocation();
     const navigate = useNavigate();
+    const {cart, fetchCart, removeCartItemsAfterOrder} = useCart();
 
-    const {cart, fetchCart} = useCart();
-    const {clearCart} = useCart();
     // Order items
     const [items, setItems] = useState<(OrderItem | CartItem)[]>([]);
     // Customer info
@@ -81,6 +77,12 @@ export const Checkout: React.FC = () => {
     const [membershipList, setMembershipList] = useState<Membership[]>([]);
     const [membershipDiscount, setMembershipDiscount] = useState(0);
 
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    useEffect(() => {
+    MainApiRequest.get('/auth/callback')
+        .then(() => setIsLoggedIn(true))
+        .catch(() => setIsLoggedIn(false));
+    }, []);
   
     useEffect(() => {
         MainApiRequest.get<Coupon[]>('/promote/coupon/list')
@@ -93,7 +95,6 @@ export const Checkout: React.FC = () => {
         .then(res =>  setMembershipList(res.data))
         .catch(err => console.error('Failed to fetch membership:', err));
     }, []);
-
 
     // Nếu đến từ "Mua ngay" thì lấy items từ state (state.initialItems); nếu không thì fetch từ giỏ hàng
     useEffect(() => {
@@ -139,7 +140,7 @@ export const Checkout: React.FC = () => {
             // Lấy thông tin người dùng từ API
             MainApiRequest.get<{
                 data: {
-                    phone: string;
+                    phone?: string;
                     name?: string;
                     email?: string;
                     address?: string;
@@ -229,6 +230,8 @@ export const Checkout: React.FC = () => {
         try {
             const {data: o} = await MainApiRequest.post<{ id: number }>('/order', {
                 phoneCustomer: phone,
+                name,
+                address,
                 serviceType: deliveryMethod === 'delivery' ? 'TAKE AWAY' : 'DINE IN',
                 orderDate: new Date().toISOString(),
                 status: 'PENDING',
@@ -250,13 +253,23 @@ export const Checkout: React.FC = () => {
                     })
                 })
             ).catch((err) => {
+                console.log('Order details created successfully:', orderId);
                 console.error('Failed to create order details:', err);
                 throw new Error('Không thể tạo chi tiết đơn hàng, vui lòng thử lại.');
             });
 
-            // 3) Xoá giỏ hàng va chuyển sang trang theo dõi đơn hàng
-            clearCart();
+            // 3) Xoá khỏi giỏ hàng sản phẩm vừa đặt va chuyển sang trang theo dõi đơn hàng
+            await removeCartItemsAfterOrder(items);
             message.success('Đặt hàng thành công!');
+
+            // LƯU PHONE GUEST
+            // const isLoggedIn = await MainApiRequest.get('/auth/callback').then(()=>true).catch(()=>false);
+            if (!isLoggedIn) {
+                // Lưu lại cả orderId và phone cho tracking, tránh trùng đơn
+                const guestHistory = JSON.parse(localStorage.getItem('guest_order_history') || '[]');
+                const newHistory = [{ orderId, phone }, ...guestHistory].slice(0, 10); // Giới hạn 10 đơn gần nhất
+                localStorage.setItem('guest_order_history', JSON.stringify(newHistory));
+            }
             navigate(`/tracking-order/${orderId}`, { replace: true });
             } catch (err) {
                 console.error(err);
@@ -264,6 +277,7 @@ export const Checkout: React.FC = () => {
             }
         };
 
+        
   return (
     <>
     <Breadcrumbs

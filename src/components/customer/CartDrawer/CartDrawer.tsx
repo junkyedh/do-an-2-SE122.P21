@@ -173,17 +173,22 @@ const CartDrawer: React.FC = () => {
                                   >
                                     {isCake(item)
                                       ? [
-                                          {name: '1 miếng', label: 'piece'},
-                                          {name: 'Cả bánh', label: 'whole'},
-                                      ].map((s) => (
-                                        <option key={s.name} value={s.name}>
-                                          {s.name}
-                                        </option>
-                                      )): item.availableSizes?.map((s) => (
-                                        <option key={s.name} value={s.name}>
-                                        {s.name}
-                                        </option>
-                                      ))}
+                                          { name: 'piece', label: '1 miếng' },
+                                          { name: 'whole', label: 'Cả bánh' },
+                                        ].map((s) => (
+                                          <option key={s.name} value={s.name}>
+                                            {s.label}
+                                          </option>
+                                        ))
+                                      : item.availableSizes?.map((s) => (
+                                          <option key={s.name} value={s.name}>
+                                            {s.name === 'whole'
+                                              ? 'Cả bánh'
+                                              : s.name === 'piece'
+                                              ? '1 miếng'
+                                              : s.name}
+                                          </option>
+                                        ))}
                                   </Form.Select>
                                     <span
                                       className="dropdown-icon position-absolute"

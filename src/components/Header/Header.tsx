@@ -11,6 +11,7 @@ import "./Header.scss";
 import { useSystemContext } from "@/hooks/useSystemContext";
 import { MainApiRequest } from "@/services/MainApiRequest";
 import CartDrawer from "../customer/CartDrawer/CartDrawer";
+import { set } from "react-datepicker/dist/date_utils";
 
 const Header: React.FC = () => {
   const [open, setOpen] = useState(false);
@@ -42,34 +43,36 @@ const Header: React.FC = () => {
   };
   
   const fetchUserInfo = async () => {
+    if (!token) {
+      setUserInfo(null);
+      return;
+    }
     try {
-      const res = await MainApiRequest.get("/auth/callback", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setUserInfo(res.data.data); // Giả định API trả về thông tin người dùng
+      const response = await MainApiRequest.get("/auth/callback", {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+      setUserInfo(response.data.data);
     } catch (error) {
-      console.error("Failed to fetch user info:", error);
-      logout(); // Nếu có lỗi, đăng xuất người dùng
+      // Neeus token không hợp lệ hoặc hết hạn thì chỉ cần xóa userInfo (khách), không cần logout
+      // và không re-direct về login
+      setUserInfo(null);
       localStorage.removeItem("token");
-      navigate("/login");
     }
-  };
+  }
 
-  // Fetch user
   useEffect(() => {
-    if (token) {
-      fetchUserInfo();
-    }
+    fetchUserInfo();
   }, [token]);
 
-  const handleLogout = () => {
-    // Clear token or any session-related info
-    logout();  // Call logout function from context
-    localStorage.removeItem("token");  // Remove token from localStorage
-    navigate("/");  // Redirect to home page or login page
-  };
+  const handleLogout = async () => {
+    try {
+      await logout();
+      setUserInfo(null);
+      navigate("/login");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  }
 
 
 
@@ -213,7 +216,7 @@ const Header: React.FC = () => {
             </Nav>
             </Nav>
 
-            <CartDrawer />
+            {<CartDrawer />}
 
           </div>
         </Navbar>

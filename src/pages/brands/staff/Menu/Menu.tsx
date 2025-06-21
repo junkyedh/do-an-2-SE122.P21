@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import imgDefault from '@/assets/coffee.png';
 import { Button, Input, Modal, Select, Card, message, Pagination, AutoComplete, Form, DatePicker, Flex } from 'antd';
 import './Menu.scss';
 import { MainApiRequest } from '@/services/MainApiRequest';
 import { useNavigate } from "react-router-dom";
-import { stringify } from 'querystring';
 
 const categories = ['All', 'Cafe', 'Trà trái cây', 'Trà sữa', 'Nước ép', 'Bánh ngọt'];
 const options = [

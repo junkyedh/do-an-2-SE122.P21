@@ -65,6 +65,8 @@ interface CartContextValue {
   ) => Promise<void>
   removeItem: (id: string) => Promise<void>
   clearCart: () => Promise<void>
+  removeCartItemsAfterOrder: (items: { productId: number|string; size: string; mood?: string }[]) => Promise<void>
+  clearSessionId: () => void
 }
 
 const CartContext = createContext<CartContextValue | undefined>(undefined)
@@ -89,17 +91,17 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // nếu user đã đăng nhập, lấy phone từ auth/callback và migrate cart
       let query  = `?sessionId=${sid}`
       try {
-        const auth = await MainApiRequest.get<{ data: { phoneCustomer: string}}>('/auth/callback')
-        const phone = auth.data.data.phoneCustomer
-        if (phone) {
+        const auth = await MainApiRequest.get<{ data: { phoneCustomer?: string; phone?: string}}>('/auth/callback')
+        const phoneCustomer = auth.data.data.phoneCustomer || auth.data.data.phone
+        if (phoneCustomer) {
           //merge cart vao cart của user
           try {
-            await MainApiRequest.post('/cart/migrate', {phoneCustomer: phone, sessionId: sid})
-            query = `?phoneCustomer=${encodeURIComponent(phone)}`
+            // await MainApiRequest.post(  `/cart/migrate?phoneCustomer=${encodeURIComponent(phoneCustomer)}&sessionId=${sessionId}`);
+            query = `?phoneCustomer=${encodeURIComponent(phoneCustomer)}`
           } catch (err) {
             console.error('Migrate cart failed', err)
           }
-          query = `?phoneCustomer=${encodeURIComponent(phone)}`
+          query = `?phoneCustomer=${encodeURIComponent(phoneCustomer)}`
         }
       } catch {}
       // 1) GET /cart voi dung query
@@ -111,7 +113,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         raw.map(async (ci) => {
           const {data: p} = await MainApiRequest.get<Product>(`/product/${ci.productId}`)
           const isCake = p.category === 'Bánh ngọt'
-          // tinh gia cho bánh ngọt
+          // tính giá cho bánh ngọt
           let price: number
           if (isCake && ci.size === 'whole') {
             price = p.sizes[0].price * 8
@@ -125,14 +127,11 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
             price = p.sizes[0].price
           }
 
-          //availableSizes: cake co them whole
+          //availableSizes: cake co them whole (Cả bánh)
           // map availableSizes dùng cho CartDrawer
           const availableSizes = isCake
-            ? [
-                { name: 'piece', price: p.sizes[0].price },
-                { name: 'whole', price: p.sizes[0].price * 8 },
-            ]
-            : p.sizes.map((s) => ({ name: s.sizeName, price: s.price }))
+            ? p.sizes.map((s) => ({ name: s.sizeName, price: s.price }))
+            : p.sizes.filter((s) => s.sizeName !== 'whole').map((s) => ({ name: s.sizeName, price: s.price }))
 
           return {
             id: ci.id,
@@ -236,35 +235,64 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }
 
   // Xóa toàn bộ giỏ hàng
+  
   const clearCart = async () => {
+    console.log('CLEAR CART CLICKED');
     try {
       const sid = sessionId()
-      let url = `/cart?sessionId=${sid}`
+      let url = `/cart?sessionId=${sid}`;
+      let usedPhoneCustomer = null;
       try {
-        const auth = await MainApiRequest.get<{ data: {phoneCustomer: string}}>('/auth/callback')
-        const phone = auth.data.data.phoneCustomer
-        if (phone) url = `/cart?phoneCustomer=${encodeURIComponent(phone)}`
+        const auth = await MainApiRequest.get<{ data: {phoneCustomer?: string; phone?: string}}>('/auth/callback')
+        const phoneCustomer = auth.data.data.phoneCustomer || auth.data.data.phone
+        if (phoneCustomer) url = `/cart?phoneCustomer=${encodeURIComponent(phoneCustomer)}`;
+        usedPhoneCustomer = phoneCustomer;
       } catch (err) {
         console.error('Clear cart failed', err)
       }
       await MainApiRequest.delete(url)
+      setCart([]) // Xóa giỏ hàng trong state
       await fetchCart()
+      console.log('Done clear, just fetched by', usedPhoneCustomer ? 'phoneCustomer=' + usedPhoneCustomer : 'sessionId=' + sid);
     } catch (err) {
       console.error('Clear cart failed', err)
       throw err // ném lại để caller có thể xử lý
     }
   }
 
+  // Hàm xóa các sản phẩm trong giỏ hàng sau khi đã đặt hàng
+  const removeCartItemsAfterOrder = async (items: { productId: number|string; size: string; mood?: string }[]) => {
+  // items là mảng các sản phẩm đã đặt (cùng productId, size, mood)
+  for (const it of items) {
+    const cartItem = cart.find(
+      c =>
+        String(c.productId) === String(it.productId) &&
+        c.size === it.size &&
+        (c.mood ?? '') === (it.mood ?? '')
+    );
+    if (cartItem) {
+      await removeItem(cartItem.id);
+    }
+  }
+  await fetchCart(); // Cập nhật lại giỏ hàng
+};
+
+const clearSessionId = () => {
+  localStorage.removeItem('sessionId')
+}
+
   useEffect(() => {
     fetchCart()
-  }, [])
+  }, []) 
 
+  // Tính tổng số lượng và giá trị của giỏ hàng
   const totalItems = cart.reduce((sum, i) => sum + i.quantity, 0)
+  // Sử dụng reduce để tính tổng số lượng và tổng giá trị
   const totalPrice = cart.reduce((sum, i) => sum + i.price * i.quantity, 0)
 
   return (
     <CartContext.Provider
-      value={{ cart, totalItems, totalPrice, fetchCart, addToCart, updateItem, removeItem, clearCart }}
+      value={{ cart, totalItems, totalPrice, fetchCart, addToCart, updateItem, removeItem, clearCart, removeCartItemsAfterOrder, clearSessionId }}
     >
       {children}
     </CartContext.Provider>

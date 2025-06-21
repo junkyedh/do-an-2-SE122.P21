@@ -33,6 +33,14 @@ interface Props {
   onAddToCart?: (size:string, quantity: number, mood?: string) => void;
 }
 
+function normalizeSizes(raw: any[]): ProductSize[] {
+  return raw.map(s => ({
+    sizeName: s.sizeName ?? s.name, // nếu có sizeName thì lấy, không thì lấy name
+    price: s.price,
+  }));
+}
+
+
 const CardProduct: React.FC<Props> = ({ product, onProductClick , onAddToCart}) => {
   const [selectedSizeIndex, setSelectedSizeIndex] = useState(0);
   const [selectedTemp, setSelectedTemp] = useState<'hot' | 'cold'>('hot')
@@ -40,12 +48,21 @@ const CardProduct: React.FC<Props> = ({ product, onProductClick , onAddToCart}) 
   const navigate = useNavigate();
   const { addToCart } = useCart();
 
-  const size = product.sizes[selectedSizeIndex];
+  
+  const sizes = normalizeSizes(product.sizes);
+  const size = sizes[selectedSizeIndex];
   const finalPrice = size.price - (product.discount || 0);
-
+  
+  const drinkCategories = [
+    "Cà phê",
+    "Trà trái cây",
+    "Trà sữa",
+    "Nước ép",
+    "Sinh tố"
+  ];
   // nếu là cà phê hoặc trà, mood mặc định hot/cold từ product.hot/product.cold
-  const defaultMood = ["Cà phê", "Trà trái cây"].includes(product.category)
-    ? product.hot ? "hot" : "cold"
+  const defaultMood = drinkCategories.includes(product.category)
+    ? (product.hot ? "hot" : (product.cold ? "cold" : undefined))
     : undefined;
 
   const handleCardClick = () => {
@@ -56,15 +73,24 @@ const CardProduct: React.FC<Props> = ({ product, onProductClick , onAddToCart}) 
     }
   };
 
+
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (!product.available) return;
-    const sizeName = product.sizes[selectedSizeIndex].sizeName;
-    const mood = defaultMood;
+    const idx = selectedSizeIndex ?? 0;
+    const sizeName = sizes?.[idx]?.sizeName || sizes?.[0]?.sizeName;
+    let mood = defaultMood;
+    if (drinkCategories.includes(product.category) && !mood) {
+      mood = "cold"; // nếu không có mood thì mặc định là cold
+    }
+    if (product.category ==="Trà sữa" && !mood) {
+      mood = "cold"; 
+    }
+    console.log("Choose size:", sizeName, 'selectedSizeIndex:', selectedSizeIndex, sizes, 'mood:', mood, 'quantity:', quantity);
     if (onAddToCart) {
-      onAddToCart(size.sizeName, quantity, mood);
+      onAddToCart(sizeName, quantity, mood);
     } else {
-      addToCart(Number(product.id), size.sizeName, 1, mood)
+      addToCart(Number(product.id), sizeName, 1, mood)
         .then(() => message.success("Đã thêm vào giỏ hàng"))
         .catch(() => message.error("Không thể thêm vào giỏ hàng"));
   };

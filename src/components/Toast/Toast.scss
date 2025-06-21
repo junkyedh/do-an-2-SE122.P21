@@ -1,0 +1,191 @@
+@import '../../scss/variables';
+
+.toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 400px;
+  width: 100%;
+
+  @media (max-width: 768px) {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    max-width: none;
+  }
+}
+
+.toast {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+  }
+
+  &--success {
+    background: linear-gradient(135deg, rgba(get-color($secondary, "400"), 0.95), rgba(get-color($secondary, "500"), 0.95));
+    color: get-color($secondary, "foreground");
+
+    &::before {
+      background: get-color($secondary, "600");
+    }
+
+    .toast__icon {
+      color: get-color($secondary, "600");
+    }
+  }
+
+  &--error {
+    background: linear-gradient(135deg, rgba(get-color($accent, "400"), 0.95), rgba(get-color($accent, "500"), 0.95));
+    color: white;
+
+    &::before {
+      background: get-color($accent, "600");
+    }
+
+    .toast__icon {
+      color: white;
+    }
+  }
+
+  &--warning {
+    background: linear-gradient(135deg, rgba(#f59e0b, 0.95), rgba(#d97706, 0.95));
+    color: white;
+
+    &::before {
+      background: #b45309;
+    }
+
+    .toast__icon {
+      color: white;
+    }
+  }
+
+  &--info {
+    background: linear-gradient(135deg, rgba(get-color($primary2, "400"), 0.95), rgba(get-color($primary2, "500"), 0.95));
+    color: white;
+
+    &::before {
+      background: get-color($primary2, "600");
+    }
+
+    .toast__icon {
+      color: white;
+    }
+  }
+
+  &__content {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    flex: 1;
+  }
+
+  &__icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  &__text {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__title {
+    font-weight: get-font-weight($font-weight, semibold);
+    font-size: get-font-size($body-font-size, rg);
+    margin-bottom: 4px;
+    line-height: 1.4;
+  }
+
+  &__message {
+    font-size: get-font-size($body-font-size, sm);
+    line-height: 1.5;
+    opacity: 0.9;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: 12px;
+  }
+
+  &__action-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: inherit;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: get-font-size($body-font-size, sm);
+    font-weight: get-font-weight($font-weight, medium);
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateY(-1px);
+    }
+  }
+
+  &__close-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: inherit;
+    padding: 6px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: scale(1.05);
+    }
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOut {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}

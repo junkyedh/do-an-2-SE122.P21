@@ -1,16 +1,52 @@
+@import '../../../scss/variables.scss';
+
 .user-profile {
   padding: 40px 0;
+  background: linear-gradient(135deg, get-color($background, "default"), get-color($neutral, "50"));
+  min-height: calc(100vh - 200px);
 
   .loading {
-    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     padding: 100px 0;
-    font-size: 18px;
+    font-size: get-font-size($body-font-size, lg);
+    color: get-color($neutral, "600");
+
+    &::before {
+      content: '';
+      width: 40px;
+      height: 40px;
+      border: 3px solid get-color($neutral, "300");
+      border-top: 3px solid get-color($primary, "500");
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 16px;
+    }
   }
 
   .profile-card {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(12px);
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 16px 64px rgba(get-color($neutral, "900"), 0.1);
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 24px 80px rgba(get-color($neutral, "900"), 0.15);
+    }
+
+    .ant-card-body {
+      padding: 32px;
+    }
+
     .avatar-section {
       text-align: center;
-      margin-bottom: 24px;
+      margin-bottom: 32px;
       position: relative;
 
       .avatar-img {
@@ -18,28 +54,138 @@
         height: 120px;
         border-radius: 50%;
         object-fit: cover;
-        border: 2px solid #1890ff;
+        border: 4px solid get-color($primary, "200");
+        box-shadow: 0 8px 32px rgba(get-color($primary, "500"), 0.2);
+        transition: all 0.3s ease;
+
+        &:hover {
+          transform: scale(1.05);
+          border-color: get-color($primary, "400");
+        }
       }
 
       .rank-tag {
         position: absolute;
         bottom: -8px;
-        right: 50%;
-        transform: translateX(50%);
-        background: #ffd666;
-        padding: 4px 12px;
-        border-radius: 12px;
-        font-weight: bold;
+        left: 50%;
+        transform: translateX(-50%);
+        background: linear-gradient(135deg, get-color($accent, "400"), get-color($accent, "500"));
+        color: white;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-weight: get-font-weight($font-weight, semibold);
+        font-size: get-font-size($body-font-size, sm);
+        box-shadow: 0 4px 16px rgba(get-color($accent, "500"), 0.3);
+        border: 2px solid white;
       }
     }
 
-    .ant-form-item-label > label {
-      font-weight: 600;
-    }
+    .ant-form {
+      .ant-form-item {
+        margin-bottom: 24px;
 
-    .ant-btn {
-      background-color: #1890ff;
-      border-color: #1890ff;
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+
+      .ant-form-item-label {
+        padding-bottom: 8px;
+
+        > label {
+          font-weight: get-font-weight($font-weight, semibold);
+          color: get-color($neutral, "700");
+          font-size: get-font-size($body-font-size, rg);
+
+          &.ant-form-item-required::before {
+            color: get-color($accent, "500");
+          }
+        }
+      }
+
+      .ant-input {
+        border-radius: 12px;
+        border: 2px solid get-color($neutral, "200");
+        padding: 12px 16px;
+        font-size: get-font-size($body-font-size, rg);
+        transition: all 0.3s ease;
+        background: get-color($neutral, "50");
+
+        &:hover {
+          border-color: get-color($primary, "300");
+          background: white;
+        }
+
+        &:focus,
+        &.ant-input-focused {
+          border-color: get-color($primary, "500");
+          box-shadow: 0 0 0 3px rgba(get-color($primary, "500"), 0.1);
+          background: white;
+        }
+
+        &:disabled {
+          background: get-color($neutral, "100");
+          color: get-color($neutral, "500");
+          border-color: get-color($neutral, "200");
+        }
+      }
+
+      .ant-btn {
+        height: 48px;
+        border-radius: 12px;
+        font-weight: get-font-weight($font-weight, semibold);
+        font-size: get-font-size($body-font-size, rg);
+        background: linear-gradient(135deg, get-color($primary, "600"), get-color($primary, "700"));
+        border: none;
+        box-shadow: 0 4px 16px rgba(get-color($primary, "600"), 0.3);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+        &:hover {
+          background: linear-gradient(135deg, get-color($primary, "700"), get-color($primary, "800"));
+          transform: translateY(-2px);
+          box-shadow: 0 8px 24px rgba(get-color($primary, "600"), 0.4);
+        }
+
+        &:active {
+          transform: translateY(0);
+        }
+
+        &.ant-btn-loading {
+          .ant-btn-loading-icon {
+            color: white;
+          }
+        }
+      }
+    }
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .user-profile {
+    padding: 20px 0;
+
+    .profile-card {
+      margin: 0 16px;
+      border-radius: 20px;
+
+      .ant-card-body {
+        padding: 24px;
+      }
+
+      .avatar-section {
+        margin-bottom: 24px;
+
+        .avatar-img {
+          width: 100px;
+          height: 100px;
+        }
+      }
     }
   }
 }
