@@ -367,14 +367,14 @@ const ManagerPromotion = () => {
             {/* Danh sách Khuyến mãi và Coupon */}
             <div className="d-flex me-2 align-items-center">
                 <h4 className='h4 mt-3'>Danh sách Khuyến mãi</h4>
-                <div className="d-flex" >
+                {/* <div className="d-flex" >
                     <Button 
                         type="primary" 
                         icon={<i className="fas fa-plus"></i>}
                         onClick={() => onOpenCreatePromoteModal()}
                     >
                     </Button>
-                </div>
+                </div> */}
             </div>
 
             <Table
@@ -400,7 +400,7 @@ const ManagerPromotion = () => {
                     { title: 'Loại', dataIndex: 'promoteType', key: 'promoteType'},
                     { title: 'Ngày bắt đầu', dataIndex: 'startAt', key: 'startAt', render: (startAt: string) => moment(startAt).format('YYYY-MM-DD HH:mm:ss') },
                     { title: 'Ngày kết thúc', dataIndex: 'endAt', key: 'endAt', render: (endAt: string) => moment(endAt).format('YYYY-MM-DD HH:mm:ss') },
-                    {
+                    /*{
                         title: 'Actions', key: 'actions', render: (text, record) => (
                             <Space size="middle">
                                 <Button type="default" onClick={() => onOpenEditPromote(record)}>
@@ -419,20 +419,20 @@ const ManagerPromotion = () => {
                                 </Popconfirm>
                             </Space>
                         )
-                    },
+                    },*/
                 ]}
             />
 
             <div className="d-flex me-2 align-items-center">
                 <h4 className='h4'>Danh sách Coupon</h4>
-                <div className="d-flex" >
+                {/* <div className="d-flex" >
                     <Button 
                         type="primary" 
                         icon={<i className="fas fa-plus"></i>}
                         onClick={() => onOpenCreateCouponModal()}
                     >
                     </Button>
-                </div>
+                </div> */}
             </div>
             <Table
                 dataSource={managerCouponList}
@@ -451,7 +451,7 @@ const ManagerPromotion = () => {
                         }
                     },
                     { title: 'Mã Code', dataIndex: 'code', key: 'code' },
-                    {
+                    /*{
                         title: 'Actions', key: 'actions', render: (text, record) => (
                             <Space size="middle">
                                 <Button 
@@ -471,7 +471,7 @@ const ManagerPromotion = () => {
                                 </Popconfirm>
                             </Space>
                         )
-                    },
+                    },*/
                 ]}
             />
         </div>

@@ -31,6 +31,9 @@ import ProfileUser from '@/pages/customer/ProfileUser/ProfileUser';
 import HistoryOrder from '@/pages/customer/HistoryOrder/HistoryOrder';
 import RegisterCustomer from '@/pages/AdminLogin/RegisterCustomer';
 import BranchStatistic from '@/pages/brands/Statistic/BranchStatistic';
+import AdminCustomerRating from '@/pages/admin/Rating/Rating';
+import ManagerBranchInfo from '@/pages/brands/ManagerBranchInfo/ManagerBranchInfo';
+import ManagerTableList from '@/pages/brands/ManagerTable/ManagerTable';
 
 
 const MainRoutes: React.FC = () => {
@@ -67,14 +70,18 @@ const MainRoutes: React.FC = () => {
         <Route path="/admin/stafflist" element={<AdminStaffList />} />
         <Route path="/admin/customerlist" element={<AdminCustomerList />} />
         <Route path="/admin/promote" element={<AdminPromotion />} />
+        <Route path="/admin/rating" element={<AdminCustomerRating />} />
 
         <Route path="/manager/dashboard" element={<BranchStatistic />} />
         <Route path="/manager/productlist" element={<ManagerProductList />} />
         <Route path="/manager/materiallist" element={<ManagerMaterialList />} />
         <Route path="/manager/stafflist" element={<ManagerStaffList />} />
+        <Route path="/manager/table" element={<ManagerTableList />} />
         <Route path="/manager/customerlist" element={<ManagerCustomerList />} />
         <Route path="/manager/orderlist" element={<ManagerOrderList />} />
         <Route path="/manager/promote" element={<ManagerPromotion />} />
+        <Route path="/manager/rating" element={<AdminCustomerRating />} />
+        <Route path="/manager/info" element={<ManagerBranchInfo />} />
       </Route>
       <Route path="/404" element={<h1>Page Not Found</h1>} />
       <Route path="*" element={<h1>404 Not Found</h1>} />

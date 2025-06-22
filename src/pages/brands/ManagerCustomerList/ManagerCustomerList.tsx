@@ -71,28 +71,41 @@ const ManagerCustomerList = () => {
     };
 
     const onOpenCreateCustomerModal = (record: any = null) => {
-        setEditingCustomer(null);
-        if (record){
+        if (record) {
             setEditingCustomer(record);
             form.setFieldsValue({
                 ...record,
                 registrationDate: moment(record.registrationDate),
             });
+        } else {
+            // Tạo mới => set ngày hiện tại
+            form.setFieldsValue({
+                registrationDate: moment(),
+                total: 0,
+                image: 'https://via.placeholder.com/150', // Mặc định
+            });
+            setEditingCustomer(null);
         }
         setOpenCreateCustomerModal(true);
     };
 
-
     const onOKCreateCustomer = async () => {
         try {
-            const data = form.getFieldsValue();
+            const data = await form.validateFields();
             data.registrationDate = data.registrationDate.toISOString();
 
             if (editingCustomer) {
-                const { id, ...rest } = data;
-                await AdminApiRequest.put(`/customer/${editingCustomer.id}`, rest);
+                const { name, gender, address, image } = data;
+                await AdminApiRequest.put(`/customer/${editingCustomer.id}`, { name, gender, address, image });
+                message.success("Cập nhật khách hàng thành công!");
             } else {
-                await AdminApiRequest.post('/customer', data);
+                await AdminApiRequest.post('/customer', {
+                    ...data,
+                    total: 0,
+                    image: data.image || 'https://via.placeholder.com/150',
+                    rank: '', // Có thể bỏ qua
+                });
+                message.success("Thêm khách hàng thành công!");
             }
 
             fetchCustomerList();
@@ -100,18 +113,17 @@ const ManagerCustomerList = () => {
             form.resetFields();
             setEditingCustomer(null);
         } catch (error) {
-            console.error('Lỗi khi tạo khách hàng:', error);
-            message.error('Không thể tạo khách hàng. Vui lòng thử lại.');
+            console.error('Lỗi khi tạo/chỉnh sửa khách hàng:', error);
+            message.error('Không thể lưu khách hàng. Vui lòng thử lại.');
         }
     };
-
 
     const onCancelCreateCustomer = () => {
         setOpenCreateCustomerModal(false);
         form.resetFields();
     };
 
-    const onEditCustomer = (record:any) => {
+    const onEditCustomer = (record: any) => {
         setEditingCustomer(record);
         form.setFieldsValue({
             ...record,
@@ -141,24 +153,24 @@ const ManagerCustomerList = () => {
                 <div className="header-actions d-flex me-2 py-2 align-items-center justify-content-between">
                     <div className="flex-grow-1 d-flex justify-content-center">
                         <Form layout="inline" className="search-form d-flex">
-                        <SearchInput
-                            placeholder="Tìm kiếm theo id, tên khách hàng hoặc SĐT"
-                            value={searchKeyword}
-                            onChange={(e) => setSearchKeyword(e.target.value)}
-                            onSearch={handleSearchKeyword}
-                            allowClear
-                        />
+                            <SearchInput
+                                placeholder="Tìm kiếm theo id, tên khách hàng hoặc SĐT"
+                                value={searchKeyword}
+                                onChange={(e) => setSearchKeyword(e.target.value)}
+                                onSearch={handleSearchKeyword}
+                                allowClear
+                            />
                         </Form>
                     </div>
                     <div className="d-flex" >
-                        {/* <Button 
-                            type="primary" 
+                        <Button
+                            type="primary"
                             icon={<i className="fas fa-plus"></i>}
                             onClick={() => onOpenCreateCustomerModal()}
                         >
-                        </Button> */}
-                        <Button 
-                            type="primary" 
+                        </Button>
+                        <Button
+                            type="primary"
                             icon={<DownloadOutlined />}
                             onClick={exportExcel}
                             title='Tải xuống danh sách'
@@ -187,12 +199,15 @@ const ManagerCustomerList = () => {
                             label='Giới tính'
                             component='select'
                             rules={[{ required: true, message: 'Giới tính là bắt buộc' }]}
-                        >
-                            <option value="Nam">Nam</option>
-                            <option value="Nữ">Nữ</option>
-                            <option value="Khác">Khác</option>
+                            options={[
+                                { value: 'Nam', label: 'Nam' },
+                                { value: 'Nữ', label: 'Nữ' },
+                                { value: 'Khác', label: 'Khác' }
+                            ]}
+                        >                            
                         </FloatingLabelInput>
                     </div>
+
                     <div className='grid-2'>
                         <FloatingLabelInput
                             name="phone"
@@ -200,14 +215,16 @@ const ManagerCustomerList = () => {
                             component='input'
                             type='text'
                             rules={[{ required: true, message: 'Số điện thoại là bắt buộc' }]}
+                            disabled={!!editingCustomer}
                         />
                         <FloatingLabelInput
                             name="registrationDate"
                             label="Ngày đăng ký"
                             component='date'
-                            rules={[{ required: true, message: 'Ngày đăng ký là bắt buộc' }]}
+                            disabled
                         />
                     </div>
+
                     <div className='grid-2'>
                         <FloatingLabelInput
                             name="total"
@@ -217,29 +234,21 @@ const ManagerCustomerList = () => {
                             disabled
                         />
                         <FloatingLabelInput
-                            name="rank"
-                            label="Hạng thành viên"
-                            component='select'
-                        >
-                            <option value="">Thường</option>
-                            {membershipList.map((membership) => (
-                                <option key={membership.id} value={membership.rank}>
-                                    {membership.rank}
-                                </option>
-                            ))}
-                        </FloatingLabelInput>
+                            name="address"
+                            label="Địa chỉ"
+                            component='input'
+                        />
                     </div>
+
+                    {/*<FloatingLabelInput
+                        name="image"
+                        label="Ảnh đại diện (URL)"
+                        component='input'
+                    />*/}
+
                     <div className='modal-footer-custom d-flex justify-content-end align-items-center gap-3'>
-                        <Button 
-                            type='default'
-                            onClick={onCancelCreateCustomer}
-                        >
-                            Hủy
-                        </Button>
-                        <Button 
-                            type='primary'
-                            onClick={onOKCreateCustomer}
-                        >
+                        <Button type='default' onClick={onCancelCreateCustomer}>Hủy</Button>
+                        <Button type='primary' onClick={onOKCreateCustomer}>
                             {editingCustomer ? "Lưu thay đổi" : "Tạo mới"}
                         </Button>
                     </div>
@@ -251,46 +260,49 @@ const ManagerCustomerList = () => {
                 pagination={{
                     pageSize: 10, // Số lượng item trên mỗi trang
                     showSizeChanger: true, // Hiển thị tùy chọn thay đổi số item trên mỗi trang
-                     // Các tùy chọn cho số item mỗi trang
-                    }}
+                    // Các tùy chọn cho số item mỗi trang
+                }}
                 columns={[
                     { title: 'ID', dataIndex: 'id', key: 'id', sorter: (a, b) => a.id - b.id },
                     { title: 'Tên', dataIndex: 'name', key: 'name', sorter: (a, b) => a.name.localeCompare(b.name) },
-                    { title: 'Giới tính', dataIndex: 'gender', key: 'gender', sorter: (a,b) => a.gender.localeCompare(b.gender)},
+                    { title: 'Giới tính', dataIndex: 'gender', key: 'gender', sorter: (a, b) => a.gender.localeCompare(b.gender) },
                     { title: 'Số điện thoại', dataIndex: 'phone', key: 'phone' },
-                    { title: 'Tổng chi tiêu', dataIndex: 'total', key: 'total', sorter: (a, b) => a.total - b.total,
+                    {
+                        title: 'Tổng chi tiêu', dataIndex: 'total', key: 'total', sorter: (a, b) => a.total - b.total,
                         render: (total: number) => total ? new Intl.NumberFormat('vi-VN',
-                             { style: 'currency', currency: 'VND' }).format(total).replace('₫', 'đ') : '0đ'
-                     },
-                    { title: 'Hạng thành viên', dataIndex: 'rank', key: 'rank', sorter: (a, b) => a.rank.localeCompare(b.rank),
+                            { style: 'currency', currency: 'VND' }).format(total).replace('₫', 'đ') : '0đ'
+                    },
+                    {
+                        title: 'Hạng thành viên', dataIndex: 'rank', key: 'rank', sorter: (a, b) => a.rank.localeCompare(b.rank),
                         render: (rank: string) => (rank ? rank : 'Thường'),
-                     },
-                    { title: 'Ngày đăng ký', dataIndex: 'registrationDate', key: 'registrationDate', sorter: (a, b) => moment(a.registrationDate).unix() - moment(b.registrationDate).unix(),
+                    },
+                    {
+                        title: 'Ngày đăng ký', dataIndex: 'registrationDate', key: 'registrationDate', sorter: (a, b) => moment(a.registrationDate).unix() - moment(b.registrationDate).unix(),
                         render: (registrationDate: string) => (registrationDate ? moment(registrationDate).format('DD-MM-YYYY HH:mm:ss') : '-')
-                     },
-                    // {
-                    //     title: 'Hành động',
-                    //     key: 'actions',
-                    //     render: (_, record) => (
-                    //         <Space size="middle">
-                    //             <Button type="default" onClick={() => onEditCustomer(record)}>
-                    //                 <i className="fas fa-edit"></i>
-                    //             </Button>
-                    //             <Popconfirm
-                    //                 title="Bạn có chắc chắn muốn xóa khách hàng này không?"
-                    //                 onConfirm={() => onDeleteCustomer(record.id)}
-                    //                 okText="Có"
-                    //                 cancelText="Không"
-                    //             >
-                    //                 <Button className="ant-btn-danger">
-                    //                     <i className="fas fa-trash"></i>
-                    //                 </Button>
-                    //             </Popconfirm>
-                    //         </Space>
-                    //     ),
-                    // },
+                    },
+                    {
+                        title: 'Hành động',
+                        key: 'actions',
+                        render: (_, record) => (
+                            <Space size="middle">
+                                <Button type="default" onClick={() => onEditCustomer(record)}>
+                                    <i className="fas fa-edit"></i>
+                                </Button>
+                                <Popconfirm
+                                    title="Bạn có chắc chắn muốn xóa khách hàng này không?"
+                                    onConfirm={() => onDeleteCustomer(record.id)}
+                                    okText="Có"
+                                    cancelText="Không"
+                                >
+                                    <Button className="ant-btn-danger">
+                                        <i className="fas fa-trash"></i>
+                                    </Button>
+                                </Popconfirm>
+                            </Space>
+                        ),
+                    },
                 ]}
-            /> 
+            />
         </div>
     );
 };
