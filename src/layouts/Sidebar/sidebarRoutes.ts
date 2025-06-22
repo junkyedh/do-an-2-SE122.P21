@@ -93,6 +93,12 @@ export const sidebarRoutes: Route[] = [
         roles: ["ADMIN_BRAND"],
     },
     {
+        title: "Bàn ghế",
+        link: "/manager/table",
+        icon: "fa-solid fa-table",
+        roles: ["ADMIN_BRAND"],
+    },
+    {
         title: "Khách hàng",
         link: "/manager/customerlist",
         icon: "fa-solid fa-user",
@@ -108,6 +114,12 @@ export const sidebarRoutes: Route[] = [
         title: "Đánh giá",
         link: "/manager/rating",
         icon: "fa-solid fa-star",
+        roles: ["ADMIN_BRAND"],
+    },
+    {
+        title: "Thông tin quán",
+        link: "/manager/info",
+        icon: "fa-solid fa-building",
         roles: ["ADMIN_BRAND"],
     },
 

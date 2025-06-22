@@ -1,4 +1,4 @@
-import { Button,  Form, GetProp, Input, message, Modal, Popconfirm,  Progress,  Space, Table, Tag, Upload, UploadFile, UploadProps } from 'antd';
+import { Button, Form, GetProp, Input, message, Modal, Popconfirm, Progress, Space, Table, Tag, Upload, UploadFile, UploadProps } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { use, useEffect, useState } from 'react';
 import "./ManagerProduct.scss";
@@ -11,14 +11,20 @@ import SearchInput from '@/components/adminsytem/Search/SearchInput';
 import { m } from 'framer-motion';
 
 type Product = {
-  id: number;
-  name: string;
-  category: string;
-  price: number;
-  upsize?: number;
-  image?: string;
-  mood?: string;
-  available: boolean;
+    id: number;
+    name: string;
+    category: string;
+    price: number;
+    upsize?: number;
+    image?: string;
+    mood?: string;
+    available: boolean;
+    sizes?: ProductSize[];
+};
+
+type ProductSize = {
+    sizeName: string;
+    price: number;
 };
 
 type UploadRequestOption = Parameters<GetProp<UploadProps, 'customRequest'>>[0];
@@ -37,15 +43,15 @@ const ManagerProductList = () => {
     const [searchKeyword, setSearchKeyword] = useState<string>("");
 
     useEffect(() => {
-    if (selectedCategory) {
-      const filtered = products.filter(
-        (product) => product.category === selectedCategory
-      );
-      setFilteredProductList(filtered);
-    } else {
-      setFilteredProductList(products);
-    }
-  }, [selectedCategory, products]);
+        if (selectedCategory) {
+            const filtered = products.filter(
+                (product) => product.category === selectedCategory
+            );
+            setFilteredProductList(filtered);
+        } else {
+            setFilteredProductList(products);
+        }
+    }, [selectedCategory, products]);
 
     // Hàm lấy danh sách sản phẩm
     const fetchManagerProductList = async () => {
@@ -63,28 +69,28 @@ const ManagerProductList = () => {
 
         const fmData = new FormData();
         const config = {
-        headers: { "content-type": "multipart/form-data" },
-        onUploadProgress: (event: any) => {
-            const percent = Math.floor((event.loaded / event.total) * 100);
-            setProgress(percent);
-            if (percent === 100) {
-            setTimeout(() => setProgress(0), 1000);
-            }
-            onProgress && onProgress({ percent });
-        },
+            headers: { "content-type": "multipart/form-data" },
+            onUploadProgress: (event: any) => {
+                const percent = Math.floor((event.loaded / event.total) * 100);
+                setProgress(percent);
+                if (percent === 100) {
+                    setTimeout(() => setProgress(0), 1000);
+                }
+                onProgress && onProgress({ percent });
+            },
         };
         fmData.append("file", file);
         try {
-        const res = await AdminApiRequest.post("/file/upload", fmData, config);
-        const { data } = res;
-        setImageUrl(data.imageUrl);
-        onSuccess && onSuccess("Ok");
+            const res = await AdminApiRequest.post("/file/upload", fmData, config);
+            const { data } = res;
+            setImageUrl(data.imageUrl);
+            onSuccess && onSuccess("Ok");
         } catch (err) {
-        console.error("Error:", err);
-        onError && onError(new Error("Upload failed"));
+            console.error("Error:", err);
+            onError && onError(new Error("Upload failed"));
         }
     };
-    
+
     // Hàm xử lý thay đổi file tải lên
     const handleChange = (info: any) => {
         const file = info.fileList[0];
@@ -134,7 +140,7 @@ const ManagerProductList = () => {
     const onOKCreateProduct = async () => {
         try {
             const values = await form.validateFields();
-            
+
             let data: any = {
                 name: values.name,
                 category: values.category,
@@ -205,19 +211,23 @@ const ManagerProductList = () => {
     // Hàm cập nhật trạng thái sản phẩm
     const onToggleProductStatus = async (record: any) => {
         try {
-            const updatedProduct = { ...record, available: !record.available };
-            await AdminApiRequest.put(`/product/available/${record.id}`, updatedProduct);
-            setManagerProductList((prevList) => 
-                prevList.map((product) => 
-                    product.id === record.id ? { ...product, available: updatedProduct.available } : product
+            const updatedAvailable = !record.available;
+            await AdminApiRequest.put(`/product-branch/available/${record.id}`, {
+                available: updatedAvailable,
+            });
+
+            setManagerProductList((prev) =>
+                prev.map((item) =>
+                    item.id === record.id ? { ...item, available: updatedAvailable } : item
                 )
             );
-            message.success(`Trạng thái sản phẩm đã được cập nhật thành công.`);
+
+            message.success('Cập nhật trạng thái sản phẩm thành công.');
         } catch (error) {
-            console.error('Error updating product status:', error);
-            message.error('Không thể cập nhật trạng thái sản phẩm. Vui lòng thử lại.');
+            console.error('Error updating availability:', error);
+            message.error('Không thể cập nhật trạng thái sản phẩm.');
         }
-    }
+    };
 
     const handleSearchKeyword = () => {
         const keyword = searchKeyword.trim().toLowerCase();
@@ -228,7 +238,7 @@ const ManagerProductList = () => {
         const filtered = managerProductList.filter(product => {
             const name = (product.name || '').toLowerCase();
             const category = (product.category || '').toLowerCase();
-            
+
             return name.includes(keyword) || category.includes(keyword);
         });
         setManagerProductList(filtered);
@@ -248,23 +258,23 @@ const ManagerProductList = () => {
                 <div className="header-actions d-flex me-3 py-2 align-items-center justify-content-between">
                     <div className="flex-grow-1 d-flex justify-content-center">
                         <Form layout="inline" className="search-form d-flex">
-                        <SearchInput
-                            placeholder="Tìm kiếm theo tên hoặc loại sản phẩm"
-                            value={searchKeyword}
-                            onChange={(e) => setSearchKeyword(e.target.value)}
-                            onSearch={handleSearchKeyword}
-                            allowClear
-                        />
+                            <SearchInput
+                                placeholder="Tìm kiếm theo tên hoặc loại sản phẩm"
+                                value={searchKeyword}
+                                onChange={(e) => setSearchKeyword(e.target.value)}
+                                onSearch={handleSearchKeyword}
+                                allowClear
+                            />
                         </Form>
                     </div>
-                    <div className="d-flex">
+                    {/*<div className="d-flex">
                         <Button 
                             type="primary" 
                             icon={<i className="fas fa-plus"></i>}
                             onClick={() => onOpenCreateProductModal()}
                         >
                         </Button>
-                    </div>
+                    </div>*/}
                 </div>
             </div>
 
@@ -283,34 +293,34 @@ const ManagerProductList = () => {
                         getValueFromEvent={(e) => e.fileList}
                     >
                         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                        <Upload
-                            listType="picture-card"
-                            fileList={fileList}
-                            accept="image/*"
-                            onPreview={() => {}}
-                            customRequest={handleUpload}
-                            onRemove={handleRemove}
-                            onChange={handleChange}
-                        >
-                        {fileList.length < 1 && (
-                            <div>
-                            <PlusOutlined />
-                            <div>Tải lên</div>
-                            </div>
-                        )}
-                        </Upload>
-                        {progress > 0 ? <Progress percent={progress} /> : null}
+                            <Upload
+                                listType="picture-card"
+                                fileList={fileList}
+                                accept="image/*"
+                                onPreview={() => { }}
+                                customRequest={handleUpload}
+                                onRemove={handleRemove}
+                                onChange={handleChange}
+                            >
+                                {fileList.length < 1 && (
+                                    <div>
+                                        <PlusOutlined />
+                                        <div>Tải lên</div>
+                                    </div>
+                                )}
+                            </Upload>
+                            {progress > 0 ? <Progress percent={progress} /> : null}
                         </div>
                     </Form.Item>
                     <div className='grid-2'>
-                        <FloatingLabelInput 
+                        <FloatingLabelInput
                             label="Tên sản phẩm"
                             name="name"
                             component='input'
                             type='text'
                             rules={[{ required: true, message: 'Vui lòng nhập tên sản phẩm!' }]}
                         />
-                        <FloatingLabelInput 
+                        <FloatingLabelInput
                             label="Loại"
                             name="category"
                             component='select'
@@ -323,7 +333,7 @@ const ManagerProductList = () => {
                                 { value: 'Sinh tố', label: 'Sinh tố' },
                                 { value: 'Nước ngọt', label: 'Nước ngọt' },
                                 { value: 'Bánh ngọt', label: 'Bánh ngọt' },
-                            ]} 
+                            ]}
                         />
                     </div>
                     <Form.Item>
@@ -359,13 +369,13 @@ const ManagerProductList = () => {
                     </Form.Item>
 
                     <div className='modal-footer-custom d-flex justify-content-end align-items-center gap-3 mt-5'>
-                        <Button 
+                        <Button
                             type='default'
                             onClick={onCancelCreateProduct}
                         >
                             Hủy
                         </Button>
-                        <Button 
+                        <Button
                             type='primary'
                             onClick={onOKCreateProduct}
                             disabled={progress > 0} // Disable button while uploading
@@ -373,7 +383,7 @@ const ManagerProductList = () => {
                             {editingProduct ? "Lưu thay đổi" : "Tạo mới"}
                         </Button>
                     </div>
-                    </Form>
+                </Form>
 
             </Modal>
 
@@ -383,76 +393,76 @@ const ManagerProductList = () => {
                 pagination={{
                     pageSize: 6, // Số lượng item trên mỗi trang
                     showSizeChanger: true, // Hiển thị tùy chọn thay đổi số item trên mỗi trang
-                        // Các tùy chọn cho số item mỗi trang
-                    }
-                }    
-                            
+                    // Các tùy chọn cho số item mỗi trang
+                }
+                }
+
                 columns={[
-                {
-                    title: 'Hình ảnh',
-                    dataIndex: 'image',
-                    key: 'image',
-                    render: (image: string) => (
-                    <img
-                        src={image || imgDefault}
-                        alt="Product"
-                        style={{
-                        width: '100px',
-                        height: '100px',
-                        borderRadius: '8px',
-                        }}
-                    />
-                    ),
-                },
-                { title: 'ID', dataIndex: 'id', key: 'id', sorter: (a, b) => a.id - b.id },
-                { title: 'Tên sản phẩm', dataIndex: 'name', key: 'name', sorter: (a, b) => a.name.localeCompare(b.name) },
-                { title: 'Loại', dataIndex: 'category', key: 'category', sorter: (a, b) => a.category.localeCompare(b.category) },
-                { title: 'Giá', key: 'price', sorter: (a, b) => a.price - b.price, render: (_, record) => {
-                    const formatter = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' });
-                    if (record.category === 'Bánh ngọt') {
-                        return formatter.format(record.price);
-                    } else {
-                        const priceS = record.price - 3000;
-                        const priceM = record.price;
-                        const priceL = record.price + (record.upsize || 0);
+                    { title: 'ID', dataIndex: 'productId', key: 'productId', sorter: (a, b) => a.id - b.id },
+                    {
+                        title: 'Hình ảnh',
+                        dataIndex: 'image',
+                        key: 'image',
+                        render: (image: string) => (
+                            <img
+                                src={image || imgDefault}
+                                alt="Product"
+                                style={{
+                                    width: '100px',
+                                    height: '100px',
+                                    borderRadius: '8px',
+                                }}
+                            />
+                        ),
+                    },
+                    { title: 'Tên sản phẩm', dataIndex: 'name', key: 'name', sorter: (a, b) => a.name.localeCompare(b.name) },
+                    { title: 'Loại', dataIndex: 'category', key: 'category', sorter: (a, b) => a.category.localeCompare(b.category) },
+                    {
+                        title: 'Giá', key: 'price', sorter: (a, b) => a.price - b.price, render: (_, record) => {
+                            const formatter = new Intl.NumberFormat('vi-VN', {
+                                style: 'currency',
+                                currency: 'VND'
+                            });
 
-                        return (
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', justifyContent: 'center'}}>
-                                <p>S: {formatter.format(priceS)}</p>
-                                <p>M: {formatter.format(priceM)}</p>
-                                <p>L: {formatter.format(priceL)}</p>
-                            </div>
-                        );
-                        
-                    }
-                },
-                },
-                { title: 'Mood', dataIndex: 'mood', key: 'mood', sorter: (a, b) => a.mood?.localeCompare(b.mood || '') || 0,
-                    render: (_, record) => {
-                        const drinkCategory = ['Cà phê', 'Trà', 'Trà sữa', 'Nước ép', 'Sinh tố', 'Nước ngọt'];
-                        if (!drinkCategory.includes(record.category)) return 'Không áp dụng';
-                        if (record.category === 'Cà phê' || record.category === 'Trà') {
-                            return <span>{record.mood || 'Nóng / Đá'}</span>;
-                        } else if (record.category === 'Trà sữa' || record.category === 'Nước ép' || record.category === 'Sinh tố' || record.category === 'Nước ngọt') {
-                            return <span>{record.mood || 'Lạnh'}</span>;
+                            return (
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                                    {record.sizes?.map((size: ProductSize) => (
+                                        <p key={size.sizeName}>
+                                            {size.sizeName}: {formatter.format(size.price)}
+                                        </p>
+                                    ))}
+                                </div>
+                            );
                         }
-                        return 'Không áp dụng'; // Không hiển thị mood nếu không phải là loại đồ uống
-                    }
+                    },
+                    {
+                        title: 'Mood', dataIndex: 'mood', key: 'mood', sorter: (a, b) => a.mood?.localeCompare(b.mood || '') || 0,
+                        render: (_, record) => {
+                            const drinkCategory = ['Cà phê', 'Trà', 'Trà trái cây', 'Trà sữa', 'Nước ép', 'Sinh tố', 'Nước ngọt'];
+                            if (!drinkCategory.includes(record.category)) return 'Không áp dụng';
+                            if (record.category === 'Cà phê' || record.category === 'Trà') {
+                                return <span>{record.mood || 'Nóng / Đá'}</span>;
+                            } else if (record.category === 'Trà sữa' || record.category === 'Nước ép' || record.category === 'Trà trái cây' || record.category === 'Sinh tố' || record.category === 'Nước ngọt') {
+                                return <span>{record.mood || 'Lạnh'}</span>;
+                            }
+                            return 'Không áp dụng'; // Không hiển thị mood nếu không phải là loại đồ uống
+                        }
 
-                },
-                { title: 'Trạng thái', dataIndex: 'available', key: 'available', sorter: (a, b) => a.available === b.available ? 0 : a.available ? -1 : 1,
-                    render: (available: boolean) => (
-                        <Tag color={available ? 'green' : 'red'}>
-                            {available ? 'Đang bán' : 'Ngưng bán'}
-                        </Tag>
-                    ),
-                },
-                {
-                    title: 'Hành động',
-                    key: 'action',
-                    render: (_, record) => (
-                    <Space size="middle">
-                        <Button 
+                    },
+                    {
+                        title: 'Trạng thái', dataIndex: 'available', key: 'available', sorter: (a, b) => a.available === b.available ? 0 : a.available ? -1 : 1,
+                        render: (available: boolean) => (
+                            <Tag color={available ? 'green' : 'red'}>
+                                {available ? 'Đang bán' : 'Ngưng bán'}
+                            </Tag>
+                        ),
+                    },
+                    {
+                        title: 'Hành động',
+                        key: 'action',
+                        render: (_, record) => (
+                            <Space size="middle">
+                                {/* <Button 
                             type="default"
                             onClick={() => onOpenEditProduct(record)}>
                             <i className="fas fa-edit"></i>
@@ -467,26 +477,26 @@ const ManagerProductList = () => {
                             <Button className='ant-btn-danger'>
                                 <i className="fas fa-trash"></i>
                             </Button>
-                        </Popconfirm>
+                        </Popconfirm> */}
 
-                        <Button
-                            type="text" 
-                            style={{
-                                color: record.available ? 'orange' : 'green',
-                                borderColor: record.available ? 'orange' : 'green',
-                            }}
-                            onClick={() => onToggleProductStatus(record)}
-                            >
-                            {record.available ? 'Ngưng bán' : 'Mở bán'}
-                        </Button>
-                    </Space>
-                    ),
-                },
+                                <Button
+                                    type="text"
+                                    style={{
+                                        color: record.available ? 'orange' : 'green',
+                                        borderColor: record.available ? 'orange' : 'green',
+                                    }}
+                                    onClick={() => onToggleProductStatus(record)}
+                                >
+                                    {record.available ? 'Ngưng bán' : 'Mở bán'}
+                                </Button>
+                            </Space>
+                        ),
+                    },
                 ]}
             />
         </div>
     );
-    
+
 };
 
 export default ManagerProductList;

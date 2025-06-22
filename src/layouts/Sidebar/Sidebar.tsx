@@ -49,6 +49,7 @@ const Sidebar: React.FC = () => {
       { title: "Sản phẩm", link: "/manager/productlist", icon: "fa-solid fa-box", roles: ["ADMIN_BRAND"] },
       { title: "Đơn hàng", link: "/manager/orderlist", icon: "fa-solid fa-receipt", roles: ["ADMIN_BRAND"] },
       { title: "Nhân viên", link: "/manager/stafflist", icon: "fa-solid fa-users", roles: ["ADMIN_BRAND"] },
+      { title: "Bàn ghế", link: "/manager/table", icon: "fa-solid fa-table", roles: ["ADMIN_BRAND"] },
       { title: "Khách hàng", link: "/manager/customerlist", icon: "fa-solid fa-user", roles: ["ADMIN_BRAND"] },
       { title: "Khuyến mãi", link: "/manager/promote", icon: "fa-solid fa-ticket", roles: ["ADMIN_BRAND"] },
       { title: "Đánh giá", link: "/manager/rating", icon: "fa-solid fa-star", roles: ["ADMIN_BRAND"] },
