@@ -4,11 +4,9 @@ import { useParams, useNavigate } from "react-router-dom"
 import { MainApiRequest } from "@/services/MainApiRequest"
 import Breadcrumbs from "@/components/littleComponent/Breadcrumbs/Breadcrumbs"
 import "./TrackingOrder.scss"
-import { Clock, CheckCircle, Truck, MapPin, Phone, Mail, ArrowLeft, Package, CreditCard } from "lucide-react"
-
-// Import custom components
+import { Clock, CheckCircle, Truck, ArrowLeft, Package } from "lucide-react"
 import { Button } from "@/components/littleComponent/Button/Button"
-import { Card, CardHeader, CardTitle, CardBody } from "@/components/littleComponent/Card/Card"
+import LoadingIndicator from "@/components/littleComponent/LoadingIndicator/Loading"
 
 interface RawOrder {
   id: number
@@ -50,9 +48,8 @@ const statusMap: Record<
   {
     label: string
     color: string
-    icon: React.ElementType
+    icon: React.ComponentType<{ size?: number }>
     description: string
-    bgColor: string
   }
 > = {
   PENDING: {
@@ -60,49 +57,42 @@ const statusMap: Record<
     color: "#f97316",
     icon: Clock,
     description: "Đơn hàng đang chờ được xác nhận từ cửa hàng",
-    bgColor: "linear-gradient(135deg, #fed7aa, #fdba74)",
   },
   CONFIRMED: {
     label: "Đã xác nhận",
     color: "#3b82f6",
     icon: CheckCircle,
     description: "Đơn hàng đã được xác nhận và đang chuẩn bị",
-    bgColor: "linear-gradient(135deg, #dbeafe, #bfdbfe)",
   },
   PREPARING: {
     label: "Đang chuẩn bị",
     color: "#f59e0b",
     icon: Package,
     description: "Đang pha chế và chuẩn bị đồ uống của bạn",
-    bgColor: "linear-gradient(135deg, #fef3c7, #fde68a)",
   },
   READY: {
     label: "Sẵn sàng",
     color: "#10b981",
     icon: CheckCircle,
     description: "Đơn hàng đã sẵn sàng để giao hoặc nhận",
-    bgColor: "linear-gradient(135deg, #d1fae5, #a7f3d0)",
   },
   DELIVERING: {
     label: "Đang giao",
     color: "#8b5cf6",
     icon: Truck,
     description: "Đơn hàng đang được giao đến địa chỉ của bạn",
-    bgColor: "linear-gradient(135deg, #ede9fe, #ddd6fe)",
   },
   COMPLETED: {
     label: "Hoàn thành",
     color: "#059669",
     icon: CheckCircle,
     description: "Đơn hàng đã được giao thành công",
-    bgColor: "linear-gradient(135deg, #d1fae5, #a7f3d0)",
   },
   CANCELLED: {
     label: "Đã hủy",
     color: "#ef4444",
     icon: Clock,
     description: "Đơn hàng đã bị hủy",
-    bgColor: "linear-gradient(135deg, #fee2e2, #fecaca)",
   },
 }
 
@@ -116,7 +106,7 @@ export const TrackingOrder: React.FC = () => {
   const [custAddress, setCustAddress] = useState("")
 
   useEffect(() => {
-    ;(async () => {
+    const fetchOrderData = async () => {
       try {
         let phoneNumber: string | undefined
         try {
@@ -137,6 +127,7 @@ export const TrackingOrder: React.FC = () => {
             setCustAddress("")
           }
         }
+
         if (!phoneNumber) {
           setOrder(null)
           setLoading(false)
@@ -169,15 +160,18 @@ export const TrackingOrder: React.FC = () => {
       } finally {
         setLoading(false)
       }
-    })()
+    }
+
+    fetchOrderData()
   }, [id])
 
   if (loading) {
     return (
-      <div className="tracking-container">
-        <div className="loading-state">
-          <div className="loading-spinner"></div>
-          <p>Đang tải thông tin đơn hàng...</p>
+      <div className="tracking-order">
+        <div className="container">
+          <div className="tracking-order__empty">
+            <LoadingIndicator text="Đang tải thông tin đơn hàng..." />
+          </div>
         </div>
       </div>
     )
@@ -185,14 +179,17 @@ export const TrackingOrder: React.FC = () => {
 
   if (!order) {
     return (
-      <div className="tracking-container">
-        <div className="empty-state">
-          <div className="empty-icon">📦</div>
-          <h3>Không tìm thấy đơn hàng</h3>
-          <p>Đơn hàng #{id} không tồn tại hoặc đã bị xóa</p>
-          <Button variant="primary" icon={<ArrowLeft />} onClick={() => navigate("/")}>
-            Về trang chủ
-          </Button>
+      <div className="tracking-order">
+        <div className="container">
+          <div className="tracking-order__empty">
+            <div className="empty-icon">📦</div>
+            <h3>Không tìm thấy đơn hàng</h3>
+            <p>Đơn hàng #{id} không tồn tại hoặc đã bị xóa</p>
+            <button className="primaryBtn" onClick={() => navigate("/")}>
+              <ArrowLeft size={16} />
+              Về trang chủ
+            </button>
+          </div>
         </div>
       </div>
     )
@@ -203,7 +200,6 @@ export const TrackingOrder: React.FC = () => {
     color: "#6b7280",
     icon: Clock,
     description: "",
-    bgColor: "linear-gradient(135deg, #f3f4f6, #e5e7eb)",
   }
   const StatusIcon = statusInfo.icon
 
@@ -245,191 +241,136 @@ export const TrackingOrder: React.FC = () => {
         items={[{ label: "Trang chủ", to: "/" }, { label: "Theo dõi đơn hàng" }]}
       />
 
-      <div className="tracking-container">
-        {/* Header */}
-        <div className="tracking-header">
-          <Button variant="secondary" icon={<ArrowLeft />} onClick={() => navigate("/")} className="back-btn">
-            Trang chủ
-          </Button>
-          <div className="header-info">
-            <h1 className="order-title">Đơn hàng #{order.id}</h1>
-            <p className="order-date">Đặt lúc {new Date(order.orderDate).toLocaleString("vi-VN")}</p>
-          </div>
-        </div>
-
-        <div className="tracking-content">
-          {/* Left Column */}
-          <div className="tracking-left">
-            {/* Status Card */}
-            <Card className="status-card">
-              <CardBody>
-                <div className="status-header">
-                  <div className="status-icon-wrapper" style={{ background: statusInfo.bgColor }}>
-                    <StatusIcon className="status-icon" style={{ color: statusInfo.color }} />
-                  </div>
-                  <div className="status-info">
-                    <h2 className="status-title">{statusInfo.label}</h2>
-                    <p className="status-description">{statusInfo.description}</p>
-                  </div>
-                </div>
-              </CardBody>
-            </Card>
-
-            {/* Progress Timeline */}
-            <Card className="timeline-card">
-              <CardHeader>
-                <CardTitle>Tiến trình đơn hàng</CardTitle>
-              </CardHeader>
-              <CardBody>
-                <div className="timeline">
-                  {progressSteps.map((step, index) => (
-                    <div
-                      key={step.key}
-                      className={`timeline-item ${step.completed ? "completed" : ""} ${step.current ? "current" : ""}`}
-                    >
-                      <div className="timeline-marker">
-                        {step.completed ? (
-                          <CheckCircle className="timeline-icon completed" />
-                        ) : step.current ? (
-                          <div className="timeline-icon current">
-                            <div className="pulse-dot"></div>
-                          </div>
-                        ) : (
-                          <div className="timeline-icon upcoming"></div>
-                        )}
-                      </div>
-                      <div className="timeline-content">
-                        <div className="timeline-label">{step.label}</div>
-                        {step.current && (
-                          <div className="timeline-time">{new Date(order.orderDate).toLocaleString("vi-VN")}</div>
-                        )}
-                      </div>
-                      {index < progressSteps.length - 1 && (
-                        <div className={`timeline-line ${step.completed ? "completed" : ""}`}></div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </CardBody>
-            </Card>
-
-            {/* Customer Info */}
-            <Card className="info-card">
-              <CardHeader>
-                <CardTitle>Thông tin giao hàng</CardTitle>
-              </CardHeader>
-              <CardBody>
-                <div className="info-list">
-                  <div className="info-item">
-                    <MapPin className="info-icon" />
-                    <div className="info-content">
-                      <div className="info-label">Địa chỉ</div>
-                      <div className="info-value">
-                        {order.serviceType === "DINE IN" ? "Nhận tại cửa hàng" : custAddress || "Địa chỉ giao hàng"}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="info-item">
-                    <Phone className="info-icon" />
-                    <div className="info-content">
-                      <div className="info-label">Số điện thoại</div>
-                      <div className="info-value">{order.phoneCustomer}</div>
-                    </div>
-                  </div>
-                  <div className="info-item">
-                    <Mail className="info-icon" />
-                    <div className="info-content">
-                      <div className="info-label">Khách hàng</div>
-                      <div className="info-value">{customerName}</div>
-                    </div>
-                  </div>
-                  <div className="info-item">
-                    <CreditCard className="info-icon" />
-                    <div className="info-content">
-                      <div className="info-label">Phương thức</div>
-                      <div className="info-value">
-                        {order.serviceType === "TAKE AWAY" ? "Giao hàng" : "Tại cửa hàng"}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </CardBody>
-            </Card>
+      <div className="tracking-order">
+        <div className="container">
+          <div className="tracking-order__header">
+            <div className="tracking-order__header-left">
+              <Button
+                variant="secondary"
+                size="sm"
+                className="back-button"
+                icon={<ArrowLeft size={16} />}
+                onClick={() => navigate("/")}
+              >
+                Về trang chủ
+              </Button>
+            </div>
+            <div className="tracking-order__header-center">
+              <h1>Đơn hàng #{order.id}</h1>
+              <p>Đặt lúc {new Date(order.orderDate).toLocaleString("vi-VN")}</p>
+            </div>
+            <div className="tracking-order__header-right">
+              <Button
+                variant="primary"
+                size="sm"
+                className="new-order-button"
+                onClick={() => navigate("/menu")}
+              >
+                Đặt hàng mới
+              </Button>
+            </div>
           </div>
 
-          {/* Right Column */}
-          <div className="tracking-right">
-            {/* Order Items */}
-            <Card className="items-card">
-              <CardHeader>
-                <CardTitle>Chi tiết đơn hàng</CardTitle>
-              </CardHeader>
-              <CardBody>
-                <div className="order-items">
-                  {items.map((item) => (
-                    <div key={item.productId} className="order-item">
-                      <img src={item.image || "/placeholder.svg"} alt={item.name} className="item-image" />
-                      <div className="item-details">
-                        <div className="item-name">{item.name}</div>
-                        <div className="item-specs">
-                          {item.size}
-                          {item.mood && `, ${item.mood === "hot" ? "Nóng" : "Lạnh"}`}
-                        </div>
-                        <div className="item-quantity">Số lượng: {item.quantity}</div>
-                      </div>
-                      <div className="item-price">{(item.price * item.quantity).toLocaleString("vi-VN")}₫</div>
-                    </div>
-                  ))}
+          <div className="tracking-order__result">
+            <div className="tracking-order__order-info">
+              <div className="order-header">
+                <h2>Trạng thái đơn hàng</h2>
+                <div className={`status-badge ${order.status.toLowerCase()}`}>
+                  <StatusIcon size={16} />
+                  {statusInfo.label}
                 </div>
-              </CardBody>
-            </Card>
+              </div>
+              <p className="status-description">{statusInfo.description}</p>
 
-            {/* Order Summary */}
-            <Card className="summary-card">
-              <CardHeader>
-                <CardTitle>Tổng cộng</CardTitle>
-              </CardHeader>
-              <CardBody>
-                <div className="summary-breakdown">
-                  <div className="summary-line">
-                    <span className="summary-label">Tạm tính</span>
-                    <span className="summary-value">{subtotal.toLocaleString("vi-VN")}₫</span>
+              <div className="order-details">
+                <div className="detail-item">
+                  <p>
+                    <strong>Khách hàng:</strong> <span>{customerName}</span>
+                  </p>
+                  <p>
+                    <strong>Số điện thoại:</strong> <span>{order.phoneCustomer}</span>
+                  </p>
+                </div>
+                <div className="detail-item">
+                  <p>
+                    <strong>Phương thức:</strong>{" "}
+                    <span>{order.serviceType === "TAKE AWAY" ? "Giao hàng" : "Tại cửa hàng"}</span>
+                  </p>
+                  <p>
+                    <strong>Địa chỉ:</strong>{" "}
+                    <span>
+                      {order.serviceType === "DINE IN" ? "Nhận tại cửa hàng" : custAddress || "Địa chỉ giao hàng"}
+                    </span>
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="tracking-order__timeline">
+              <h3>Tiến trình đơn hàng</h3>
+              <div className="timeline">
+                {progressSteps.map((step, index) => (
+                  <div
+                    key={step.key}
+                    className={`timeline-item ${step.completed ? "completed" : ""} ${step.current ? "active" : ""}`}
+                  >
+                    <div className="timeline-content">
+                      <div className="title">{step.label}</div>
+                      {step.current && <div className="time">{new Date(order.orderDate).toLocaleString("vi-VN")}</div>}
+                    </div>
                   </div>
-                  <div className="summary-line">
-                    <span className="summary-label">Phí giao hàng</span>
-                    <span className="summary-value">{deliveryFee.toLocaleString("vi-VN")}₫</span>
+                ))}
+              </div>
+            </div>
+
+            <div className="tracking-order__items">
+              <h3>Chi tiết đơn hàng</h3>
+              <div className="items-list">
+                {items.map((item) => (
+                  <div key={item.productId} className="item">
+                    <img
+                      src={item.image || "/placeholder.svg?height=60&width=60"}
+                      alt={item.name}
+                      className="item-image"
+                    />
+                    <div className="item-info">
+                      <div className="name">{item.name}</div>
+                      <div className="details">
+                        {item.size}
+                        {item.mood && `, ${item.mood === "hot" ? "Nóng" : "Lạnh"}`}
+                      </div>
+                    </div>
+                    <div className="item-price">
+                      <div className="quantity">x{item.quantity}</div>
+                      <div className="price">{(item.price * item.quantity).toLocaleString("vi-VN")}₫</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="total">
+                <div className="total-breakdown">
+                  <div className="total-line">
+                    <span>Tạm tính:</span>
+                    <span>{subtotal.toLocaleString("vi-VN")}₫</span>
+                  </div>
+                  <div className="total-line">
+                    <span>Phí giao hàng:</span>
+                    <span>{deliveryFee.toLocaleString("vi-VN")}₫</span>
                   </div>
                   {discount > 0 && (
-                    <div className="summary-line discount">
-                      <span className="summary-label">Giảm giá</span>
-                      <span className="summary-value">-{discount.toLocaleString("vi-VN")}₫</span>
+                    <div className="total-line discount">
+                      <span>Giảm giá:</span>
+                      <span>-{discount.toLocaleString("vi-VN")}₫</span>
                     </div>
                   )}
-                  <div className="summary-line total">
-                    <span className="summary-label">Tổng cộng</span>
-                    <span className="summary-value">{total.toLocaleString("vi-VN")}₫</span>
-                  </div>
                 </div>
-              </CardBody>
-            </Card>
+                <div className="total-amount">
+                  Tổng cộng: <span>{total.toLocaleString("vi-VN")}₫</span>
+                </div>
+              </div>
+            </div>
 
-            {/* Support Card */}
-            <Card className="support-card">
-              <CardHeader>
-                <CardTitle>Cần hỗ trợ?</CardTitle>
-              </CardHeader>
-              <CardBody>
-                <p className="support-text">Liên hệ với chúng tôi nếu bạn có bất kỳ thắc mắc nào về đơn hàng</p>
-                <div className="support-actions">
-                  <Button variant="secondary" size="sm" icon={<Phone />}>
-                    Gọi: 1900 1234
-                  </Button>
-                  <Button variant="secondary" size="sm" icon={<Mail />}>
-                    Email hỗ trợ
-                  </Button>
-                </div>
-              </CardBody>
-            </Card>
           </div>
         </div>
       </div>

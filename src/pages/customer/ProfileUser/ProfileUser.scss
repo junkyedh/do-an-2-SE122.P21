@@ -1,158 +1,319 @@
 @import '../../../scss/variables.scss';
 
-.user-profile {
-  padding: 40px 0;
-  background: linear-gradient(135deg, get-color($background, "default"), get-color($neutral, "50"));
-  min-height: calc(100vh - 200px);
+.profile-user {
+  padding: 2rem;
+  background: var(--bgClr);
+  min-height: 100vh;
 
-  .loading {
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  &__loading {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 100px 0;
-    font-size: get-font-size($body-font-size, lg);
-    color: get-color($neutral, "600");
+    padding: 4rem 0;
 
-    &::before {
-      content: '';
+    .loading-spinner {
       width: 40px;
       height: 40px;
-      border: 3px solid get-color($neutral, "300");
-      border-top: 3px solid get-color($primary, "500");
+      border: 3px solid #E4E7EB;
+      border-top: 3px solid var(--primaryClr);
       border-radius: 50%;
       animation: spin 1s linear infinite;
-      margin-bottom: 16px;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      font-size: var(--bodyText);
+      color: var(--subTextClr);
     }
   }
 
-  .profile-card {
-    background: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(12px);
-    border-radius: 24px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 16px 64px rgba(get-color($neutral, "900"), 0.1);
-    overflow: hidden;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  &__content {
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    gap: 2rem;
+    align-items: start;
 
-    &:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 24px 80px rgba(get-color($neutral, "900"), 0.15);
+    @media (max-width: 992px) {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
     }
+  }
 
-    .ant-card-body {
-      padding: 32px;
-    }
+  &__sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .avatar-card {
+    background: var(--white);
+    border-radius: 1.4rem;
+    padding: 2rem;
+    box-shadow: 0 4px 18px rgba(47, 65, 86, 0.10);
+    text-align: center;
 
     .avatar-section {
-      text-align: center;
-      margin-bottom: 32px;
-      position: relative;
+      .avatar-wrapper {
+        position: relative;
+        display: inline-block;
+        margin-bottom: 1.5rem;
 
-      .avatar-img {
-        width: 120px;
-        height: 120px;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 4px solid get-color($primary, "200");
-        box-shadow: 0 8px 32px rgba(get-color($primary, "500"), 0.2);
-        transition: all 0.3s ease;
+        .avatar-img {
+          width: 120px;
+          height: 120px;
+          border-radius: 50%;
+          object-fit: cover;
+          border: 4px solid var(--primaryClr);
+          transition: all 0.3s ease;
 
-        &:hover {
-          transform: scale(1.05);
-          border-color: get-color($primary, "400");
+          &:hover {
+            transform: scale(1.05);
+          }
         }
-      }
 
-      .rank-tag {
-        position: absolute;
-        bottom: -8px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: linear-gradient(135deg, get-color($accent, "400"), get-color($accent, "500"));
-        color: white;
-        padding: 8px 16px;
-        border-radius: 20px;
-        font-weight: get-font-weight($font-weight, semibold);
-        font-size: get-font-size($body-font-size, sm);
-        box-shadow: 0 4px 16px rgba(get-color($accent, "500"), 0.3);
-        border: 2px solid white;
-      }
-    }
+        .avatar-edit-btn {
+          position: absolute;
+          bottom: 0;
+          right: 0;
+          width: 36px;
+          height: 36px;
+          border-radius: 50%;
+          background: var(--primaryClr);
+          color: var(--white);
+          border: 3px solid var(--white);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          transition: all 0.3s ease;
 
-    .ant-form {
-      .ant-form-item {
-        margin-bottom: 24px;
-
-        &:last-child {
-          margin-bottom: 0;
-        }
-      }
-
-      .ant-form-item-label {
-        padding-bottom: 8px;
-
-        > label {
-          font-weight: get-font-weight($font-weight, semibold);
-          color: get-color($neutral, "700");
-          font-size: get-font-size($body-font-size, rg);
-
-          &.ant-form-item-required::before {
-            color: get-color($accent, "500");
+          &:hover {
+            background: var(--accent1Clr);
+            transform: scale(1.1);
           }
         }
       }
 
-      .ant-input {
-        border-radius: 12px;
-        border: 2px solid get-color($neutral, "200");
-        padding: 12px 16px;
-        font-size: get-font-size($body-font-size, rg);
-        transition: all 0.3s ease;
-        background: get-color($neutral, "50");
-
-        &:hover {
-          border-color: get-color($primary, "300");
-          background: white;
+      .user-info {
+        .user-name {
+          font-size: var(--subTitle);
+          color: var(--primaryText);
+          font-weight: 700;
+          margin-bottom: 1rem;
         }
 
-        &:focus,
-        &.ant-input-focused {
-          border-color: get-color($primary, "500");
-          box-shadow: 0 0 0 3px rgba(get-color($primary, "500"), 0.1);
-          background: white;
+        .rank-badge {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.5rem;
+          padding: 0.75rem 1.5rem;
+          border-radius: 2rem;
+          font-weight: 600;
+          font-size: var(--bodyText);
+
+          .rank-icon {
+            font-size: 1.2rem;
+          }
+
+          .rank-text {
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+          }
+        }
+      }
+    }
+  }
+
+  .stats-card {
+    background: var(--white);
+    border-radius: 1.4rem;
+    padding: 2rem;
+    box-shadow: 0 4px 18px rgba(47, 65, 86, 0.10);
+
+    h3 {
+      font-size: var(--subTitle);
+      color: var(--primaryText);
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+    }
+
+    .stats-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+
+      .stat-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+
+        .stat-icon {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: var(--primaryClr);
+          color: var(--white);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
         }
 
-        &:disabled {
-          background: get-color($neutral, "100");
-          color: get-color($neutral, "500");
-          border-color: get-color($neutral, "200");
+        .stat-content {
+          flex: 1;
+
+          .stat-label {
+            font-size: var(--smallText);
+            color: var(--subTextClr);
+            margin-bottom: 0.25rem;
+          }
+
+          .stat-value {
+            font-size: var(--bodyText);
+            color: var(--primaryText);
+            font-weight: 600;
+          }
+        }
+      }
+    }
+  }
+
+  &__main {
+    .profile-form-card {
+      background: var(--white);
+      border-radius: 1.4rem;
+      box-shadow: 0 4px 18px rgba(47, 65, 86, 0.10);
+      overflow: hidden;
+
+      .card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 2rem 2rem 0;
+        margin-bottom: 2rem;
+
+        @media (max-width: 768px) {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 1rem;
+        }
+
+        h3 {
+          font-size: var(--subTitle);
+          color: var(--primaryText);
+          font-weight: 600;
+          margin: 0;
+        }
+
+        .header-actions {
+          display: flex;
+          align-items: center;
+          justify-content: flex-end;
+          gap: 0.75rem;
+          min-height: 32px;
+
+          .secondaryBtn,
+          .primaryBtn {
+            min-width: 100px;
+            padding: 4px 12px;
+            font-size: 0.95rem;
+            height: 32px;
+            border-radius: 0.75rem;
+            outline: auto;
+
+            .btn-icon {
+              margin-right: 0.5rem;
+            }
+          }
+
+          .edit-actions {
+            display: flex;
+            gap: 0.75rem;
+          }
+          .primaryBtn {
+            background: var(--secondaryClr);
+            color: var(--white);
+            border: none;
+            transition: background 0.2s ease;
+
+            &:hover {
+              background: #445e7c;
+            }
+          }
         }
       }
 
-      .ant-btn {
-        height: 48px;
-        border-radius: 12px;
-        font-weight: get-font-weight($font-weight, semibold);
-        font-size: get-font-size($body-font-size, rg);
-        background: linear-gradient(135deg, get-color($primary, "600"), get-color($primary, "700"));
-        border: none;
-        box-shadow: 0 4px 16px rgba(get-color($primary, "600"), 0.3);
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      .card-body {
+        padding: 0 2rem 2rem;
 
-        &:hover {
-          background: linear-gradient(135deg, get-color($primary, "700"), get-color($primary, "800"));
-          transform: translateY(-2px);
-          box-shadow: 0 8px 24px rgba(get-color($primary, "600"), 0.4);
-        }
+        .form-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 1.5rem;
 
-        &:active {
-          transform: translateY(0);
-        }
+          @media (max-width: 768px) {
+            grid-template-columns: 1fr;
+          }
 
-        &.ant-btn-loading {
-          .ant-btn-loading-icon {
-            color: white;
+          .form-group {
+            &.full-width {
+              grid-column: 1 / -1;
+            }
+
+            .form-label {
+              display: flex;
+              align-items: center;
+              gap: 0.5rem;
+              font-size: var(--bodyText);
+              color: var(--primaryText);
+              font-weight: 600;
+              margin-bottom: 0.5rem;
+
+              svg {
+                color: var(--primaryClr);
+              }
+            }
+
+            .form-input {
+              width: 100%;
+              padding: 0.75rem 1rem;
+              border: 2px solid #E4E7EB;
+              border-radius: 0.75rem;
+              font-size: var(--bodyText);
+              color: var(--primaryText);
+              background: var(--white);
+              transition: all 0.3s ease;
+
+              &:focus {
+                outline: none;
+                border-color: var(--primaryClr);
+                box-shadow: 0 0 0 3px rgba(255, 111, 97, 0.1);
+              }
+
+              &:disabled {
+                background: #F8FAFC;
+                color: var(--subTextClr);
+                cursor: not-allowed;
+              }
+
+              &::placeholder {
+                color: var(--subTextClr);
+              }
+            }
+
+            select.form-input {
+              cursor: pointer;
+
+              &:disabled {
+                cursor: not-allowed;
+              }
+            }
           }
         }
       }
@@ -165,27 +326,14 @@
   100% { transform: rotate(360deg); }
 }
 
-// Responsive
-@media (max-width: 768px) {
-  .user-profile {
-    padding: 20px 0;
+@media (max-width: 992px) {
+  .profile-user {
+    padding: 1.5rem;
+  }
+}
 
-    .profile-card {
-      margin: 0 16px;
-      border-radius: 20px;
-
-      .ant-card-body {
-        padding: 24px;
-      }
-
-      .avatar-section {
-        margin-bottom: 24px;
-
-        .avatar-img {
-          width: 100px;
-          height: 100px;
-        }
-      }
-    }
+@media (max-width: 600px) {
+  .profile-user {
+    padding: 1rem;
   }
 }

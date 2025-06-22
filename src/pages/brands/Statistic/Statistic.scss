@@ -1,121 +1,253 @@
 @import "../../../scss/variables.scss";
 
-.header-custom {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  padding: 20px 32px;
-  background-color: get-color($background, "100") !important;
+.container-fluid {
+  padding: 1.5rem;
+  background: get-color($background, "default");
+  min-height: 100vh;
 
-  .h2, .h4 {
-    font-weight: bold !important;
-    color: get-color($primary, "100");
-    margin: 20px 0;
-    display: flex;
-    justify-content: center;
-  }
-}
+  .header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding: 2rem;
+    background: linear-gradient(135deg, 
+      get-color($primary, "50"), 
+      get-color($secondary, "50")
+    );
+    border-radius: 1.5rem;
+    box-shadow: 0 4px 24px rgba(get-color($primary, "default"), 0.08);
 
-.container-fluid1 {
-  padding: 20px;
+    .header-custom {
+      font-size: 2rem;
+      font-weight: 700;
+      color: get-color($primary, "800");
+      margin: 0;
+      letter-spacing: -0.025em;
 
-  .stat-cards {
-    display: flex;
-    flex-wrap: wrap; /* Đảm bảo các phần tử sẽ xuống dòng khi không đủ không gian */
-    gap: 20px;
-
-    .card {
-      flex: 1;
-      min-width: 200px; /* Đặt kích thước tối thiểu để card không quá nhỏ */
-      max-width: calc(33.33% - 20px); /* Đặt kích thước tối đa cho màn hình lớn */
-      text-align: center;
-      background: linear-gradient(0deg, #35728c, #f9dede);
-      color: #fff;
-      border-radius: 15px;
-      padding: 5px;
-      margin: 10px;
-      border: none;
-      box-shadow: 0 5px 10px rgb(196, 228, 244);
-
-      .card-title {
-        font-size: 1.2rem;
-      }
-
-      .card-text {
-        font-size: 2rem;
-        font-weight: bold;
-        color: #fff;
+      @media (max-width: 768px) {
+        font-size: 1.5rem;
       }
     }
   }
 
-  .charts {
-    margin: 30px 10px;
+  .container-fluid1 {
+    // Enhanced Stat Cards
+    .stat-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
 
-    .chart-full-width {
-      background: linear-gradient(0deg, #e2f1f8, #e8f3fa);
-      border-radius: 20px;
-      padding: 20px;
-      margin: 10px 0;
-      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
-      width: 100%; /* Đầy đủ chiều rộng cho màn hình nhỏ */
-      max-width: 70%; /* Giới hạn cho màn hình lớn */
-      margin: 0 auto;
+      .card {
+        background: linear-gradient(135deg, 
+          get-color($primary, "600"), 
+          get-color($primary, "700")
+        );
+        border-radius: 1.5rem;
+        padding: 2rem;
+        text-align: center;
+        color: white;
+        border: none;
+        box-shadow: 0 8px 32px rgba(get-color($primary, "600"), 0.3);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+
+        &::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: linear-gradient(135deg, 
+            rgba(255, 255, 255, 0.1), 
+            transparent
+          );
+          pointer-events: none;
+        }
+
+        &:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 12px 40px rgba(get-color($primary, "600"), 0.4);
+        }
+
+        &:nth-child(1) {
+          background: linear-gradient(135deg, 
+            get-color($accent1, "500"), 
+            get-color($accent1, "600")
+          );
+          box-shadow: 0 8px 32px rgba(get-color($accent1, "500"), 0.3);
+
+          &:hover {
+            box-shadow: 0 12px 40px rgba(get-color($accent1, "500"), 0.4);
+          }
+        }
+
+        &:nth-child(2) {
+          background: linear-gradient(135deg, 
+            get-color($secondary, "500"), 
+            get-color($secondary, "600")
+          );
+          box-shadow: 0 8px 32px rgba(get-color($secondary, "500"), 0.3);
+
+          &:hover {
+            box-shadow: 0 12px 40px rgba(get-color($secondary, "500"), 0.4);
+          }
+        }
+
+        &:nth-child(3) {
+          background: linear-gradient(135deg, 
+            get-color($accent2, "500"), 
+            get-color($accent2, "600")
+          );
+          box-shadow: 0 8px 32px rgba(get-color($accent2, "500"), 0.3);
+
+          &:hover {
+            box-shadow: 0 12px 40px rgba(get-color($accent2, "500"), 0.4);
+          }
+        }
+
+        .card-body {
+          padding: 0;
+        }
+
+        .card-title {
+          font-size: 1rem;
+          font-weight: 500;
+          margin-bottom: 1rem;
+          opacity: 0.9;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+
+        .card-text {
+          font-size: 2.5rem;
+          font-weight: 700;
+          margin: 0;
+          text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+
+          @media (max-width: 768px) {
+            font-size: 2rem;
+          }
+        }
+      }
+
+      @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
     }
-  }
 
-  .charts-row {
-    display: flex;
-    flex-wrap: wrap; /* Đảm bảo xuống dòng khi cần */
-    justify-content: space-between;
-    gap: 20px;
+    // Enhanced Charts Section
+    .charts {
+      margin: 2rem 0;
 
-    .chart-left,
-    .chart-right {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      flex: 1;
+      .chart-full-width {
+        background: white;
+        border-radius: 1.5rem;
+        padding: 2rem;
+        box-shadow: 0 4px 24px rgba(get-color($primary, "default"), 0.08);
+        border: 1px solid get-color($primary, "200");
+        margin-bottom: 2rem;
+
+        h3 {
+          color: get-color($primary, "800");
+          font-weight: 600;
+          margin-bottom: 1.5rem;
+          text-align: center;
+        }
+      }
+    }
+
+    .charts-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+
+      .chart-left,
+      .chart-right {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+      }
 
       .chart-card,
       .donut-chart {
-        background: get-color($background, "100");
-        border-radius: 15px;
-        padding: 20px;
-        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
-        flex-grow: 1;
+        background: white;
+        border-radius: 1.5rem;
+        padding: 2rem;
+        box-shadow: 0 4px 24px rgba(get-color($primary, "default"), 0.08);
+        border: 1px solid get-color($primary, "200");
+        transition: all 0.3s ease;
+
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 8px 32px rgba(get-color($primary, "default"), 0.12);
+        }
+
+        h3, h4 {
+          color: get-color($primary, "800");
+          font-weight: 600;
+          margin-bottom: 1.5rem;
+          text-align: center;
+        }
+      }
+
+      @media (max-width: 1024px) {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    // Responsive adjustments
+    @media (max-width: 768px) {
+      .charts {
+        .chart-full-width {
+          padding: 1.5rem;
+          margin-bottom: 1.5rem;
+        }
+      }
+
+      .charts-row {
+        gap: 1rem;
+
+        .chart-card,
+        .donut-chart {
+          padding: 1.5rem;
+        }
       }
     }
   }
 }
 
-/* Media Queries */
-@media (max-width: 1024px) {
-  .stat-cards {
-    .card {
-      max-width: calc(50% - 20px); /* Hiển thị 2 card trên một hàng */
-    }
+// Chart specific enhancements
+.recharts-wrapper {
+  .recharts-cartesian-grid-horizontal line,
+  .recharts-cartesian-grid-vertical line {
+    stroke: get-color($primary, "200");
+    stroke-opacity: 0.5;
   }
 
-  .charts {
-    .chart-full-width {
-      max-width: 90%; /* Giới hạn chiều rộng trên màn hình nhỏ */
+  .recharts-text {
+    fill: get-color($primary, "600");
+    font-size: 0.875rem;
+  }
+
+  .recharts-legend-wrapper {
+    .recharts-legend-item-text {
+      color: get-color($primary, "700") !important;
+      font-weight: 500;
     }
   }
 }
 
-@media (max-width: 768px) {
-  .stat-cards {
-    .card {
-      max-width: 100%; /* Một card trên một hàng */
-    }
-  }
-
-  .charts-row {
-    flex-direction: column; /* Sắp xếp các biểu đồ theo cột */
-    .chart-left, .chart-right {
-      flex: none;
+// Loading states
+.ant-spin-container {
+  .ant-spin {
+    .ant-spin-dot {
+      i {
+        background-color: get-color($primary, "600");
+      }
     }
   }
 }

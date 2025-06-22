@@ -1,6 +1,6 @@
 @import "../../../scss/_variables.scss";
 
-.rooms_section {
+.section-spacing {
   padding: 50px 0;
   background: get-color($background, "100");
 
@@ -13,7 +13,7 @@
 }
 
 @media (max-width: 1199px) {
-  .rooms_section {
+  .section-spacing {
     .slick-slide img {
       max-width: 90%;  // Giới hạn ảnh nhỏ hơn một chút trên màn hình nhỏ
       height: auto;
@@ -22,7 +22,7 @@
 }
 
 @media (max-width: 768px) {
-  .rooms_section {
+  .section-spacing {
     .slick-slide img {
       max-width: 100%;  // Đảm bảo ảnh không vượt quá chiều rộng container
       height: auto;

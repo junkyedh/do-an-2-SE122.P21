@@ -1,186 +1,334 @@
-@import "../../scss/_variables.scss";
+@import "../../scss/variables.scss";
 
-.sidebar {
-  width: 100%;
-  max-width: 340px;
-  min-width: 250px;
-  padding: 0 0 20px 0;
-
-.menulist {
-  background-color: get-color($background, "100");
+// Modern Admin Sidebar
+.sidebar.menulist {
+  background: linear-gradient(180deg, get-color($primary, "800"), get-color($primary, "900"));
+  min-width: 280px;
+  max-width: 320px;
   height: 100vh;
-  min-width: 250px;
-  max-width: 340px;
+  padding: 1.5rem 0;
+  border-right: 1px solid get-color($primary, "600");
   display: flex;
   flex-direction: column;
-  position: sticky;
+  box-shadow: 4px 0 24px rgba(47, 65, 86, 0.15);
+  position: relative;
   overflow-y: auto;
-  top: 0;
-  left: 0;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  z-index: 1000;
 
-
-    @media (max-width: 1024px) {
-      max-width: 280px;
-    }
-
-    @media (max-width: 768px) {
-      max-width: 250px;
-    }
-
-    @media (max-width: 576px) {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      max-width: 100%;
-      height: auto;
-      z-index: 9999;
-      box-shadow: none;
-      padding: 10px;
-    }
-  }
-  .side{
-    justify-content: center;
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), transparent);
+    pointer-events: none;
   }
 
   .logo {
-    font-family: $font-family;
-    font-weight: bold;
-    color: get-color($primary, "100");
-    font-size: 24px;
-    margin: 20px;
     text-align: center;
-
-    @media (max-width: 576px) {
-      font-size: 20px;
-      margin: 10px auto;
+    margin-bottom: 2rem;
+    padding: 0 1.5rem;
+    
+    svg {
+      margin: 0 auto;
+      display: block;
+      filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.2));
+      transition: transform 0.3s ease;
+      
+      &:hover {
+        transform: scale(1.05);
+      }
     }
+  }
+
+  @media (max-width: 1200px) {
+    min-width: 240px;
+  }
+
+  @media (max-width: 768px) {
+    min-width: 70px;
+    
+    .logo {
+      display: none;
+    }
+  }
+}
+
+// Navigation Styles
+.side.side-pills {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  flex: 1;
+}
+
+.side-item {
+  margin-bottom: 0.25rem;
+  position: relative;
+  
+  &.dropdown {
+    margin-bottom: 0;
+  }
+}
+
+// Enhanced Side Links
+.side-link {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  padding: 0.875rem 1.5rem;
+  color: get-color($primary, "100");
+  border-radius: 0 2rem 2rem 0;
+  text-decoration: none;
+  background: transparent;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  margin-right: 1rem;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 0;
+    background: get-color($accent1, "default");
+    border-radius: 0 2px 2px 0;
+    transition: height 0.3s ease;
+  }
+
+  .icon {
+    font-size: 1.1rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: get-color($accent2, "300");
+    transition: all 0.3s ease;
+    flex-shrink: 0;
   }
 
   .title {
-    font-size: 16px;
-    margin-inline: 15px;
-    padding: 8px 0px 8px 4px;
-    border-radius: 5px;
+    transition: color 0.3s ease;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
-    &:hover {
-      color: get-color($primary, "100");
+  .arrow {
+    margin-left: auto;
+    color: get-color($accent2, "400");
+    font-size: 0.875rem;
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+    
+    &.up { 
+      transform: rotate(180deg);
     }
-
-    &.title-active {
-      color: get-color($accent, "100");
-      font-weight: bold;
+    &.down { 
+      transform: rotate(0deg);
     }
   }
 
-  .side-item {
-    margin: 0 10px;
-    padding: 8px 5px;
-
-    &.side-item-active {
-      font-weight: bold;
+  &:hover {
+    background: linear-gradient(90deg, 
+      rgba(get-color($primary, "700"), 0.8), 
+      rgba(get-color($primary, "600"), 0.4)
+    );
+    color: get-color($accent1, "100");
+    transform: translateX(4px);
+    
+    &::before {
+      height: 60%;
     }
-
-    .side-link {
-      padding: 12px 0px 12px 8px;
-      display: flex;
-      align-items: center;
-      margin-bottom: 5px;
-      border-radius: 10px;
-      color: get-color($primary, "100");
-      background-color: get-color($accent, "100");
-      border: 1px solid get-color($primary, "100");
-
-      &:hover {
-        background-color: lightcyan;
-        color: get-color($primary, "100");
-        border: 1.5px solid get-color($primary, "200");
-      }
-
-      &.side-link-active {
-        background-color: get-color($primary, "200");
-        color: get-color($neutral, "100");
-        border: 1.5px solid get-color($primary, "100");
-      }
-
-      .icon {
-        margin-left: 10px;
-        font-size: 20px;
-      }
-
-      .arrow {
-        margin-left: auto;
-        transition: transform 0.3s;
-        color: get-color($primary, "100");
-      }
-
-      &.up {
-        transform: rotate(0deg);
-      }
-
-      &.down {
-        transform: rotate(180deg);
-      }
-    }
-
-    .side-children {
-      width: 100%;
-      border-radius: 10px;
-      background-color: get-color($accent, "100");
-
-      .side-link {
-        padding-left: 20px;
-        color: get-color($primary, "200");
-
-        &:hover {
-          background-color: get-color($secondary, "100");
-          color: get-color($primary, "100");
-        }
-
-        &.side-link-active {
-          background-color: get-color($primary, "100");
-          color: get-color($neutral, "100");
-        }
-      }
+    
+    .icon { 
+      color: get-color($accent1, "200");
+      transform: scale(1.1);
     }
   }
 
-  .logout-box {
-    width: 80%;
-    font-weight: bold;
-    padding: 15px;
-    background-color: linen;
-    color: lightcoral;
-    border-radius: 20px;
-    border: 1px solid lightcoral;
-    display: flex;
+  &.side-link-active {
+    background: linear-gradient(90deg, 
+      rgba(get-color($accent1, "default"), 0.15), 
+      rgba(get-color($accent1, "default"), 0.05)
+    );
+    color: get-color($accent1, "default");
+    
+    &::before {
+      height: 80%;
+    }
+    
+    .icon { 
+      color: get-color($accent1, "default");
+    }
+    
+    .title {
+      color: get-color($accent1, "default");
+      font-weight: 600;
+    }
+  }
+
+  @media (max-width: 768px) {
+    padding: 0.75rem;
     justify-content: center;
-    align-items: center;
-    text-decoration: none;
-    position: sticky;
-    bottom: 0;
-    margin: 20px auto;
-
-    i {
-      margin-right: 10px;
-      font-size: 24px;
-      color: lightcoral;
+    margin-right: 0;
+    border-radius: 0.5rem;
+    
+    .title, .arrow {
+      display: none;
     }
+    
+    .icon {
+      font-size: 1.25rem;
+    }
+  }
+}
 
+// Submenu Styles
+.side-children {
+  background: rgba(get-color($primary, "900"), 0.5);
+  margin-left: 1rem;
+  margin-right: 1rem;
+  border-radius: 0.75rem;
+  padding: 0.5rem 0;
+  margin-bottom: 0.5rem;
+  backdrop-filter: blur(10px);
+  
+  .side-item {
+    margin-bottom: 0.125rem;
+  }
+  
+  .side-link {
+    font-size: 0.875rem;
+    padding: 0.625rem 1rem;
+    margin-right: 0;
+    border-radius: 0.5rem;
+    color: get-color($primary, "200");
+    
+    &::before {
+      display: none;
+    }
+    
+    .icon { 
+      color: get-color($accent2, "400");
+      font-size: 1rem;
+    }
+    
     &:hover {
-      background: linear-gradient(0deg, lightcoral, lightpink);
-      color: get-color($accent, "100");
-
-      i {
-        color: get-color($accent, "100");
+      background: rgba(get-color($accent2, "default"), 0.1);
+      color: get-color($accent2, "100");
+      transform: translateX(2px);
+      
+      .icon { 
+        color: get-color($accent2, "200");
       }
     }
-
-    @media (max-width: 576px) {
-      width: 100%;
-      padding: 10px;
+    
+    &.side-link-active {
+      background: rgba(get-color($accent1, "default"), 0.2);
+      color: get-color($accent1, "100");
+      
+      .icon { 
+        color: get-color($accent1, "200");
+      }
     }
+  }
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+}
+
+// Enhanced Logout Button
+.logout-box {
+  margin: 1.5rem 1.5rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  background: linear-gradient(135deg, get-color($accent1, "default"), get-color($accent1, "600"));
+  color: white;
+  border: none;
+  border-radius: 1rem;
+  padding: 0.875rem 1.25rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(get-color($accent1, "default"), 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+  }
+
+  i { 
+    font-size: 1.1rem;
+    transition: transform 0.3s ease;
+  }
+  
+  &:hover {
+    background: linear-gradient(135deg, get-color($accent1, "600"), get-color($accent1, "700"));
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(get-color($accent1, "default"), 0.4);
+    
+    &::before {
+      left: 100%;
+    }
+    
+    i {
+      transform: translateX(2px);
+    }
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  @media (max-width: 768px) {
+    margin: 1rem 0.5rem 0;
+    padding: 0.75rem;
+    font-size: 0;
+    
+    i {
+      font-size: 1.25rem;
+    }
+    
+    span {
+      display: none;
+    }
+  }
+}
+
+// Scrollbar Styling
+.sidebar.menulist::-webkit-scrollbar {
+  width: 4px;
+}
+
+.sidebar.menulist::-webkit-scrollbar-track {
+  background: rgba(get-color($primary, "700"), 0.3);
+}
+
+.sidebar.menulist::-webkit-scrollbar-thumb {
+  background: rgba(get-color($accent1, "default"), 0.5);
+  border-radius: 2px;
+  
+  &:hover {
+    background: rgba(get-color($accent1, "default"), 0.7);
   }
 }

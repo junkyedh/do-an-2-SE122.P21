@@ -6,8 +6,8 @@ import { BiTrash, BiTrashAlt, BiShoppingBag, BiPlus, BiMinus, BiX, BiArrowToRigh
 import "./CartDrawer.scss"
 import emptyCart from "@/assets/empty-cart.png"
 import { Button } from "@/components/littleComponent/Button/Button"
-import { Badge } from "@/components/littleComponent/Badge/Badge"
 import { Col, Form, Image, Offcanvas, Row } from "react-bootstrap"
+import { Badge } from "@/components/littleComponent/Badge/Badge"
 
 const CartDrawer: React.FC = () => {
   const { cart, totalItems, totalPrice, updateItem, removeItem, clearCart } = useCart()
@@ -33,7 +33,7 @@ const CartDrawer: React.FC = () => {
 
   // Helper functions to determine item type
   const isCake = (item: CartItem) => item.category === 'Bánh ngọt'
-  const isDrink = (item: CartItem) =>['Cà phê', 'Trà trái cây'].includes(item.category)
+  const isDrink = (item: CartItem) =>['Cà phê'].includes(item.category)
 
   const deliveryFee = 10000
   const finalTotal = totalPrice + deliveryFee
@@ -43,13 +43,14 @@ const CartDrawer: React.FC = () => {
       {/* Cart Trigger Button */}
       <Button
         variant="ghost"
+        size="lg"
         onClick={open}
         className="cart-trigger position-relative"
         aria-label={`Giỏ hàng (${totalItems} sản phẩm)`}
       >
         <BiShoppingBag className="cart-icon" />
         {totalItems > 0 && (
-          <Badge variant="error" className="cart-badge position-absolute">
+          <Badge size="sm" className="cart-badge position-absolute">
             {totalItems > 99 ? "99+" : totalItems}
           </Badge>
         )}
@@ -117,7 +118,7 @@ const CartDrawer: React.FC = () => {
                               className="product-image"
                               onClick={() => {
                                 close()
-                                navigate(`/product/${item.id}`)
+                                navigate(`/product/${item.productId}`)
                               }}
                             />
                             <div className="image-overlay">
@@ -126,7 +127,7 @@ const CartDrawer: React.FC = () => {
                                 className="image-overlay-btn"
                                 onClick={() => {
                                   close()
-                                  navigate(`/product/${item.id}`)
+                                  navigate(`/product/${item.productId}`)
                                 }}    
                               >
                                 <BiArrowToRight />
@@ -144,7 +145,7 @@ const CartDrawer: React.FC = () => {
                                 className="product-name mb-0"
                                 onClick={() => {
                                   close()
-                                  navigate(`/product/${item.id}`)
+                                  navigate(`/product/${item.productId}`)
                                 }}
                               >
                                 {item.name}

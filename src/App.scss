@@ -173,13 +173,14 @@
 }
 
 .featured-item, .slick-slide {
-  padding: 0 10px;
+  padding: 0 0px;
 }
 
 .card-title {
   font-size: 1.1rem;
   font-weight: 600;
   margin: 0.7rem 0 0.4rem 0;
+
 }
 
 .card-text {
@@ -224,6 +225,19 @@
   background: #445e7c;
   color: #fff;
 }
+
+.btn.ghost, .btn-ghost, .cart-trigger {
+  background: #fff;
+  border: 1.5px solid #f3d3cf;
+  color: #ff6f61;
+}
+
+.btn.ghost:hover, .btn-ghost:hover, .cart-trigger:hover {
+  background: #fff4f1;
+  border-color: #ff6f61;
+  color: #e45b4c;
+}
+
 
 // ---- Overlay (dùng cho Banner, Section có nền ảnh) ----
 .overlay {

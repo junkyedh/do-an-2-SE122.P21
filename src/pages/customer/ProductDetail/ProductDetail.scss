@@ -1,17 +1,18 @@
 @import "../../../scss/variables.scss";
+
 :root {
-  --color-primary: #c2410c;
-  --color-accent: #f97316;
-  --color-bg: get-color($background, "100");
+  --color-primary: #667eea;
+  --color-accent: #764ba2;
+  --color-bg: #f8fafc;
   --color-text: #374151;
   --radius: 1rem;
-  --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .detailProduct {
   max-width: 1200px;
   margin: 2rem auto;
-  padding: 2rem 2rem;
+  padding: 2rem;
   border-radius: var(--radius);
   background: var(--color-bg);
   display: flex;
@@ -31,15 +32,13 @@
   }
 }
 
-/* Divider */
 .divider {
   border: none;
   height: 1px;
-  background: #b9babc;
-  margin: 1rem 0;
+  background: #e5e7eb;
+  margin: 1.5rem 0;
 }
 
-/* Image + badges */
 .image-wrapper {
   position: relative;
   width: 100%;
@@ -57,159 +56,79 @@
   .badge {
     position: absolute;
     top: 1rem;
-    padding: 0.25rem 0.5rem;
-    border-radius: 0.25rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 20px;
     font-size: 0.75rem;
     font-weight: 600;
-    color: #fff;
+    color: white;
   }
+  
   .popular {
     left: 1rem;
-    background: #dc2626;
+    background: linear-gradient(135deg, #f6d365, #fda085);
   }
+  
   .new {
-    left: 5.5rem; /* sát badge đầu, tránh đè lên heart */
-    background: #2563eb;
+    left: 5.5rem;
+    background: linear-gradient(135deg, #667eea, #764ba2);
   }
 
   .fav-btn {
     position: absolute;
     top: 1rem;
     right: 1rem;
-    background: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.9);
     border: none;
     border-radius: 50%;
-    padding: 0.5rem;
+    padding: 0.75rem;
     cursor: pointer;
-  }
-}
-
-/* Reviews */
-.reviews {
-  margin-top: 2rem;
-
-  h3 {
-    font-size: 1.125rem;
-    color: var(--color-text);
-  }
-
-  .review-list {
+    transition: all 0.3s ease;
+    width: 44px;
+    height: 44px;
     display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    margin-top: 1rem;
+    align-items: center;
+    justify-content: center;
 
-    .review-item {
-      display: flex;
-      gap: 1rem;
-      background: #fff;
-      padding: 1rem;
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-
-      .avatar {
-        width: 2.5rem;
-        height: 2.5rem;
-        background: var(--color-primary);
-        color: #fff;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 600;
-      }
-
-      .review-content {
-        flex: 1;
-
-        .name-date {
-          display: flex;
-          justify-content: space-between;
-          margin-bottom: 0.25rem;
-
-          .name {
-            font-weight: 600;
-            color: var(--color-text);
-          }
-          .date {
-            font-size: 0.75rem;
-            color: #6b7280;
-          }
-        }
-
-        /* Reuse ProductRating styling */
-        p.comment {
-          margin-top: 0.5rem;
-          color: var(--color-text);
-        }
-      }
+    &:hover {
+      background: white;
+      transform: scale(1.1);
     }
   }
-
-  .view-all {
-    display: block;
-    text-align: center;
-    margin-top: 1rem;
-    color: var(--color-primary);
-    font-weight: 600;
-  }
 }
 
-/* Materials as pills */
-.materials {
-  h4 {
-    color: var(--color-text);
-  }
-  .material-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-top: 0.5rem;
-  }
-  .material-badge {
-    background: #fff;
-    border: 1px solid #d1d5db;
-    border-radius: var(--radius);
-    padding: 0.25rem 0.75rem;
-    font-size: 0.875rem;
-    color: var(--color-text);
-    box-shadow: var(--shadow);
-  }
-}
-
-/* Price */
 .price {
   font-size: 1.5rem;
   font-weight: bold;
   color: var(--color-primary);
 }
 
-/* Option cards (size / temp) */
 .options {
   &.size-options,
   &.temp-options {
-    margin-top: 1rem;
+    margin-top: 1.5rem;
 
     .option-title {
       font-weight: 600;
-      margin-bottom: 0.75rem;
+      margin-bottom: 1rem;
+      color: var(--color-text);
+      font-size: 1rem;
     }
 
     .option-cards {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
       gap: 1rem;
 
       .option-card {
         position: relative;
-        background: #fff;
-        border: 1px solid #d1d5db;
+        background: white;
+        border: 2px solid #e5e7eb;
         border-radius: var(--radius);
         padding: 1rem;
         text-align: center;
         cursor: pointer;
         box-shadow: var(--shadow);
-        transition: transform 0.2s, border-color 0.2s;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
         input {
           position: absolute;
@@ -219,63 +138,69 @@
 
         .label-text {
           display: block;
-          font-weight: 500;
-          margin-bottom: 0.25rem;
+          font-weight: 600;
+          margin-bottom: 0.5rem;
           color: var(--color-text);
+          font-size: 0.9rem;
         }
+        
         .label-price {
           font-size: 0.875rem;
           color: var(--color-primary);
+          font-weight: 600;
         }
 
         &:hover {
           transform: translateY(-2px);
+          border-color: var(--color-primary);
         }
+        
         &.active {
           border-color: var(--color-primary);
-          background: #fff4ed;
+          background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+          box-shadow: 0 4px 16px rgba(102, 126, 234, 0.2);
         }
       }
     }
   }
 }
 
-/* Quantity */
 .quantity {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  margin: 1.5rem 0;
+  gap: 1rem;
+  margin: 2rem 0;
 
-    h4 {
-      font-size: 1rem;
-      font-weight: 600;
-      color: var(--color-text);
-      margin-bottom: 0.5rem;
-    }
+  h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text);
+    margin: 0;
+  }
 
   .quantity-controls {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 1rem;
   }
 
   .quantity-btn {
-    width: 2.5rem;
-    height: 2.5rem;
+    width: 40px;
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #fff;
-    border: 1px solid #d1d5db;
-    border-radius: 0.5rem;
-    font-size: 0.85rem;
+    background: white;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 1rem;
     cursor: pointer;
-    transition: background 0.2s, border-color 0.2s;
+    transition: all 0.3s ease;
 
-    &:hover {
-      background: var(--color-bg);
+    &:hover:not(:disabled) {
+      background: var(--color-primary);
       border-color: var(--color-primary);
+      color: white;
     }
 
     &:disabled {
@@ -285,36 +210,35 @@
   }
 
   .quantity-value {
-    min-width: 1.5rem;
+    min-width: 3rem;
     text-align: center;
-    font-size: 1rem;
+    font-size: 1.125rem;
     font-weight: 600;
     color: var(--color-text);
   }
 }
 
-
-/* Summary price + actions */
 .summary {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    background-color: get-color($neutral, "100");
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  background: white;
+  padding: 1.5rem;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
 
-    .summary-price {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0 1rem;
-        font-size: 1.25rem;
-        font-weight: 600;
-        color: var(--color-text);
+  .summary-price {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-text);
 
     span {
-        right: 0;
-        font-size: 1.5rem;
-        color: var(--color-primary);
-        margin-left: 0.5rem;
+      font-size: 1.5rem;
+      color: var(--color-primary);
+      font-weight: 700;
     }
   }
 
@@ -324,84 +248,91 @@
 
     .btn {
       flex: 1;
-      padding: 0.75rem;
+      padding: 0.875rem 1.5rem;
       border-radius: var(--radius);
       font-weight: 600;
       cursor: pointer;
-      transition: background 0.2s;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
     }
+    
     .add-cart {
-      background: var(--color-primary);
-      color: #fff;
+      background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+      color: white;
       border: none;
+      
       &:hover {
-        background: var(--color-accent);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
       }
     }
+    
     .buy-now {
-      background: #fff;
-      color: var(--color-text);
-      border: 1px solid var(--color-primary);
+      background: white;
+      color: var(--color-primary);
+      border: 2px solid var(--color-primary);
+      
       &:hover {
-        background: #fdf7f0;
+        background: var(--color-primary);
+        color: white;
+        transform: translateY(-2px);
       }
     }
   }
 }
 
-/* Additional info */
 .info {
   font-size: 0.875rem;
   color: var(--color-text);
+  background: white;
+  padding: 1.5rem;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  
   p {
-    margin: 0.25rem 0;
+    margin: 0.75rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
   }
 }
 
-/* ===== RIGHT: header ===== */
 .detailProduct__right {
   .header {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 1rem;
 
-    .header-infor {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        margin-bottom: 0.5rem;
+    .header-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 0.5rem;
     
-        .category {
-            font-size: 0.875rem;
-            color: #6b7280;
-            font-weight: 500;
-        }
-        .status {
-            font-size: 0.875rem;
-            font-weight: 600;
-            padding: 0.25rem 0.5rem;
-            border-radius: var(--radius);
-            background: #f3f4f6;
-            color: #111827;
-        }
-    }
-    .category,
-    .status {
-      display: inline-block;
-      font-size: 0.8125rem;
-      font-weight: 600;
-      padding: 0.25rem 0.5rem;
-      border-radius: var(--radius);
-      background: hsl(0, 0%, 100%);
-      box-shadow: var(--shadow);
-      color: var(--color-text);
-      margin-right: 0.5rem;
-    }
-    .status.in {
-      color: #059669;
-    }
-    .status.out {
-      color: #b91c1c;
+      .category,
+      .status {
+        font-size: 0.875rem;
+        font-weight: 600;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        background: white;
+        box-shadow: var(--shadow);
+        color: var(--color-text);
+      }
+      
+      .status.in {
+        color: #059669;
+        background: #d1fae5;
+      }
+      
+      .status.out {
+        color: #dc2626;
+        background: #fee2e2;
+      }
     }
 
     h1 {
@@ -414,149 +345,118 @@
 
     .desc {
       font-size: 1rem;
-      color: #4b5563;
-      line-height: 1.5;
+      color: #6b7280;
+      line-height: 1.6;
       margin-bottom: 1rem;
-      max-height: 4.5rem; /* Giới hạn chiều cao */
-    }
-
-    /* căn khoảng cách cho rating */
-    > :last-child {
-      margin-top: 0.75rem;
-
     }
   }
 
-  /* ===== materials ===== */
   .materials {
+    margin: 2rem 0;
+    
     h4 {
       font-size: 1rem;
       font-weight: 600;
       color: var(--color-text);
-      margin-bottom: 0.75rem;
+      margin-bottom: 1rem;
     }
+    
     .material-list {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.5rem;
+      gap: 0.75rem;
     }
+    
     .material-badge {
-      background: #fff;
-      border: 1px solid #d1d5db;
+      background: white;
+      border: 1px solid #e5e7eb;
       border-radius: var(--radius);
-      padding: 0.4rem 0.8rem;
+      padding: 0.5rem 1rem;
       font-size: 0.875rem;
       color: var(--color-text);
       box-shadow: var(--shadow);
-      transition: background 0.2s, transform 0.2s;
+      transition: all 0.3s ease;
       cursor: default;
 
       &:hover {
-        background: #f3f4f6;
+        background: #f9fafb;
         transform: translateY(-1px);
       }
     }
   }
 }
 
-/* breakdown stars */
-.star-breakdown {
-  list-style: none;
-  padding: 0;
-  margin: 0.75rem 0;
-  li {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.875rem;
-    .bar {
-      flex: 1;
-      background: #e5e7eb;
-      height: 0.5rem;
-      border-radius: 0.25rem;
-      overflow: hidden;
-      .fill {
-        background: get-color($primary, "100");
-        height: 100%;
-      }
-    }
-    .count {
-      width: 1.5rem;
-      text-align: right;
-    }
-  }
-}
-/* Reviews (1-column layout) */
-/* Reviews: 1-column layout */
 .reviews {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.5rem;
   margin-top: 2rem;
 
-  /* Tiêu đề */
   h3 {
-    font-size: 1.125rem;
+    font-size: 1.25rem;
     font-weight: 600;
     color: var(--color-text);
   }
 
-  /* 1. Tổng quan đánh giá */
   .rating-summary {
-    background: #fff;
+    background: white;
     border-radius: var(--radius);
-    padding: 1.5rem;
+    padding: 2rem;
     box-shadow: var(--shadow);
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.5rem;
+    gap: 1rem;
 
     .big-number {
-      font-size: 2.5rem;
+      font-size: 3rem;
       font-weight: 700;
       color: var(--color-primary);
     }
-    /* reuse ProductRating styles for stars */
+    
     .total-count {
       font-size: 0.875rem;
       color: var(--color-text);
     }
+    
     .star-breakdown {
       width: 100%;
-      margin-top: 1rem;
+      margin-top: 1.5rem;
       list-style: none;
       padding: 0;
       margin: 0;
-      
 
       li {
         display: flex;
         align-items: center;
-        gap: 0.5rem;
+        gap: 1rem;
         font-size: 0.875rem;
         color: var(--color-text);
+        margin-bottom: 0.75rem;
 
         .star-label {
-          width: 2rem;
+          width: 3rem;
           flex-shrink: 0;
           font-weight: 600;
-          
+          display: flex;
+          align-items: center;
+          gap: 0.25rem;
         }
+        
         .bar {
           flex: 1;
-          background: #e5e7eb;
-          height: 0.5rem;
-          border-radius: 0.25rem;
+          background: #f3f4f6;
+          height: 8px;
+          border-radius: 4px;
           overflow: hidden;
-          position: relative;
 
           .fill {
             background: var(--color-primary);
             height: 100%;
-            border-radius: 0.25rem 0 0 0.25rem;
+            border-radius: 4px;
           }
         }
+        
         .count {
           width: 2rem;
           text-align: right;
@@ -566,104 +466,106 @@
     }
   }
 
-  /* 2. Filter & Sort */
   .review-filters {
     display: flex;
-    padding: 0.75rem;
-    background: #fff;
+    padding: 1rem;
+    background: white;
     border-radius: var(--radius);
     box-shadow: var(--shadow);
     justify-content: space-around;
+    gap: 1rem;
 
     .filter-group {
       display: flex;
-      align-items: baseline;
-      gap: 0.5rem;
+      align-items: center;
+      gap: 0.75rem;
       flex-wrap: wrap;
+
       @media (max-width: 600px) {
         flex-direction: column;
+        align-items: flex-start;
       }
 
       label {
         font-size: 0.875rem;
         color: var(--color-text);
-        margin-bottom: 0.25rem;
+        font-weight: 500;
         white-space: nowrap;
       }
+      
       select {
         padding: 0.5rem 0.75rem;
-        border: 1px solid #d1d5db;
-        border-radius: var(--radius);
-        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        background: white;
         cursor: pointer;
         font-size: 0.875rem;
         color: var(--color-text);
         transition: border-color 0.2s;
-      }
-      &:focus {
-        outline: none;
+
+        &:focus {
+          outline: none;
+          border-color: var(--color-primary);
+        }
       }
     }
   }
 
-  /* 3. Danh sách reviews (max 3) */
   .review-list {
     display: flex;
     flex-direction: column;
     gap: 1rem;
 
     .review-item {
-      background: #fff;
+      background: white;
       border-radius: var(--radius);
       box-shadow: var(--shadow);
       display: flex;
-      padding: 1rem;
+      padding: 1.5rem;
       gap: 1rem;
 
       .avatar {
-        width: 2.5rem;
-        height: 2.5rem;
+        width: 3rem;
+        height: 3rem;
         background: var(--color-primary);
-        color: #fff;
+        color: white;
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
         font-weight: 600;
+        flex-shrink: 0;
       }
 
       .review-content {
         flex: 1;
         display: flex;
         flex-direction: column;
-        gap: 0.25rem;
+        gap: 0.5rem;
 
         .name-line {
           display: flex;
           align-items: center;
-          gap: 0.5rem;
+          gap: 1rem;
 
           .name {
             font-weight: 600;
             color: var(--color-text);
           }
+          
           .purchased {
             font-size: 0.75rem;
-            color: #6b7280;
-            background: #f3f4f6;
-            padding: 0.125rem 0.5rem;
-            border-radius: var(--radius);
+            color: #059669;
+            background: #d1fae5;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
           }
+          
           .date {
             margin-left: auto;
             font-size: 0.75rem;
-            color: #6b7280;
+            color: #9ca3af;
           }
-        }
-
-        /* Star rating của từng comment */
-        & > .productRating {
-          margin-top: 0.25rem;
         }
 
         .title {
@@ -675,17 +577,36 @@
         .comment {
           font-size: 0.875rem;
           color: var(--color-text);
+          line-height: 1.5;
         }
 
         .helpful {
-          margin-top: 0.5rem;
+          margin-top: 0.75rem;
           font-size: 0.875rem;
-          color: #6b7280;
+          color: #9ca3af;
           display: flex;
           align-items: center;
-          gap: 0.25rem;
+          gap: 0.5rem;
         }
       }
     }
+  }
+}
+
+@media (max-width: 768px) {
+  .summary .summary-actions {
+    flex-direction: column;
+    
+    .btn {
+      padding: 1rem;
+    }
+  }
+  
+  .options .option-cards {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .quantity .quantity-controls {
+    justify-content: center;
   }
 }

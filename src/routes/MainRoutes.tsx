@@ -34,6 +34,7 @@ import BranchStatistic from '@/pages/brands/Statistic/BranchStatistic';
 import AdminCustomerRating from '@/pages/admin/Rating/Rating';
 import ManagerBranchInfo from '@/pages/brands/ManagerBranchInfo/ManagerBranchInfo';
 import ManagerTableList from '@/pages/brands/ManagerTable/ManagerTable';
+import FeedbackPage from '@/pages/customer/Feedback/FeedbackPage';
 
 
 const MainRoutes: React.FC = () => {
@@ -51,6 +52,7 @@ const MainRoutes: React.FC = () => {
             <Route path="/checkout" element={<Checkout />} />
             <Route path="tracking-order/:id" element={<TrackingOrder />} />
             <Route path="/history" element={<HistoryOrder />} />
+            <Route path="/feedback" element={<FeedbackPage />} />
             <Route path="/register" element={<RegisterCustomer />} />
           </Route>
 

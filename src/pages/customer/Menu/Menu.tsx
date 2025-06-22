@@ -1,4 +1,3 @@
-// src/Menu.tsx
 import React, { useState, useEffect, useMemo } from "react";
 import "./Menu.scss";
 import { MainApiRequest } from "@/services/MainApiRequest";
@@ -10,6 +9,9 @@ import ViewToggle from "@/components/customer/ViewToggle/ViewToggle";
 import CardListView from "@/components/customer/CardProduct/CardListView";
 import Breadcrumbs from "@/components/littleComponent/Breadcrumbs/Breadcrumbs";
 import PriceFilter, { PriceOption } from "@/components/customer/PriceFilter/PriceFilter";
+import { Pagination } from "@/components/littleComponent/Pagination/Pagination";
+import LoadingIndicator from "@/components/littleComponent/LoadingIndicator/Loading";
+import EmptyState from "@/components/littleComponent/EmtyState/EmptyState";
 
 interface RawProduct {
   id: string;
@@ -60,6 +62,10 @@ const Menu: React.FC = () => {
     | "popular"
   >("default");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(8); // 12 products per page
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     MainApiRequest.get<RawProduct[]>("/product/list")
@@ -159,6 +165,34 @@ const Menu: React.FC = () => {
     return arr;
   }, [filtered, sortBy]);
 
+  // Add pagination logic
+  const paginatedProducts = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return sorted.slice(startIndex, endIndex);
+  }, [sorted, currentPage, itemsPerPage]);
+
+  const totalPages = Math.ceil(sorted.length / itemsPerPage);
+
+  // Reset pagination when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, selectedCategory, priceFilter, sortBy]);
+
+  useEffect(() => {
+  setLoading(true);
+  MainApiRequest.get<RawProduct[]>("/product/list")
+    .then((res) => {
+      const mapped: Product[] = res.data.map((p) => ({
+        ...p,
+        sizes: p.sizes.map((s) => ({sizeName: s.sizeName, price: s.price})),
+      }));
+      setProducts(mapped);
+    })
+    .catch(console.error)
+    .finally(() => setLoading(false)); // Kết thúc loading dù thành công hay lỗi
+}, []);
+
   return (
     <>
     <Breadcrumbs
@@ -199,27 +233,53 @@ const Menu: React.FC = () => {
             <SortDropdown value={sortBy} onChange={setSortBy} />
             <ViewToggle mode={viewMode} onChange={setViewMode} />
             <span className="menu-page__count">
-              Hiển thị {sorted.length} trên {products.length}
+              Hiển thị {Math.min(itemsPerPage, sorted.length - (currentPage - 1) * itemsPerPage)} trong số {sorted.length}
+              {totalPages > 1 && ` (Trang ${currentPage}/${totalPages})`}
             </span>
           </div>
-
-          <div
-            className={
-              viewMode === "grid"
-                ? "menu-page__grid"
-                : "menu-page__list"
-            }
-          >
-            {viewMode === "grid"
-                ? sorted.map((prod) => (
-              <CardProduct key={prod.id} product={prod} />
-            ))
-                : sorted.map((prod) => (
-              <div key={prod.id} className="menu-page__list-item">
-                <CardListView  product={prod} />
+          {loading ? (
+            <div className="menu-page__loading">
+              <LoadingIndicator text="Đang tải sản phẩm..." />
+            </div>
+          ) : (
+            <>
+            {sorted.length === 0 ? (
+              <div className="menu-page__empty">
+                <EmptyState text="Không có sản phẩm nào phù hợp với tìm kiếm của bạn." 
+                icon={<span role="img" style={{fontSize: '2.2rem'}}>🔍</span>} />
               </div>
-            ))}
-          </div>
+            ) : (
+              <>
+                <div className={ viewMode === "grid" ? "menu-page__grid" : "menu-page__list"}>
+                  {viewMode === "grid"
+                    ? paginatedProducts.map((prod) => (
+                        <CardProduct key={prod.id} product={prod} />
+                      ))
+                    : paginatedProducts.map((prod) => (
+                        <div key={prod.id} className="menu-page__list-item">
+                          <CardListView product={prod} />
+                        </div>
+                      ))}
+                </div>
+              
+                {/* Add Pagination */}
+                {totalPages > 1 && (
+                  <div className="menu-page__pagination">
+                    <Pagination
+                      currentPage={currentPage}
+                      totalPages={totalPages}
+                      onPageChange={(page) => {
+                        setCurrentPage(page);
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }}
+                      className="pagination-elegant"
+                    />
+                  </div>
+                )}
+              </>
+            )}
+          </>
+          )}
         </main>
       </div>
     </div>

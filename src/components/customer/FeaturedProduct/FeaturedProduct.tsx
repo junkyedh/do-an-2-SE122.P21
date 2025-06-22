@@ -56,7 +56,7 @@ const FeaturedList: React.FC<FeaturedListProps> = ({
           </Slider>
 
           {/* Nút Xem Thêm */}
-          <div className="see-more-wrapper text-center mt-3">
+          <div className="see-more-wrapper text-center">
               <button className="see-more-btn" onClick={handleShowMore}>
                   Xem thêm
               </button>

@@ -8,6 +8,7 @@ import { yellow } from "@mui/material/colors";
 import ProductRating from "@/components/customer/RatingStar/ProductRating";
 import { useCart } from "@/hooks/cartContext";
 import { message } from "antd";
+import LoadingIndicator from "@/components/littleComponent/LoadingIndicator/Loading";
 
 interface ProductSize {
   sizeName: string;
@@ -106,7 +107,11 @@ const DetailProduct: React.FC = () => {
         return list;
     }, [ratingData, filterStar, sortOption]);
 
-    if (!product) return <div className="loading">Đang tải...</div>
+    if (!product) return (
+        <div className="detailProduct__empty">
+            <LoadingIndicator text="Đang tải sản phẩm..." />
+        </div>
+    )
     const isCake = product.category === "Bánh ngọt";
     // const needsTemp = ["Cà phê", "Trà trái cây"].includes(product.category);
 
@@ -164,6 +169,7 @@ const DetailProduct: React.FC = () => {
         });
     };
 
+
     return (
         <>
         <Breadcrumbs
@@ -181,7 +187,6 @@ const DetailProduct: React.FC = () => {
                     <img src={product.image} alt={product.name} />
                     {product.isPopular && <span className="badge popular">Bán chạy</span>}
                     {product.isNew && <span className="badge new">Mới</span>}
-                    <button className="fav-btn"><FaHeart /></button>
                 </div>
 
 
@@ -240,7 +245,7 @@ const DetailProduct: React.FC = () => {
                             onChange={(e) => setFilterStar(e.target.value as "5" | "4" | "3" | "2" | "1" | "all")
                             }
                             >
-                            <option value="">Tất cả</option>
+                            <option value="all">Tất cả</option>
                             <option value="5">5 sao</option>
                             <option value="4">4 sao</option>
                             <option value="3">3 sao</option>
