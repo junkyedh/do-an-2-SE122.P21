@@ -37,6 +37,8 @@ const FloatingLabelInput: React.FC<FloatingLabelInputProps> = ({
     const commonProps = {
       onFocus: () => setIsFocused(true),
       onBlur: () => setIsFocused(false),
+      disabled,
+      readOnly,
       ...componentProps,
     };
 

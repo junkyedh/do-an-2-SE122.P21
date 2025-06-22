@@ -52,7 +52,7 @@ const BranchStatistic: React.FC = () => {
 
   return (
     <div className="container-fluid">
-      <div className="header">
+      <div className="sticky-header-wrapper">
         <h2 className='h2 header-custom'>THỐNG KÊ CHI NHÁNH</h2>
       </div>
       <div className="container-fluid1">

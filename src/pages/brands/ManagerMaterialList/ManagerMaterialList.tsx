@@ -18,7 +18,7 @@ const ManagerMaterialList = () => {
 
     const fetchMaterialList = async () => {
         try {
-            const res = await AdminApiRequest.get('/material/list');
+            const res = await AdminApiRequest.get('/branch-material/list');
             setMaterialList(res.data);
         } catch (error) {
             console.error('Error fetching material list:', error);
@@ -30,73 +30,72 @@ const ManagerMaterialList = () => {
         fetchMaterialList();
     }, []);
 
-        const exportExcel = () => {
-            const exportData = materialList.map((material) => ({
-                'ID': material.id,
-                'Tên nguyên liệu': material.name,
-                'Số lượng nhập': material.quantityImported,
-                'Số lượng tồn': material.quantityStock,
-                'Giá': new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(material.price),
-                'Loại bảo quản': material.storageType,
-                'Ngày nhập': moment(material.importDate).format('YYYY-MM-DD HH:mm:ss'),
-                'Ngày hết hạn': moment(material.expiryDate).format('YYYY-MM-DD HH:mm:ss'),
-            }));
-    
-            const worksheet = XLSX.utils.json_to_sheet(exportData);
-            const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, "DanhSachNguyenLieu");
-            XLSX.writeFile(workbook, "DanhSachNguyenLieu.xlsx");
-        };
+    const exportExcel = () => {
+        const exportData = materialList.map((material) => ({
+            'ID': material.id,
+            'Tên nguyên liệu': material.name,
+            'Số lượng nhập': material.quantityImported,
+            'Số lượng tồn': material.quantityStock,
+            'Giá': new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(material.price),
+            'Loại bảo quản': material.storageType,
+            'Ngày nhập': moment(material.importDate).format('YYYY-MM-DD HH:mm:ss'),
+            'Ngày hết hạn': moment(material.expiryDate).format('YYYY-MM-DD HH:mm:ss'),
+        }));
 
-
-    const onOpenCreateMaterialModal = (record: any = null) => {
-        setEditingMaterial(record); // Gán record vào trạng thái đang chỉnh sửa
-        if (record) {
-            form.setFieldsValue({
-                ...record,
-                price: record.price.toFixed(0),
-                importDate: moment(record.importDate), 
-                expiryDate: moment(record.expiryDate), 
-            });
-        }
-        setOpenCreateMaterialModal(true);
+        const worksheet = XLSX.utils.json_to_sheet(exportData);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "DanhSachNguyenLieu");
+        XLSX.writeFile(workbook, "DanhSachNguyenLieu.xlsx");
     };
 
+
+    const onOpenCreateMaterialModal = (record: any) => {
+        setEditingMaterial(record);
+
+        if (record) {
+            form.setFieldsValue({
+                name: record.rawMaterial.name,
+                price: Number(record.rawMaterial.price).toFixed(0),
+                storageType: record.rawMaterial.storageType,
+                quantityImported: record.quantityImported,
+                quantityStock: record.quantityStock,
+                importDate: moment(record.importDate),
+                expiryDate: moment(record.expiryDate),
+            });
+        }
+
+        setOpenCreateMaterialModal(true);
+    };
 
     const onOKCreateMaterial = async () => {
         try {
             const data = form.getFieldsValue();
-            if (data.importDate) {
-                data.importDate = data.importDate.toISOString();
-            } else {
-                message.error('Vui lòng chọn ngày nhập!');
-                return;
-            }
-            if (data.expiryDate) {
-                data.expiryDate = data.expiryDate.toISOString();
-            } else {
-                message.error('Vui lòng chọn ngày hết hạn!');
+
+            if (!data.importDate || !data.expiryDate) {
+                message.error('Vui lòng nhập đầy đủ ngày nhập và ngày hết hạn!');
                 return;
             }
 
-            if (editingMaterial) {
-                const { id, ...rest } = data;
-                await AdminApiRequest.put(`/material/${editingMaterial.id}`, rest);
-            } else {
-                await AdminApiRequest.post('/material', data);
-            }
+            const payload = {
+                quantityImported: Number(data.quantityImported),
+                quantityStock: Number(data.quantityStock),
+                importDate: data.importDate.toISOString(),
+                expiryDate: data.expiryDate.toISOString(),
+            };
+
+            await AdminApiRequest.put(`/branch-material/${editingMaterial.id}`, payload);
 
             fetchMaterialList();
             setOpenCreateMaterialModal(false);
             form.resetFields();
-            message.success('Nguyên liệu đã được lưu thành công!');
+            message.success('Nguyên liệu đã được cập nhật thành công!');
             setEditingMaterial(null);
 
         } catch (error) {
-            console.error('Lỗi khi tạo nguyên liệu:', error);
-            message.error('Không thể tạo nguyên liệu. Vui lòng thử lại.');
+            console.error('Lỗi khi cập nhật nguyên liệu:', error);
+            message.error('Không thể cập nhật nguyên liệu. Vui lòng thử lại.');
         }
-    }
+    };
 
     const onCancelCreateMaterial = () => {
         setOpenCreateMaterialModal(false);
@@ -114,7 +113,7 @@ const ManagerMaterialList = () => {
         }
     };
 
-        const handleSearchKeyword = () => {
+    const handleSearchKeyword = () => {
         const keyword = searchKeyword.trim().toLowerCase();
         if (!keyword) {
             fetchMaterialList(); // Lấy lại danh sách đầy đủ nếu không có từ khóa tìm kiếm
@@ -125,7 +124,7 @@ const ManagerMaterialList = () => {
             const name = (material.name ?? '').toLowerCase();
             const storageType = (material.storageType ?? '').toLowerCase();
             return name.includes(keyword) || storageType.includes(keyword) ||
-                String(material.id).toLowerCase().includes(keyword)           
+                String(material.id).toLowerCase().includes(keyword)
         });
         setMaterialList(filtered);
     }
@@ -143,24 +142,18 @@ const ManagerMaterialList = () => {
                 <div className="header-actions d-flex me-2 py-2 align-items-center justify-content-between">
                     <div className="flex-grow-1 d-flex justify-content-center">
                         <Form layout="inline" className="search-form d-flex">
-                        <SearchInput
-                            placeholder="Tìm kiếm theo tên, loại bảo quản hoặc ID"
-                            value={searchKeyword}
-                            onChange={(e) => setSearchKeyword(e.target.value)}
-                            onSearch={handleSearchKeyword}
-                            allowClear
-                        />
+                            <SearchInput
+                                placeholder="Tìm kiếm theo tên, loại bảo quản hoặc ID"
+                                value={searchKeyword}
+                                onChange={(e) => setSearchKeyword(e.target.value)}
+                                onSearch={handleSearchKeyword}
+                                allowClear
+                            />
                         </Form>
                     </div>
                     <div className="d-flex" >
-                        <Button 
-                            type="primary" 
-                            icon={<i className="fas fa-plus"></i>}
-                            onClick={() => onOpenCreateMaterialModal()}
-                        >
-                        </Button>
-                        <Button 
-                            type="primary" 
+                        <Button
+                            type="primary"
                             icon={<DownloadOutlined />}
                             onClick={exportExcel}
                             title='Tải xuống danh sách'
@@ -171,18 +164,33 @@ const ManagerMaterialList = () => {
 
             <Modal
                 className='material-modal'
-                title={editingMaterial ? "Chỉnh sửa" : "Thêm mới"}
+                title={"Chỉnh sửa thông tin nguyên liệu"}
                 open={openCreateMaterialModal}
-                onCancel = {() => onCancelCreateMaterial()}
+                onCancel={onCancelCreateMaterial}
                 footer={null}
             >
                 <Form form={form} layout="vertical">
+                    {/* Chỉ hiển thị tên nguyên liệu và loại bảo quản, không chỉnh sửa */}
                     <FloatingLabelInput
                         name="name"
                         label="Tên nguyên liệu"
-                        component='input'
-                        rules={[{ required: true, message: 'Tên nguyên liệu là bắt buộc' }]}
+                        component="input"
+                        disabled={!!editingMaterial}
                     />
+                    <FloatingLabelInput
+                        name="storageType"
+                        label="Loại bảo quản"
+                        component="input"
+                        disabled={!!editingMaterial}
+                    />
+                    <FloatingLabelInput
+                        name="price"
+                        label="Giá (VNĐ)"
+                        component="input"
+                        disabled={!!editingMaterial}
+                    />
+
+                    {/* Chỉ cho phép chỉnh sửa số lượng và ngày */}
                     <div className='grid-2'>
                         <FloatingLabelInput
                             name="quantityImported"
@@ -201,25 +209,6 @@ const ManagerMaterialList = () => {
                     </div>
                     <div className='grid-2'>
                         <FloatingLabelInput
-                            name="price"
-                            label="Giá"
-                            component='input'
-                            type='number'
-                            rules={[{ required: true, message: 'Giá là bắt buộc' }]}
-                        />
-                        <FloatingLabelInput
-                            name="storageType"
-                            label="Loại bảo quản"
-                            component='select'
-                            rules={[{ required: true, message: 'Loại bảo quản là bắt buộc' }]}
-                            options={[
-                                { value: 'Cấp đông', label: 'Cấp đông' },
-                                { value: 'Để ngoài', label: 'Để ngoài' },
-                            ]}
-                        />
-                    </div>
-                    <div className='grid-2'>
-                        <FloatingLabelInput
                             name="importDate"
                             label="Ngày nhập"
                             component='date'
@@ -232,10 +221,11 @@ const ManagerMaterialList = () => {
                             rules={[{ required: true, message: 'Ngày hết hạn là bắt buộc' }]}
                         />
                     </div>
+
                     <div className='modal-footer-custom d-flex justify-content-end align-items-center gap-3'>
                         <Button
                             type='default'
-                            onClick={() => onCancelCreateMaterial()}
+                            onClick={onCancelCreateMaterial}
                         >
                             Hủy
                         </Button>
@@ -243,50 +233,74 @@ const ManagerMaterialList = () => {
                             type='primary'
                             onClick={onOKCreateMaterial}
                         >
-                            {editingMaterial ? "Lưu thay đổi" : "Tạo mới"}
+                            Lưu thay đổi
                         </Button>
-                    </div>  
+                    </div>
                 </Form>
             </Modal>
+
             <Table
                 dataSource={materialList}
                 pagination={{
                     pageSize: 9, // Số lượng item trên mỗi trang
                     showSizeChanger: true, // Hiển thị tùy chọn thay đổi số item trên mỗi trang
-                     // Các tùy chọn cho số item mỗi trang
-                    }}
+                    // Các tùy chọn cho số item mỗi trang
+                }}
                 columns={[
                     { title: 'ID', dataIndex: 'id', key: 'id', sorter: (a, b) => a.id - b.id },
-                    { title: 'Tên nguyên liệu', dataIndex: 'name', key: 'name', sorter: (a, b) => a.name.localeCompare(b.name) },
-                    { title: 'Số lượng nhập', dataIndex: 'quantityImported', key: 'quantityImported', sorter: (a, b) => a.quantityImported - b.quantityImported },
-                    { title: 'Số lượng tồn', dataIndex: 'quantityStock', key: 'quantityStock', sorter: (a, b) => a.quantityStock - b.quantityStock },
-                    { title: 'Giá', dataIndex: 'price', key: 'price', sorter: (a, b) => a.price - b.price,
-                        render: (price: number) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price)
-                     },
-                    { title: 'Loại bảo quản', dataIndex: 'storageType', key: 'storageType', sorter: (a, b) => a.storageType.localeCompare(b.storageType) },
-                    { title: 'Ngày nhập', dataIndex: 'importDate', key: 'importDate', sorter: (a, b) => moment(a.importDate).unix() - moment(b.importDate).unix(),
-                        render: (importDate: string) => moment(importDate).format('YYYY-MM-DD HH:mm:ss')
-                     },
-                    { title: 'Ngày hết hạn', dataIndex: 'expiryDate', key: 'expiryDate', sorter: (a, b) => moment(a.expiryDate).unix() - moment(b.expiryDate).unix(),
-                        render: (expiryDate: string) => moment(expiryDate).format('YYYY-MM-DD HH:mm:ss'),
-                     },
-                    { title: 'Hành động',
+                    {
+                        title: 'Tên nguyên liệu',
+                        dataIndex: ['rawMaterial', 'name'],
+                        key: 'name',
+                        sorter: (a, b) => a.rawMaterial.name.localeCompare(b.rawMaterial.name),
+                    },
+                    {
+                        title: 'Giá',
+                        dataIndex: ['rawMaterial', 'price'],
+                        key: 'price',
+                        render: (price: string) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(price)),
+                        sorter: (a, b) => parseFloat(a.rawMaterial.price) - parseFloat(b.rawMaterial.price),
+                    },
+                    {
+                        title: 'Loại bảo quản',
+                        dataIndex: ['rawMaterial', 'storageType'],
+                        key: 'storageType',
+                        sorter: (a, b) => a.rawMaterial.storageType.localeCompare(b.rawMaterial.storageType),
+                    },
+                    {
+                        title: 'Số lượng nhập',
+                        dataIndex: 'quantityImported',
+                        key: 'quantityImported',
+                        sorter: (a, b) => a.quantityImported - b.quantityImported,
+                    },
+                    {
+                        title: 'Số lượng tồn',
+                        dataIndex: 'quantityStock',
+                        key: 'quantityStock',
+                        sorter: (a, b) => a.quantityStock - b.quantityStock,
+                    },
+                    {
+                        title: 'Ngày nhập',
+                        dataIndex: 'importDate',
+                        key: 'importDate',
+                        render: (date: string) => moment(date).format('YYYY-MM-DD'),
+                        sorter: (a, b) => moment(a.importDate).unix() - moment(b.importDate).unix(),
+                    },
+                    {
+                        title: 'Ngày hết hạn',
+                        dataIndex: 'expiryDate',
+                        key: 'expiryDate',
+                        render: (date: string) => moment(date).format('YYYY-MM-DD'),
+                        sorter: (a, b) => moment(a.expiryDate).unix() - moment(b.expiryDate).unix(),
+                    },
+                    {
+                        title: 'Hành động',
                         key: 'actions',
                         render: (_, record) => (
                             <Space size="middle">
                                 <Button type="default" onClick={() => onOpenCreateMaterialModal(record)}>
                                     <i className="fas fa-edit"></i>
                                 </Button>
-                                <Popconfirm
-                                    title="Bạn có chắc chắn muốn xóa nguyên liệu này không?"
-                                    onConfirm={() => onDeleteMaterial(record.id)}
-                                    okText="Có"
-                                    cancelText="Không"
-                                >
-                                    <Button className="ant-btn-danger">
-                                        <i className="fas fa-trash"></i>
-                                    </Button>
-                                </Popconfirm>
                             </Space>
                         ),
                     },
