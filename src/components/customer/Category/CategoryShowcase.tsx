@@ -91,7 +91,6 @@ const CategoryShowcase: React.FC = () => {
 
   return (
     <section className="category-section">
-      <div className="category-container">
         <div className="category-header">
           <h2>Danh mục sản phẩm</h2>
         </div>
@@ -117,7 +116,6 @@ const CategoryShowcase: React.FC = () => {
             </div>
           ))}
         </div>
-      </div>
     </section>
   )
 }

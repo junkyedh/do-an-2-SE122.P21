@@ -46,7 +46,7 @@ const Home = () => {
       <Features />
       <CategoryShowcase />
 
-      <section className="popular py-5">
+      <section className="popular section-spacing">
         <Container>
           <Row>
             <Col md={12} className="product-slider">
@@ -60,15 +60,15 @@ const Home = () => {
         </Container>
 
         <Gallery />
-        <section className="call_us px-5">
+        <section className="call_us section-spacing">
           <Container>
             <Row className="align-items-center">
-              <Col md="4" className="text-center mt-3 mt-md-0">
+              <Col sx={12} md={4} className="text-center mt-3 mt-md-0">
                 <Link to="/contact-us" className="secondary_btn bounce">
                   Liên hệ với chúng tôi!
                 </Link>
               </Col>
-              <Col md="8">
+              <Col sx={12} md="8">
                 <h2 className="heading">
                   SẴN SÀNG VỚI TRẢI NGHIỆM TUYỆT VỜI TẠI CỬA HÀNG CHÚNG TÔI?
                 </h2>

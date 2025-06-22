@@ -2,15 +2,14 @@
 import React, { useState, useEffect, useMemo } from "react";
 import "./Menu.scss";
 import { MainApiRequest } from "@/services/MainApiRequest";
-import PriceFilter, { PriceOption } from "@/components/PriceFilter/PriceFilter";
 import CategoryFilter, { Category } from "@/components/customer/CategoryFilter/CategoryFilter";
 import SearchBar from "@/components/customer/Searchbar/Searchbar";
 import CardProduct from "@/components/customer/CardProduct/CardProduct";
 import SortDropdown from "@/components/customer/SortDropdown/SortDropdown";
 import ViewToggle from "@/components/customer/ViewToggle/ViewToggle";
-import { view } from "framer-motion";
 import CardListView from "@/components/customer/CardProduct/CardListView";
-import Breadcrumbs from "@/components/Breadcrumbs/Breadcrumbs";
+import Breadcrumbs from "@/components/littleComponent/Breadcrumbs/Breadcrumbs";
+import PriceFilter, { PriceOption } from "@/components/customer/PriceFilter/PriceFilter";
 
 interface RawProduct {
   id: string;

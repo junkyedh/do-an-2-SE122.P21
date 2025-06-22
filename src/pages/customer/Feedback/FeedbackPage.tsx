@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Form, Input, Button, Rate, message } from 'antd';
 import './FeedbackPage.scss';
 import img from '@/assets/bg2.jpg';
-import Breadcrumbs from '@/components/Breadcrumbs/Breadcrumbs';
+import Breadcrumbs from '@/components/littleComponent/Breadcrumbs/Breadcrumbs';
 
 const FeedbackPage = () => {
   const { reservationCode } = useParams<{ reservationCode: string }>();

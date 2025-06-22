@@ -107,3 +107,154 @@
     display: none !important;
   }
 }
+
+// ---- Layout & Responsive Spacing ----
+.section-spacing {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+  @media (max-width: 992px) {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+  @media (max-width: 600px) {
+    padding-top: 1.2rem;
+    padding-bottom: 1.2rem;
+  }
+}
+
+.container, .container-fluid {
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.1rem;
+  padding-right: 1.1rem;
+}
+
+.row {
+  margin-left: -0.75rem;
+  margin-right: -0.75rem;
+  > [class*='col-'] {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+}
+
+// ---- Heading & Typography ----
+.heading, .main_heading h1, h2.heading {
+  font-family: var(--fontFamily1), 'Barlow', sans-serif;
+  font-size: 2.1rem;
+  font-weight: 700;
+  color: var(--primaryText);
+  margin-bottom: 1rem;
+  line-height: 1.15;
+  letter-spacing: -0.5px;
+  @media (max-width: 992px) {
+    font-size: 1.5rem;
+  }
+  @media (max-width: 600px) {
+    font-size: 1.17rem;
+  }
+}
+
+.body-text, p, .text {
+  font-size: 1rem;
+  color: var(--textclr);
+  line-height: 1.7;
+  margin-bottom: 0.7rem;
+}
+
+// ---- Card & Box ----
+.card, .feature-image, .featured-item, .product-card {
+  border-radius: 1.4rem !important;
+  // box-shadow: 0 4px 18px rgba(47,65,86,0.10), 0 2px 6px rgba(0,0,0,0.03);
+  background: var(--white);
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+
+.featured-item, .slick-slide {
+  padding: 0 10px;
+}
+
+.card-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0.7rem 0 0.4rem 0;
+}
+
+.card-text {
+  color: var(--subTextClr);
+  font-size: 0.98rem;
+}
+
+@media (max-width: 768px) {
+  .featured-item, .slick-slide {
+    padding: 0 2px;
+  }
+}
+
+// ---- Button style ----
+.primaryBtn, .secondary_btn, .see-more-btn {
+  padding: 0.8rem 2rem;
+  font-size: 1.05rem;
+  font-family: var(--fontFamily1), 'Barlow', sans-serif;
+  border-radius: 2rem;
+  font-weight: 600;
+  border: none;
+  min-width: 150px;
+  box-shadow: 0 2px 12px rgba(255,111,97,0.09);
+  transition: background 0.18s, color 0.18s, box-shadow 0.21s;
+  margin: 0.2rem auto;
+  display: inline-block;
+}
+.primaryBtn, .see-more-btn {
+  background: var(--primaryClr);
+  color: var(--white);
+}
+.primaryBtn:hover, .see-more-btn:hover {
+  background: #FF8978;
+  color: var(--white);
+  box-shadow: 0 6px 24px rgba(255,111,97,0.14);
+}
+.secondary_btn {
+  background: var(--secondaryClr);
+  color: var(--white);
+}
+.secondary_btn:hover {
+  background: #445e7c;
+  color: #fff;
+}
+
+// ---- Overlay (dùng cho Banner, Section có nền ảnh) ----
+.overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(47,65,86,0.12);
+  z-index: 1;
+  border-radius: inherit;
+}
+
+// ---- Responsive Col fix ----
+@media (max-width: 768px) {
+  .row > [class*='col-'] {
+    margin-bottom: 1.3rem;
+  }
+  .heading {
+    text-align: center;
+  }
+}
+
+// ---- Fix Slick Slider Arrow spacing on mobile ----
+@media (max-width: 600px) {
+  .slick_slider .slick-arrow {
+    display: none !important;
+  }
+}
+
+// ---- Utility ----
+.text-center {
+  text-align: center !important;
+}
+.mt-3 { margin-top: 1rem !important;}
+.mt-md-0 { @media (min-width: 768px) { margin-top: 0 !important; } }
+.mb-4 { margin-bottom: 1.5rem !important; }

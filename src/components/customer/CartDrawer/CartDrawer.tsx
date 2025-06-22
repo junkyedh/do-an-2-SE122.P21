@@ -1,11 +1,13 @@
 import React from "react"
 import { useState } from "react"
-import { Offcanvas, Button, Form, Image, Row, Col, Badge } from "react-bootstrap"
 import { useNavigate } from "react-router-dom"
 import { useCart, type CartItem } from "@/hooks/cartContext"
 import { BiTrash, BiTrashAlt, BiShoppingBag, BiPlus, BiMinus, BiX, BiArrowToRight, BiChevronDown } from "react-icons/bi"
 import "./CartDrawer.scss"
 import emptyCart from "@/assets/empty-cart.png"
+import { Button } from "@/components/littleComponent/Button/Button"
+import { Badge } from "@/components/littleComponent/Badge/Badge"
+import { Col, Form, Image, Offcanvas, Row } from "react-bootstrap"
 
 const CartDrawer: React.FC = () => {
   const { cart, totalItems, totalPrice, updateItem, removeItem, clearCart } = useCart()
@@ -40,14 +42,14 @@ const CartDrawer: React.FC = () => {
     <>
       {/* Cart Trigger Button */}
       <Button
-        variant="outline-light"
+        variant="ghost"
         onClick={open}
         className="cart-trigger position-relative"
         aria-label={`Giỏ hàng (${totalItems} sản phẩm)`}
       >
         <BiShoppingBag className="cart-icon" />
         {totalItems > 0 && (
-          <Badge bg="danger" className="cart-badge position-absolute" pill>
+          <Badge variant="error" className="cart-badge position-absolute">
             {totalItems > 99 ? "99+" : totalItems}
           </Badge>
         )}
@@ -252,7 +254,7 @@ const CartDrawer: React.FC = () => {
 
                               <div className="quantity-controls d-flex align-items-center">
                                 <Button
-                                  variant="outline-secondary"
+                                  variant="secondary"
                                   size="sm"
                                   className="qty-btn"
                                   onClick={() => updateItem(item.id, { quantity: Math.max(1, item.quantity - 1) })}
@@ -262,7 +264,7 @@ const CartDrawer: React.FC = () => {
                                 </Button>
                                 <span className="qty-display">{item.quantity}</span>
                                 <Button
-                                  variant="outline-secondary"
+                                  variant="secondary"
                                   size="sm"
                                   className="qty-btn"
                                   onClick={() => updateItem(item.id, { quantity: item.quantity + 1 })}
@@ -301,7 +303,7 @@ const CartDrawer: React.FC = () => {
 
                   {/* Action Buttons */}
                   <div className="action-buttons d-flex gap-2">
-                    <Button variant="outline-primary" className="continue-btn flex-fill" onClick={close}>
+                    <Button variant="secondary" className="continue-btn flex-fill" onClick={close}>
                       Tiếp tục mua
                     </Button>
                     <Button variant="primary" className="checkout-btn flex-fill"  onClick={handleCheckout}>

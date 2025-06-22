@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Card, Form, Input, Button, Row, Col, message } from "antd";
 import { useNavigate } from "react-router-dom";
-import Breadcrumbs from "@/components/Breadcrumbs/Breadcrumbs";
+import Breadcrumbs from "@/components/littleComponent/Breadcrumbs/Breadcrumbs";
 import { MainApiRequest } from "@/services/MainApiRequest";
 import "./ProfileUser.scss";
 

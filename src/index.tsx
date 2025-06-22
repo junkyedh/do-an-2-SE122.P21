@@ -5,6 +5,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { AppSystemProvider } from './hooks/useSystemContext';
 import "./index.scss";
 import { CartProvider } from './hooks/cartContext';
+import { ToastProvider } from './components/littleComponent/Toast/Toast';
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 
@@ -13,7 +14,9 @@ root.render(
     <CartProvider>
       <AppSystemProvider>
         <BrowserRouter>
+        <ToastProvider>
           <App />
+        </ToastProvider>
         </BrowserRouter>
       </AppSystemProvider>
     </CartProvider>

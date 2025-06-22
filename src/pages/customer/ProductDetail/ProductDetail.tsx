@@ -3,7 +3,7 @@ import { NavLink, useNavigate, useParams } from "react-router-dom";
 import { FaHeart, FaMinus, FaPlus, FaStar } from "react-icons/fa";
 import "./ProductDetail.scss";
 import { MainApiRequest } from "@/services/MainApiRequest";
-import Breadcrumbs from "@/components/Breadcrumbs/Breadcrumbs";
+import Breadcrumbs from "@/components/littleComponent/Breadcrumbs/Breadcrumbs";
 import { yellow } from "@mui/material/colors";
 import ProductRating from "@/components/customer/RatingStar/ProductRating";
 import { useCart } from "@/hooks/cartContext";

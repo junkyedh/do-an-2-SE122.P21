@@ -1,0 +1,73 @@
+@import './variables.scss';
+
+// Modern Card System
+.card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(get-color($neutral, "900"), 0.08);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 48px rgba(get-color($neutral, "900"), 0.12);
+  }
+
+  &.card-elevated {
+    box-shadow: 0 12px 40px rgba(get-color($neutral, "900"), 0.15);
+  }
+
+  &.card-flat {
+    box-shadow: none;
+    border: 1px solid get-color($neutral, "200");
+  }
+
+  .card-header {
+    padding: 24px 24px 0;
+    border-bottom: 1px solid get-color($neutral, "100");
+    margin-bottom: 24px;
+
+    .card-title {
+      font-size: get-font-size($title-font-size, sm);
+      font-weight: get-font-weight($font-weight, semibold);
+      color: get-color($primary, "800");
+      margin: 0 0 8px 0;
+    }
+
+    .card-subtitle {
+      font-size: get-font-size($body-font-size, rg);
+      color: get-color($neutral, "600");
+      margin: 0;
+    }
+  }
+
+  .card-body {
+    padding: 24px;
+  }
+
+  .card-footer {
+    padding: 0 24px 24px;
+    border-top: 1px solid get-color($neutral, "100");
+    margin-top: 24px;
+    padding-top: 24px;
+  }
+
+  // Card variants
+  &.card-primary {
+    background: linear-gradient(135deg, get-color($primary, "50"), get-color($primary, "100"));
+    border-color: get-color($primary, "200");
+  }
+
+  &.card-accent {
+    background: linear-gradient(135deg, get-color($accent, "50"), get-color($accent, "100"));
+    border-color: get-color($accent, "200");
+  }
+
+  &.card-glass {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+}

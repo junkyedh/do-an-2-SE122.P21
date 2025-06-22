@@ -2,7 +2,7 @@ import React, { useState, useEffect, use } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './Checkout.scss';
 import { MainApiRequest } from '@/services/MainApiRequest';
-import Breadcrumbs from '@/components/Breadcrumbs/Breadcrumbs';
+import Breadcrumbs from '@/components/littleComponent/Breadcrumbs/Breadcrumbs';
 import { message } from 'antd';
 import { CartItem, useCart } from '@/hooks/cartContext';
 
