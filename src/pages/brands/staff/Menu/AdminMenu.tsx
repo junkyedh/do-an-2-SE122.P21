@@ -141,9 +141,20 @@ const AdminMenu = () => {
     const product = menuList.find((p) => p.id === id)
     if (product && size) {
       const mood = product.hot || product.cold ? selectedMoods[id] : ""
-      const sizeData = product.sizes.find((s: { sizeName: string }) => s.sizeName === selectedSizes[product.id])
-      const price = sizeData?.price || 0
-
+      let price = 0
+  
+      if (product.category === "Bánh ngọt") {
+        // Lấy giá đúng cho "piece" hoặc "whole"
+        if (size === "piece") {
+          price = product.sizes[0]?.price || 0
+        } else if (size === "whole") {
+          price = (product.sizes[0]?.price || 0) * 8
+        }
+      } else {
+        const sizeData = product.sizes.find((s: { sizeName: string }) => s.sizeName === selectedSizes[product.id])
+        price = sizeData?.price || 0
+      }
+  
       const key = `${id}-${size}-${mood}`
       setOrder((prevOrder) => ({
         ...prevOrder,
@@ -154,7 +165,7 @@ const AdminMenu = () => {
           price,
         },
       }))
-
+  
       setSelectedSizes({})
       setSelectedMoods({})
       setCurrentProductId(null)
@@ -213,34 +224,67 @@ const AdminMenu = () => {
     }
   }
 
-  const handlePayment = async () => {
-    try {
-      let finalTotal = totalPrice - discountAmount
-      if (finalTotal < 0) finalTotal = 0
+const handlePayment = async () => {
+  try {
+    let finalTotal = totalPrice - discountAmount
+    if (finalTotal < 0) finalTotal = 0
 
-      if (totalPrice === 0) {
-        message.warning("Đơn hàng không có sản phẩm hoặc tổng tiền không hợp lệ.")
-        return
+    if (Object.keys(order).length === 0 || totalPrice === 0) {
+      message.warning("Đơn hàng không có sản phẩm hoặc tổng tiền không hợp lệ.")
+      return
+    }
+
+    // 1. Chuẩn bị dữ liệu cho branch-order
+    // Lưu ý: orderInfo có thể chứa thông tin về tableID, serviceType, staffName...
+    const payload = {
+      phoneCustomer: phone || null,
+      serviceType: orderInfo?.serviceType || "DINE IN", // hoặc "TAKE AWAY"
+      totalPrice: finalTotal,
+      tableID: orderInfo?.tableID || null,
+      orderDate: new Date().toISOString(),
+      status: "PENDING",
+      staffName: orderInfo?.staffName || null,
+      // productIDs sẽ được thêm sau bằng endpoint detail
+    }
+
+    // 2. Tạo đơn hàng branch-order
+    const res = await AdminApiRequest.post("/branch-order", payload)
+    if (!res?.data?.id) {
+      message.error("Đặt đơn hàng thất bại! Không nhận được ID đơn hàng.")
+      return
+    }
+
+    const orderId = res.data.id
+
+    // 3. Thêm từng món vào chi tiết đơn hàng qua endpoint POST /branch-order/detail/{orderId}
+    const orderItems = Object.keys(order).map((productKey) => {
+      const item = order[productKey]
+      const [id] = productKey.split("-")
+      return {
+        productID: Number(id),
+        size: item.size,
+        mood: item.mood,
+        quantity: item.quantity,
+        price: item.price,
       }
+    })
 
-      message.success("Thanh toán thành công!")
-      setOrder({})
-      setCouponCode("")
-      setDiscountAmount(0)
-      navigate("/staff/order/order-list")
-    } catch (error) {
-      console.error("Error during payment:", error)
-      message.error("Có lỗi xảy ra khi thanh toán!")
+    // Gọi tuần tự, hoặc song song nếu muốn
+    for (const item of orderItems) {
+      await AdminApiRequest.post(`/branch-order/detail/${orderId}`, item)
     }
-  }
 
-  const handleSelect = (value: string) => {
-    const selectedCustomer = suggestions.find((customer) => customer.phone === value)
-    if (selectedCustomer) {
-      setPhone(selectedCustomer.phone)
-      setName(selectedCustomer.name)
-    }
+    message.success("Đơn hàng đặt thành công!")
+    setOrder({})
+    setCouponCode("")
+    setDiscountAmount(0)
+    navigate("/staff/order/order-list")
+  } catch (error) {
+    console.error("Error during payment:", error)
+    message.error("Có lỗi xảy ra khi thanh toán!")
   }
+}
+
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page)
@@ -277,6 +321,13 @@ const AdminMenu = () => {
         },
       }))
     }
+  }
+
+  // Handle customer selection from AutoComplete
+  const handleSelect = (value: string, option: any) => {
+    setPhone(value)
+    const selected = suggestions.find((s) => s.phone === value)
+    setName(selected ? selected.name : "")
   }
 
   return (
