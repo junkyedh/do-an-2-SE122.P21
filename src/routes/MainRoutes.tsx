@@ -16,12 +16,12 @@ import ProductDetail from '@/pages/customer/ProductDetail/ProductDetail';
 import Menu from '@/pages/customer/Menu/Menu';
 import PublicLayout from '@/layouts/Layout/PublicLayout';
 import Layout from '@/layouts/Layout/Layout';
-import ManagerCustomerList from '@/pages/brands/ManagerCustomerList/ManagerCustomerList';
-import ManagerProductList from '@/pages/brands/ManagerProduct/ManagerProduct';
-import ManagerMaterialList from '@/pages/brands/ManagerMaterialList/ManagerMaterialList';
-import ManagerOrderList from '@/pages/brands/ManagerOrderList/ManagerOrderList';
-import ManagerPromotion from '@/pages/brands/ManagerPromotion/ManagerPromotion';
-import ManagerStaffList from '@/pages/brands/ManagerStaffList/ManagerStaffList';
+import ManagerCustomerList from '@/pages/brands/ManagerCustomerList';
+import ManagerProductList from '@/pages/brands/ManagerProduct';
+import ManagerMaterialList from '@/pages/brands/ManagerMaterialList';
+import ManagerOrderList from '@/pages/brands/ManagerOrderList';
+import ManagerPromotion from '@/pages/brands/ManagerPromotion';
+import ManagerStaffList from '@/pages/brands/ManagerStaffList';
 import { Checkout } from '@/pages/customer/Checkout/Checkout';
 import { TrackingOrder } from '@/pages/customer/TrackingOrder/TrackingOrder';
 import ProfileUser from '@/pages/customer/ProfileUser/ProfileUser';
@@ -29,9 +29,8 @@ import HistoryOrder from '@/pages/customer/HistoryOrder/HistoryOrder';
 import RegisterCustomer from '@/pages/AdminLogin/RegisterCustomer';
 import BranchStatistic from '@/pages/brands/BranchStatistic';
 import AdminCustomerRating from '@/pages/admin/Rating';
-import ManagerBranchInfo from '@/pages/brands/ManagerBranchInfo/ManagerBranchInfo';
-import ManagerTableList from '@/pages/brands/ManagerTable/ManagerTable';
-import StaffMenu from '@/pages/brands/staff/Menu/AdminMenu';
+import ManagerBranchInfo from '@/pages/brands/ManagerBranchInfo';
+import ManagerTableList from '@/pages/brands/ManagerTable';
 import TableOrder from '@/pages/brands/staff/TableOrder/TableOrder';
 import CustomerList from '@/pages/brands/staff/CustomerList';
 import StaffProfile from '@/pages/brands/staff/StaffProfile/StaffProfile';
@@ -40,6 +39,7 @@ import FeedbackPage from '@/pages/customer/Feedback/FeedbackPage';
 import AdminBranchList from '@/pages/admin/AdminBranchList';
 import AdminMaterialList from '@/pages/admin/AdminMaterialList';
 import StaffList from '@/pages/brands/staff/StaffList';
+import AdminMenu from '@/pages/brands/staff/Menu/AdminMenu';
 
 const MainRoutes: React.FC = () => {
   return (
@@ -90,7 +90,7 @@ const MainRoutes: React.FC = () => {
         <Route path="/manager/info" element={<ManagerBranchInfo />} />
 
         <Route path="/staff/dashboard" element={<ManagerBranchInfo />} />
-        <Route path="/staff/order/place-order" element={<StaffMenu />} />
+        <Route path="/staff/order/place-order" element={<AdminMenu />} />
         <Route path="/staff/order/choose-table" element={<TableOrder />} />
         <Route path="/staff/order/order-list" element={<OrderList />} />
         <Route path="/staff/customer-list" element={<CustomerList />} />

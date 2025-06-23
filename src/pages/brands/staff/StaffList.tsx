@@ -6,6 +6,8 @@ import "../../admin/adminPage.scss";
 import AdminButton from '@/pages/admin/button/AdminButton';
 import FloatingLabelInput from '@/components/FloatingInput/FloatingLabelInput';
 import AdminPopConfirm from '@/pages/admin/button/AdminPopConfirm';
+import { Search } from 'lucide-react';
+import SearchInput from '@/components/Search/SearchInput';
 
 const StaffList = () => {
     const [form] = Form.useForm();
@@ -100,16 +102,34 @@ const StaffList = () => {
             message.error('Failed to delete staff. Please try again.');
         }
     };
+    const [searchKeyword, setSearchKeyword] = useState('');
+    const handleSearchKeyword = () => {
+        const keyword = searchKeyword.trim().toLowerCase();
+        if (!keyword) return fetchStaffList();
+        const filtered = staffList.filter((s) =>
+            [s.name, s.phone, s.typeStaff].some((val) =>
+                (val || '').toLowerCase().includes(keyword),
+            )
+        );
+        setStaffList(filtered);
+    };
 
     return (
         <div className="container-fluid">
-            <h2 className='header-custom'>DANH SÁCH NHÂN VIÊN</h2>
-            {/* <AdminButton 
-                variant='primary'
-                size='sm'
-                icon={<i className="fas fa-plus"></i>}
-                onClick={onOpenCreateStaffModal}>
-            </AdminButton> */}
+            <div className="sticky-header-wrapper">
+                <h2 className="header-custom">DANH SÁCH NHÂN VIÊN</h2>
+                <div className="header-actions">
+                    <div className="search-form">
+                        <SearchInput
+                            placeholder="Tìm kiếm theo tên, loại nhân viên hoặc SĐT"
+                            value={searchKeyword}
+                            onChange={(e) => setSearchKeyword(e.target.value)}
+                            onSearch={handleSearchKeyword}
+                            allowClear
+                        />
+                    </div>
+                </div>
+            </div>
 
             <Table
                 className="custom-table"

@@ -60,7 +60,7 @@ const handleRoleChange = (value: string) => {
             const res = await AdminApiRequest.get('/staff/list');
             const staffWithBranch = res.data.map((staff: any) => ({
                 ...staff,
-                branch: branchList.find((b: any) => b.id === staff.branchId) || null
+                branch: branchList.find((b: any) => Number(b.id) === Number(staff.branchId)) || null
             }));
             setStaffList(staffWithBranch);
         } catch (error) {
@@ -79,8 +79,8 @@ const handleRoleChange = (value: string) => {
     };
 
     useEffect(() => {
-        fetchStaffList();
         fetchBranchList();
+        fetchStaffList();
     }, []);
 
     const handleSearchKeyword = () => {

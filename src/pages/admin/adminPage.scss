@@ -6,7 +6,7 @@
     rgba(get-color($primary2, "50"), 0.3)
   );
   min-height: 100vh;
-  padding: 0;
+  padding: 2rem 1.5rem;
   z-index: 1;
 
   .sticky-header-wrapper {
@@ -23,6 +23,7 @@
     border-bottom: 1px solid rgba(get-color($primary2, "200"), 0.2);
     box-shadow: 0 2px 8px rgba(get-color($primary, "default"), 0.1);
     border-radius: 0rem 0rem 2rem 2rem;  
+    padding: 2rem 2rem;
   }
 
   .header-custom {
@@ -32,6 +33,7 @@
     letter-spacing: 0.05rem;
     margin: 0;
     text-shadow: 0 2px 4px rgba(get-color($primary, "default"), 0.1);
+    
 
   }
 

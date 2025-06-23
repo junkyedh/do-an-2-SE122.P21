@@ -4,7 +4,9 @@ import moment from 'moment';
 import { useEffect, useState } from 'react';
 import { AdminApiRequest } from '@/services/AdminApiRequest';
 import FloatingLabelInput from '@/components/FloatingInput/FloatingLabelInput';
-import './ManagerTable.scss';
+import '../admin/adminPage.scss';
+import AdminButton from "@/pages/admin/button/AdminButton";
+import AdminPopConfirm from "@/pages/admin/button/AdminPopConfirm";
 
 const ManagerTableList = () => {
     const [tableList, setTableList] = useState<any[]>([]);
@@ -80,16 +82,16 @@ const ManagerTableList = () => {
     };
 
     return (
-        <div className="container-fluid m-2">
+        <div className="container-fluid">
             <div className="sticky-header-wrapper">
-                <h2 className="h2 header-custom">DANH SÁCH BÀN</h2>
-                <div className="header-actions py-2 me-2 text-end">
-                    <Button
-                        type="primary"
+                <h2 className="header-custom">DANH SÁCH BÀN</h2>
+                <div className="header-actions">
+                    <AdminButton
+                        variant="primary"
                         icon={<PlusOutlined />}
                         onClick={() => openFormModal()}
                     >
-                    </Button>
+                    </AdminButton>
                 </div>
             </div>
 
@@ -100,8 +102,8 @@ const ManagerTableList = () => {
                 onCancel={() => onCancelCreateTable()}
                 onOk={submitForm}
                 footer={null}
-                // okText="Lưu"
-                // cancelText="Hủy"
+            // okText="Lưu"
+            // cancelText="Hủy"
             >
                 <Form form={form} layout="vertical">
                     <FloatingLabelInput
@@ -122,23 +124,26 @@ const ManagerTableList = () => {
                         rules={[{ required: true, min: 1 }]}
                     />
                     <div className='modal-footer-custom d-flex justify-content-end align-items-center gap-3'>
-                        <Button
-                            type='default'
+                        <AdminButton
+                            variant="secondary"
+                            size="sm"
                             onClick={onCancelCreateTable}
                         >
                             Hủy
-                        </Button>
-                        <Button
-                            type='primary'
+                        </AdminButton>
+                        <AdminButton
+                            variant="primary"
+                            size="sm"
                             onClick={submitForm}
                         >
                             {editingTable ? "Lưu thay đổi" : "Tạo mới"}
-                        </Button>
+                        </AdminButton>
                     </div>
                 </Form>
             </Modal>
 
             <Table
+                className="custom-table"
                 dataSource={tableList}
                 rowKey="id"
                 pagination={{ pageSize: 10 }}
@@ -188,15 +193,18 @@ const ManagerTableList = () => {
                         key: 'action',
                         render: (_, record) => (
                             <Space>
-                                <Button icon={<i className="fas fa-edit" />} onClick={() => openFormModal(record)} />
-                                <Popconfirm
+                                <AdminButton variant="secondary"
+                                    size="sm" icon={<i className="fas fa-edit" />} onClick={() => openFormModal(record)} />
+                                <AdminPopConfirm
                                     title="Bạn có chắc chắn muốn xóa?"
                                     onConfirm={() => onDeleteTable(record.id)}
                                     okText="Xóa"
                                     cancelText="Hủy"
                                 >
-                                    <Button danger icon={<i className="fas fa-trash" />} />
-                                </Popconfirm>
+                                    <AdminButton 
+                                        variant="destructive"
+                                        size="sm" icon={<i className="fas fa-trash" />} />
+                                </AdminPopConfirm>
                             </Space>
                         )
                     },

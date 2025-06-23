@@ -30,13 +30,13 @@ const SearchInput: React.FC<SearchInputProps> = ({
         onChange={onChange}
         onPressEnter={onSearch}
         allowClear={allowClear}
-        suffix={
-          <SearchOutlined
-            className="search-icon"
-            onClick={onSearch}
-            style={{ cursor: 'pointer', color: value ? '#2F4156' : '#557C8D' }}
-          />
-        }
+        // suffix={
+        //   <SearchOutlined
+        //     className="search-icon"
+        //     onClick={onSearch}
+        //     style={{ cursor: 'pointer', color: value ? '#2F4156' : '#557C8D' }}
+        //   />
+        // }
       />
     </div>
   );
