@@ -81,6 +81,7 @@ const handleRoleChange = (value: string) => {
     useEffect(() => {
         fetchBranchList();
         fetchStaffList();
+        console.log("Staff list fetched:", branchList);
     }, []);
 
     const handleSearchKeyword = () => {
@@ -373,7 +374,7 @@ const handleRoleChange = (value: string) => {
                         title: 'Chi nhánh làm việc',
                         dataIndex: 'branch',
                         key: 'branch',
-                        render: (branch: any) => branch?.name || '---',
+                        render: (branch: any) => branch ? branch.name : '---',
                     },
                     {
                         title: 'Giờ làm việc',
