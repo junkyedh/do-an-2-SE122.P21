@@ -1,7 +1,7 @@
 // src/hooks/cartContext.tsx
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import { MainApiRequest } from '@/services/MainApiRequest'
-
+import { v4 as uuidv4 } from 'uuid'
 /** Kiểu trả về từ API /cart */
 interface RawCartItem {
   id: string       // id của bản ghi cart
@@ -78,7 +78,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const sessionId = () => {
     let sid = localStorage.getItem('sessionId')
     if (!sid) {
-      sid = crypto.randomUUID()
+      sid = uuidv4()
       localStorage.setItem('sessionId', sid)
     }
     return sid

@@ -146,6 +146,7 @@ const CardProduct: React.FC<Props> = ({ product, onProductClick , onAddToCart}) 
 
           <div className="cardProductActions">
             <button
+              type="button"
               className="cardProductBtn"
               onClick={handleCardClick}
               disabled={!product.available}
@@ -153,6 +154,7 @@ const CardProduct: React.FC<Props> = ({ product, onProductClick , onAddToCart}) 
               Chi tiết
             </button>
             <button
+              type="button"
               className="cardProductCartBtn"
               onClick={handleAddToCart}
               disabled={!product.available}
