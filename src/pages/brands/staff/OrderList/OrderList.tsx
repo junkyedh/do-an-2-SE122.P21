@@ -6,7 +6,7 @@ import moment from 'moment';
 import { useEffect, useState } from 'react';
 import * as XLSX from 'xlsx';
 import './OrderList.scss';
-import SearchInput from '@/components/adminsytem/Search/SearchInput';
+import SearchInput from '@/components/Search/SearchInput';
 
 const statusMap: Record<
   string,
@@ -176,11 +176,11 @@ export const OrderList = () => {
           <div className="flex-grow-1 d-flex justify-content-center">
             <Form layout="inline" className="search-form d-flex">
               <SearchInput
-                placeholder="Tìm kiếm theo SĐT, mã đơn hoặc nhân viên"
-                value={searchKeyword}
-                onChange={(e) => setSearchKeyword(e.target.value)}
-                onSearch={handleSearchKeyword}
-                allowClear
+              placeholder="Tìm kiếm theo SĐT, mã đơn hoặc nhân viên"
+              value={searchKeyword}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchKeyword(e.target.value)}
+              onSearch={handleSearchKeyword}
+              allowClear
               />
             </Form>
           </div>

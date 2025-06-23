@@ -31,18 +31,14 @@ import BranchStatistic from '@/pages/brands/BranchStatistic';
 import AdminCustomerRating from '@/pages/admin/Rating';
 import ManagerBranchInfo from '@/pages/brands/ManagerBranchInfo/ManagerBranchInfo';
 import ManagerTableList from '@/pages/brands/ManagerTable/ManagerTable';
-<<<<<<< HEAD
-import FeedbackPage from '@/pages/customer/Feedback/FeedbackPage';
-import AdminBranchList from '@/pages/admin/AdminBranchList';
-import AdminMaterialList from '@/pages/admin/AdminMaterialList';
-
-=======
 import StaffMenu from '@/pages/brands/staff/Menu/Menu';
 import TableOrder from '@/pages/brands/staff/TableOrder/TableOrder';
 import CustomerList from '@/pages/brands/staff/CustomerList/CustomerList';
 import StaffProfile from '@/pages/brands/staff/StaffProfile/StaffProfile';
 import OrderList from '@/pages/brands/staff/OrderList/OrderList';
->>>>>>> 131be10 (WIP: lưu tạm trước khi rebase)
+import FeedbackPage from '@/pages/customer/Feedback/FeedbackPage';
+import AdminBranchList from '@/pages/admin/AdminBranchList';
+import AdminMaterialList from '@/pages/admin/AdminMaterialList';
 
 const MainRoutes: React.FC = () => {
   return (

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Descriptions, Button, Modal, Form, message } from 'antd';
-import FloatingLabelInput from '@/components/adminsytem/FloatingInput/FloatingLabelInput';
+import FloatingLabelInput from '@/components/FloatingInput/FloatingLabelInput';
 import moment from 'moment';
 import { AdminApiRequest } from '@/services/AdminApiRequest';
 

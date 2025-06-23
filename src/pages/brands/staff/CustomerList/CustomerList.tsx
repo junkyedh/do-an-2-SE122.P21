@@ -4,9 +4,9 @@ import moment from 'moment';
 import { useEffect, useState } from 'react';
 import * as XLSX from 'xlsx';
 import "./CustomerList.scss";
-import SearchInput from '@/components/adminsytem/Search/SearchInput';
+import SearchInput from '@/components/Search/SearchInput'
 import { AdminApiRequest } from '@/services/AdminApiRequest';
-import FloatingLabelInput from '@/components/adminsytem/FloatingInput/FloatingLabelInput';
+import FloatingLabelInput from '@/components/FloatingInput/FloatingLabelInput';
 
 const CustomerList = () => {
     const [customerList, setCustomerList] = useState<any[]>([]);
