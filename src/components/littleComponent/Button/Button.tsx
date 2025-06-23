@@ -4,7 +4,7 @@ import "./Button.scss"
 import { cn } from "@/modules/utils"
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "secondary" | "accent" | "ghost" | "link" | "destructive"
+  variant?: "primary" | "secondary" | "accent" | "ghost" | "link" | "destructive" | "outline"
   size?: "sm" | "md" | "lg"
   loading?: boolean
   icon?: React.ReactNode

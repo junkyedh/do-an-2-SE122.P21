@@ -31,10 +31,18 @@ import BranchStatistic from '@/pages/brands/BranchStatistic';
 import AdminCustomerRating from '@/pages/admin/Rating';
 import ManagerBranchInfo from '@/pages/brands/ManagerBranchInfo/ManagerBranchInfo';
 import ManagerTableList from '@/pages/brands/ManagerTable/ManagerTable';
+<<<<<<< HEAD
 import FeedbackPage from '@/pages/customer/Feedback/FeedbackPage';
 import AdminBranchList from '@/pages/admin/AdminBranchList';
 import AdminMaterialList from '@/pages/admin/AdminMaterialList';
 
+=======
+import StaffMenu from '@/pages/brands/staff/Menu/Menu';
+import TableOrder from '@/pages/brands/staff/TableOrder/TableOrder';
+import CustomerList from '@/pages/brands/staff/CustomerList/CustomerList';
+import StaffProfile from '@/pages/brands/staff/StaffProfile/StaffProfile';
+import OrderList from '@/pages/brands/staff/OrderList/OrderList';
+>>>>>>> 131be10 (WIP: lưu tạm trước khi rebase)
 
 const MainRoutes: React.FC = () => {
   return (
@@ -83,6 +91,13 @@ const MainRoutes: React.FC = () => {
         <Route path="/manager/promote" element={<ManagerPromotion />} />
         <Route path="/manager/rating" element={<AdminCustomerRating />} />
         <Route path="/manager/info" element={<ManagerBranchInfo />} />
+
+        <Route path="/staff/dashboard" element={<ManagerBranchInfo />} />
+        <Route path="/staff/order/place-order" element={<StaffMenu />} />
+        <Route path="/staff/order/choose-table" element={<TableOrder />} />
+        <Route path="/staff/order/order-list" element={<OrderList />} />
+        <Route path="/staff/customer-list" element={<CustomerList />} />
+        <Route path="/staff/info" element={<StaffProfile />} />
       </Route>
       <Route path="/404" element={<h1>Page Not Found</h1>} />
       <Route path="*" element={<h1>404 Not Found</h1>} />

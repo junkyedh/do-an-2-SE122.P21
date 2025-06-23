@@ -1,11 +1,23 @@
-import { MainApiRequest } from "@/services/MainApiRequest";
+import { AdminApiRequest } from "@/services/AdminApiRequest";
 import { Button, Card, Form, Input, message, Modal, Select } from "antd";
 import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./TableOrder.scss";
-
+import { jwtDecode } from 'jwt-decode';
 const { Option } = Select;
+
+interface TokenPayload {
+    id?: number;
+    phone?: string;
+    role?: string;
+    branchId?: number;
+    type?: 'staff' | 'customer';
+}
+
+const token = localStorage.getItem('token');
+const decoded: TokenPayload | null = token ? jwtDecode(token) : null;
+const staffId = decoded?.id;
 
 const TableOrder = () => {
     const [tableList, setTableList] = useState<any[]>([]);
@@ -24,7 +36,7 @@ const TableOrder = () => {
     const fetchTableList = async () => {
         try {
             setLoading(true);
-            const res = await MainApiRequest.get("/table/list");
+            const res = await AdminApiRequest.get("/table/list");
             setTableList(res.data);
             setFilteredTableList(res.data); // Set initial filtered table list
         } catch (error) {
@@ -70,7 +82,7 @@ const TableOrder = () => {
             const { status, seat } = values;
 
             // Gửi request thêm bàn mới
-            await MainApiRequest.post("/table", {
+            await AdminApiRequest.post("/table", {
                 status,
                 seat,
             });
@@ -86,7 +98,7 @@ const TableOrder = () => {
 
     const handleBookTable = async (table: any) => {
         try {
-            await MainApiRequest.put(`/table/book/${table.id}`);
+            await AdminApiRequest.put(`/table/book/${table.id}`);
             message.success(`Bàn ${table.id} đã được đặt thành công!`);
             fetchTableList();
         } catch (error) {
@@ -96,51 +108,41 @@ const TableOrder = () => {
 
     const handleChooseProduct = async (table: any, serviceType: "Dine In" | "Take Away") => {
         try {
-            if (serviceType === "Dine In") {
-                if (table.phoneOrder) {
-                    try {
-                        // Kiểm tra khách hàng đã tồn tại hay chưa
-                        const response = await MainApiRequest.get(`/customer/${table.phoneOrder}`);
-                        console.log("Existing customer found:", response.data);
-                    } catch (error) {
-                        const axiosError = error as AxiosError;
-                        if (axiosError.response?.status === 404) {
-                            // Nếu khách hàng không tồn tại, thêm mới
-                            const customerData = {
-                                name: table.name || "Khách vãng lai", // Sử dụng tên từ table hoặc mặc định
-                                phone: table.phoneOrder,
-                                gender: "Khác", // Mặc định giới tính
-                                registrationDate: new Date().toISOString(), // Ngày đăng ký hiện tại
-                            };
-
-                            console.log("Customer data (new):", customerData);
-
-                            await MainApiRequest.post("/customer", customerData);
-                            console.log("New customer created successfully!");
-                        } else {
-                            throw error; // Ném lỗi khác nếu không phải 404
-                        }
+            if (serviceType === "Dine In" && table.phoneOrder) {
+                try {
+                    await AdminApiRequest.get(`/customer/${table.phoneOrder}`);
+                } catch (error) {
+                    const axiosError = error as AxiosError;
+                    if (axiosError.response?.status === 404) {
+                        const customerData = {
+                            name: table.name || "Khách vãng lai",
+                            phone: table.phoneOrder,
+                            gender: "Khác",
+                            registrationDate: new Date().toISOString(),
+                        };
+                        await AdminApiRequest.post("/customer", customerData);
+                    } else {
+                        throw error;
                     }
                 }
             }
-            // Chuẩn bị dữ liệu đơn hàng thô
+
             const orderData = {
-                phone: table?.phoneOrder || null,
+                phoneCustomer: table?.phoneOrder || null,
                 serviceType,
                 totalPrice: 0,
-                orderDate: new Date().toISOString(),
-                staffID: 1, // ID nhân viên mặc định
+                staffID: staffId,
                 tableID: serviceType === "Dine In" ? table?.id : null,
-                status: "Đang chuẩn bị", // Trạng thái mặc định
+                orderDate: new Date().toISOString(),
+                status: "PENDING",
+                productIDs: [],
+                branchId: table?.branchId || 1,
             };
 
-            console.log("data: ", orderData);
-
-            // Gửi yêu cầu tạo đơn hàng
-            await MainApiRequest.post("/order", orderData);
+            await AdminApiRequest.post("/branch-order", orderData);
 
             message.success("Đơn hàng thô đã được tạo thành công!");
-            navigate("/order/place-order"); // Chuyển hướng sau khi tạo thành công
+            navigate("/staff/order/place-order");
         } catch (error) {
             console.error("Error creating order:", error);
             message.error("Không thể tạo đơn hàng!");
@@ -149,7 +151,7 @@ const TableOrder = () => {
 
     const handleCompleteTable = async (table: any) => {
         try {
-            await MainApiRequest.put(`/table/complete/${table.id}`);
+            await AdminApiRequest.put(`/table/complete/${table.id}`);
             message.success(`Bàn ${table.id} đã hoàn tất!`);
             fetchTableList();
         } catch (error) {
@@ -162,7 +164,7 @@ const TableOrder = () => {
             title: "Bạn có chắc chắn muốn xóa bàn này?",
             onOk: () => {
                 console.log("Xóa bàn:", tableId);
-                MainApiRequest.delete(`/table/${tableId}`)
+                AdminApiRequest.delete(`/table/${tableId}`)
             },
         });
     };
@@ -186,7 +188,7 @@ const TableOrder = () => {
         if (!editingTable) return; // Nếu editingTable là null, không thực hiện gì
 
         try {
-            const response = await MainApiRequest.put(`/table/${tableId}`, values);
+            const response = await AdminApiRequest.put(`/table/${tableId}`, values);
             console.log("Updated Table:", response.data);
             alert("Cập nhật bàn thành công!");
             setIsEditModalVisible(false);
