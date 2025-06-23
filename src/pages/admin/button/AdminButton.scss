@@ -40,7 +40,7 @@
           get-color($primary, "700"), 
           get-color($primary, "800")
         );
-        color: #000;
+        color: white;
         transform: translateY(-2px);
         box-shadow: 0 6px 20px rgba(get-color($primary, "600"), 0.25);
       }

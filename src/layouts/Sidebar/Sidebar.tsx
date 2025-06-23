@@ -65,6 +65,7 @@ const Sidebar: React.FC = () => {
           { title: "Danh sách đơn hàng", link: "order-list", icon: "fa-solid fa-receipt", roles: ["STAFF"] },
         ]
       },
+      { title: "Danh sách nhân viên", link: "/staff/staff-list", icon: "fa-solid fa-users", roles: ["STAFF"] },
       { title: "Danh sách khách hàng", link: "/staff/customer-list", icon: "fa-solid fa-users", roles: ["STAFF"] },
       { title: "Thông tin nhân viên", link: "/staff/info", icon: "fa-solid fa-user", roles: ["STAFF"] },
     ];

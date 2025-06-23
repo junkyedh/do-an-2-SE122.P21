@@ -3,10 +3,12 @@ import { UploadOutlined, DownloadOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
 import * as XLSX from 'xlsx';
-import "./CustomerList.scss";
+import "../../admin/adminPage.scss"; 
 import SearchInput from '@/components/Search/SearchInput'
 import { AdminApiRequest } from '@/services/AdminApiRequest';
 import FloatingLabelInput from '@/components/FloatingInput/FloatingLabelInput';
+import AdminPopConfirm from '@/pages/admin/button/AdminPopConfirm';
+import AdminButton from '@/pages/admin/button/AdminButton';
 
 const CustomerList = () => {
     const [customerList, setCustomerList] = useState<any[]>([]);
@@ -146,7 +148,7 @@ const CustomerList = () => {
 
 
     return (
-        <div className="container-fluid m-2">
+        <div className="container-fluid">
             <div className='sticky-header-wrapper'>
                 <h2 className="h2 header-custom">QUẢN LÝ KHÁCH HÀNG</h2>
                 {/* Tìm kiếm và Import + Export */}
@@ -163,14 +165,17 @@ const CustomerList = () => {
                         </Form>
                     </div>
                     <div className="d-flex" >
-                        <Button
-                            type="primary"
+                        <AdminButton
+                            variant="primary"
+                            size="sm"
                             icon={<i className="fas fa-plus"></i>}
                             onClick={() => onOpenCreateCustomerModal()}
+                            title='Thêm khách hàng mới'
                         >
-                        </Button>
-                        <Button
-                            type="primary"
+                        </AdminButton>
+                        <AdminButton
+                            variant="primary"
+                            size="sm"
                             icon={<DownloadOutlined />}
                             onClick={exportExcel}
                             title='Tải xuống danh sách'
@@ -180,6 +185,7 @@ const CustomerList = () => {
             </div>
 
             <Modal
+                className="custom-modal"
                 title={editingCustomer ? 'Chỉnh sửa khách hàng' : 'Thêm khách hàng'}
                 open={openCreateCustomerModal}
                 onOk={onOKCreateCustomer}
@@ -224,21 +230,11 @@ const CustomerList = () => {
                             disabled
                         />
                     </div>
-
-                    <div className='grid-2'>
-                        <FloatingLabelInput
-                            name="total"
-                            label="Tổng chi tiêu"
-                            component='input'
-                            type='number'
-                            disabled
-                        />
                         <FloatingLabelInput
                             name="address"
                             label="Địa chỉ"
                             component='input'
                         />
-                    </div>
 
                     {/*<FloatingLabelInput
                         name="image"
@@ -246,16 +242,24 @@ const CustomerList = () => {
                         component='input'
                     />*/}
 
-                    <div className='modal-footer-custom d-flex justify-content-end align-items-center gap-3'>
-                        <Button type='default' onClick={onCancelCreateCustomer}>Hủy</Button>
-                        <Button type='primary' onClick={onOKCreateCustomer}>
+                    <div className='modal-footer-custom'>
+                        <AdminButton 
+                            variant='secondary'
+                            size='sm'
+                            onClick={onCancelCreateCustomer}>Hủy</AdminButton>
+                        <AdminButton
+                            variant='primary'
+                            size='sm'
+                            onClick={onOKCreateCustomer}>
                             {editingCustomer ? "Lưu thay đổi" : "Tạo mới"}
-                        </Button>
+                        </AdminButton>
                     </div>
                 </Form>
             </Modal>
 
             <Table
+                className="custom-table"
+                rowKey="id"
                 dataSource={customerList}
                 pagination={{
                     pageSize: 10, // Số lượng item trên mỗi trang
@@ -285,19 +289,24 @@ const CustomerList = () => {
                         key: 'actions',
                         render: (_, record) => (
                             <Space size="middle">
-                                <Button type="default" onClick={() => onEditCustomer(record)}>
-                                    <i className="fas fa-edit"></i>
-                                </Button>
-                                <Popconfirm
+                                <AdminButton 
+                                    variant='secondary'
+                                    size='sm'
+                                    icon={<i className="fas fa-edit"></i>}
+                                    onClick={() => onEditCustomer(record)}>
+                                </AdminButton>
+                                <AdminPopConfirm
                                     title="Bạn có chắc chắn muốn xóa khách hàng này không?"
                                     onConfirm={() => onDeleteCustomer(record.id)}
                                     okText="Có"
                                     cancelText="Không"
                                 >
-                                    <Button className="ant-btn-danger">
-                                        <i className="fas fa-trash"></i>
-                                    </Button>
-                                </Popconfirm>
+                                    <AdminButton 
+                                        variant='destructive'
+                                        size='sm'
+                                        icon={<i className="fas fa-trash"></i>}>
+                                    </AdminButton>
+                                </AdminPopConfirm>
                             </Space>
                         ),
                     },

@@ -29,7 +29,6 @@ const AdminStaffList = () => {
   { value: 'Nhân viên marketing', label: 'Nhân viên marketing' },
   { value: 'Nhân viên bán hàng', label: 'Nhân viên bán hàng' },
   { value: 'Nhân viên kho', label: 'Nhân viên kho' },
-  { value: 'Nhân viên khác', label: 'Nhân viên khác' },
 ]);
 
 const handleRoleChange = (value: string) => {

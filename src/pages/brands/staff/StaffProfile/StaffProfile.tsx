@@ -3,7 +3,7 @@ import { Card, Descriptions, Button, Modal, Form, message } from 'antd';
 import FloatingLabelInput from '@/components/FloatingInput/FloatingLabelInput';
 import moment from 'moment';
 import { AdminApiRequest } from '@/services/AdminApiRequest';
-
+import './StaffProfile.scss';
 import { jwtDecode } from 'jwt-decode';
 
 interface TokenPayload {

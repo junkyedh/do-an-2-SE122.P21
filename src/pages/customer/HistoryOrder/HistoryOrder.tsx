@@ -3,8 +3,18 @@ import { useEffect, useState } from "react"
 import "./HistoryOrder.scss"
 import Breadcrumbs from "@/components/littleComponent/Breadcrumbs/Breadcrumbs"
 import { MainApiRequest } from "@/services/MainApiRequest"
-import { Clock, CheckCircle, Truck, Star, Eye, Calendar, Search } from "lucide-react"
-import { FaInfo } from "react-icons/fa"
+import { Clock, CheckCircle, Truck, Star, Eye, Calendar } from "lucide-react"
+
+// Import custom components
+import { Button } from "@/components/littleComponent/Button/Button"
+import { Card, CardBody } from "@/components/littleComponent/Card/Card"
+import { Modal, ModalBody, ModalFooter } from "@/components/littleComponent/Modal/Modal"
+import { Textarea } from "@/components/littleComponent/Textarea/Textarea"
+import { useToast } from "@/components/littleComponent/Toast/Toast"
+import { Search as SearchComponent } from "@/components/littleComponent/Search/Search"
+import { Form, message } from "antd"
+import { useNavigate } from "react-router-dom"
+import { FaEye, FaStar } from "react-icons/fa"
 
 interface OrderSummary {
   id: number
@@ -59,7 +69,11 @@ const HistoryOrder: React.FC = () => {
   const [star, setStar] = useState(5)
   const [comment, setComment] = useState("")
   const [phone, setPhone] = useState<string>("")
+  const [form] = Form.useForm()
   const [guestHistory, setGuestHistory] = useState<{ orderId: number; phone: string }[] | null>(null)
+
+  const navigate = useNavigate()
+  const toast = useToast()
 
   useEffect(() => {
     MainApiRequest.get<{ msg: string; data: { phone: string } }>("/auth/callback")
@@ -87,6 +101,7 @@ const HistoryOrder: React.FC = () => {
         })
         .catch((err) => {
           console.error(err)
+          message.error("Không tải được lịch sử đơn hàng")
         })
         .finally(() => setLoading(false))
     } else if (guestHistory) {
@@ -176,6 +191,7 @@ const HistoryOrder: React.FC = () => {
       setDetails((prev) => ({ ...prev, [orderId]: enriched }))
     } catch (err) {
       console.error(err)
+      message.error("Không tải được chi tiết đơn")
     }
   }
 
@@ -183,6 +199,7 @@ const HistoryOrder: React.FC = () => {
     setCurrentProd(prod)
     setStar(5)
     setComment("")
+    form.resetFields()
     setRatingModalVisible(true)
   }
 
@@ -195,11 +212,11 @@ const HistoryOrder: React.FC = () => {
         description: comment,
         star,
       })
-      alert("Cảm ơn đánh giá của bạn!")
+      toast.success("Cảm ơn đánh giá của bạn!")
       setRatingModalVisible(false)
     } catch (err) {
       console.error(err)
-      alert("Gửi đánh giá thất bại")
+      toast.error("Gửi đánh giá thất bại")
     }
   }
 
@@ -207,7 +224,7 @@ const HistoryOrder: React.FC = () => {
     const info = statusMap[status] || { label: status, color: "gray", icon: Clock }
     return (
       <div className={`status-badge status-${info.color}`}>
-        <FaInfo className="status-icon" />
+        {React.createElement(info.icon as React.ElementType, { className: "status-icon" })}
         <span>{info.label}</span>
       </div>
     )
@@ -227,32 +244,30 @@ const HistoryOrder: React.FC = () => {
 
         {/* Filters */}
         <div className="filters-section">
-          <div className="search-box">
-            <Search className="search-icon" />
-            <input
-              type="text"
-              placeholder="Tìm kiếm theo mã đơn hoặc chi nhánh..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="search-input"
-            />
-          </div>
+          <SearchComponent
+            placeholder="Tìm kiếm theo mã đơn hoặc chi nhánh..."
+            value={searchTerm}
+            onChange={setSearchTerm}
+            fullWidth
+          />
 
           <div className="status-filters">
-            <button
-              className={`filter-btn ${statusFilter === "all" ? "active" : ""}`}
+            <Button
+              variant={statusFilter === "all" ? "primary" : "ghost"}
+              size="sm"
               onClick={() => setStatusFilter("all")}
             >
               Tất cả ({orders.length})
-            </button>
+            </Button>
             {uniqueStatuses.map((status) => (
-              <button
+              <Button
                 key={status}
-                className={`filter-btn ${statusFilter === status ? "active" : ""}`}
+                variant={statusFilter === status ? "primary" : "ghost"}
+                size="sm"
                 onClick={() => setStatusFilter(status)}
               >
                 {statusMap[status]?.label || status} ({orders.filter((o) => o.status === status).length})
-              </button>
+              </Button>
             ))}
           </div>
         </div>
@@ -272,168 +287,162 @@ const HistoryOrder: React.FC = () => {
             </div>
           ) : (
             filteredOrders.map((order) => (
-              <div key={order.id} className="order-card">
-                <div className="order-header">
-                  <div className="order-info">
-                    <h3 className="order-id">Đơn hàng #{order.id}</h3>
-                    <div className="order-meta">
-                      <span className="order-date">
-                        <Calendar className="meta-icon" />
-                        {new Date(order.orderDate).toLocaleDateString("vi-VN", {
-                          year: "numeric",
-                          month: "2-digit",
-                          day: "2-digit",
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
-                      </span>
-                      <span className="order-branch">{order.branchName || "Chi nhánh không xác định"}</span>
-                      <span className="order-type">
-                        {order.serviceType === "TAKE AWAY" ? "Giao hàng" : "Tại cửa hàng"}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="order-status">{getStatusBadge(order.status)}</div>
-                </div>
-
-                <div className="order-body">
-                  <div className="order-items">
-                    {(details[order.id] || []).slice(0, 3).map((item) => (
-                      <div key={item.productId} className="order-item-preview">
-                        <img src={item.image || "/placeholder.svg"} alt={item.name} className="item-image" />
-                        <div className="item-info">
-                          <span className="item-name">{item.name}</span>
-                          <span className="item-details">
-                            {item.size}
-                            {item.mood ? `, ${item.mood === "hot" ? "Nóng" : "Lạnh"}` : ""} × {item.quantity}
-                          </span>
-                        </div>
+              <Card key={order.id} className="order-card">
+                <CardBody>
+                  <div className="order-header">
+                    <div className="order-info">
+                      <h3 className="order-id">Đơn hàng #{order.id}</h3>
+                      <div className="order-meta">
+                        <span className="order-date">
+                          <Calendar className="meta-icon" />
+                          {new Date(order.orderDate).toLocaleDateString("vi-VN", {
+                            year: "numeric",
+                            month: "2-digit",
+                            day: "2-digit",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </span>
+                        <span className="order-branch">{order.branchName || "Chi nhánh không xác định"}</span>
+                        <span className="order-type">
+                          {order.serviceType === "TAKE AWAY" ? "Giao hàng" : "Tại cửa hàng"}
+                        </span>
                       </div>
-                    ))}
-                    {(details[order.id] || []).length > 3 && (
-                      <div className="more-items">+{(details[order.id] || []).length - 3} sản phẩm khác</div>
-                    )}
+                    </div>
+                    <div className="order-status">{getStatusBadge(order.status)}</div>
                   </div>
 
-                  <div className="order-summary">
-                    <div className="order-total">
-                      <span className="total-label">Tổng tiền:</span>
-                      <span className="total-amount">
-                        {(details[order.id] || [])
-                          .reduce((sum, item) => sum + item.price * item.quantity, 0)
-                          .toLocaleString("vi-VN")}
-                        ₫
-                      </span>
-                    </div>
-                    <div className="order-actions">
-                      <button
-                        className="btn btn-secondary"
-                        onClick={() => window.open(`/tracking-order/${order.id}`, "_blank")}
-                      >
-                        <Eye className="btn-icon" />
-                        Xem chi tiết
-                      </button>
-                      {order.status === "COMPLETED" && (
-                        <button
-                          className="btn btn-accent"
-                          onClick={() => {
-                            const firstItem = details[order.id]?.[0]
-                            if (firstItem) openRating(firstItem)
-                          }}
-                        >
-                          <Star className="btn-icon" />
-                          Đánh giá
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Expandable details */}
-                <div className="order-details">
-                  <details>
-                    <summary className="details-toggle">Xem chi tiết đơn hàng</summary>
-                    <div className="details-content">
-                      {(details[order.id] || []).map((item) => (
-                        <div key={item.productId} className="detail-item">
-                          <img src={item.image || "/placeholder.svg"} alt={item.name} className="detail-image" />
-                          <div className="detail-info">
-                            <div className="detail-name">{item.name}</div>
-                            <div className="detail-specs">
-                              Size: {item.size}
-                              {item.mood && `, ${item.mood === "hot" ? "Nóng" : "Lạnh"}`}
-                            </div>
-                            <div className="detail-quantity">Số lượng: {item.quantity}</div>
-                            <div className="detail-price">
-                              Giá: {(item.price * item.quantity).toLocaleString("vi-VN")}₫
-                            </div>
+                  <div className="order-body">
+                    <div className="order-items">
+                      {(details[order.id] || []).slice(0, 3).map((item) => (
+                        <div key={item.productId} className="order-item-preview">
+                          <img src={item.image || "/placeholder.svg"} alt={item.name} className="item-image" />
+                          <div className="item-info">
+                            <span className="item-name">{item.name}</span>
+                            <span className="item-details">
+                              {item.size}
+                              {item.mood ? `, ${item.mood === "hot" ? "Nóng" : "Lạnh"}` : ""} × {item.quantity}
+                            </span>
                           </div>
-                          {order.status === "COMPLETED" && (
-                            <button className="btn" onClick={() => openRating(item)}>
-                              <Star className="btn-icon" />
-                              Đánh giá
-                            </button>
-                          )}
                         </div>
                       ))}
+                      {(details[order.id] || []).length > 3 && (
+                        <div className="more-items">+{(details[order.id] || []).length - 3} sản phẩm khác</div>
+                      )}
                     </div>
-                  </details>
-                </div>
-              </div>
+
+                    <div className="order-summary">
+                      <div className="order-total">
+                        <span className="total-label">Tổng tiền:</span>
+                        <span className="total-amount">
+                          {(details[order.id] || [])
+                            .reduce((sum, item) => sum + item.price * item.quantity, 0)
+                            .toLocaleString("vi-VN")}
+                          ₫
+                        </span>
+                      </div>
+                      <div className="order-actions">
+                        <Button
+                          variant="secondary"
+                          size="sm"
+                          icon={<FaEye />}
+                          onClick={() => window.open(`/tracking-order/${order.id}`, "_blank")}
+                        >
+                          Xem chi tiết
+                        </Button>
+                        {/* {order.status === "COMPLETED" && (
+                          <Button
+                            variant="accent"
+                            size="sm"
+                            icon={<Star />}
+                            onClick={() => navigate(`/feedback?orderId=${order.id}`)}
+                          >
+                            Đánh giá
+                          </Button>
+                        )} */}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Expandable details */}
+                  <div className="order-details">
+                    <details>
+                      <summary className="details-toggle">Xem chi tiết đơn hàng</summary>
+                      <div className="details-content">
+                        {(details[order.id] || []).map((item) => (
+                          <div key={item.productId} className="detail-item">
+                            <img src={item.image || "/placeholder.svg"} alt={item.name} className="detail-image" />
+                            <div className="detail-info">
+                              <div className="detail-name">{item.name}</div>
+                              <div className="detail-specs">
+                                Size: {item.size}
+                                {item.mood && `, ${item.mood === "hot" ? "Nóng" : "Lạnh"}`}
+                              </div>
+                              <div className="detail-quantity">Số lượng: {item.quantity}</div>
+                              <div className="detail-price">
+                                Giá: {(item.price * item.quantity).toLocaleString("vi-VN")}₫
+                              </div>
+                            </div>
+                            {order.status === "COMPLETED" && (
+                              <Button variant="primary" size="sm" icon={<FaStar />} 
+                                onClick={() => navigate(`/feedback?orderId=${order.id}&productId=${item.productId}`)}
+                              >
+                                Đánh giá
+                              </Button>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </details>
+                  </div>
+                </CardBody>
+              </Card>
             ))
           )}
         </div>
 
         {/* Rating Modal */}
-        {ratingModalVisible && (
-          <div className="modal-overlay" onClick={() => setRatingModalVisible(false)}>
-            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-              <div className="modal-header">
-                <h3>Đánh giá "{currentProd?.name}"</h3>
-                <button className="modal-close" onClick={() => setRatingModalVisible(false)}>
-                  ×
-                </button>
-              </div>
-              <div className="modal-body">
-                <div className="rating-form">
-                  <div className="form-group">
-                    <label className="form-label">Số sao đánh giá</label>
-                    <div className="rating-stars">
-                      {[1, 2, 3, 4, 5].map((rating) => (
-                        <button
-                          key={rating}
-                          type="button"
-                          className={`star-btn ${rating <= star ? "active" : ""}`}
-                          onClick={() => setStar(rating)}
-                        >
-                          <Star />
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="form-group">
-                    <label className="form-label">Nhận xét của bạn</label>
-                    <textarea
-                      rows={4}
-                      value={comment}
-                      onChange={(e) => setComment(e.target.value)}
-                      placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm này..."
-                      className="form-textarea"
-                    />
-                  </div>
+        {/* <Modal
+          isOpen={ratingModalVisible}
+          onClose={() => setRatingModalVisible(false)}
+          title={`Đánh giá "${currentProd?.name}"`}
+          size="md"
+        >
+          <ModalBody>
+            <div className="rating-form">
+              <div className="form-group">
+                <label className="form-label">Số sao đánh giá</label>
+                <div className="rating-stars">
+                  {[1, 2, 3, 4, 5].map((rating) => (
+                    <button
+                      key={rating}
+                      type="button"
+                      className={`star-btn ${rating <= star ? "active" : ""}`}
+                      onClick={() => setStar(rating)}
+                    >
+                      <Star />
+                    </button>
+                  ))}
                 </div>
               </div>
-              <div className="modal-footer">
-                <button className="btn btn-secondary" onClick={() => setRatingModalVisible(false)}>
-                  Hủy
-                </button>
-                <button className="btn" onClick={submitRating}>
-                  Gửi đánh giá
-                </button>
-              </div>
+              <Textarea
+                label="Nhận xét của bạn"
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm này..."
+                fullWidth
+              />
             </div>
-          </div>
-        )}
+          </ModalBody>
+          <ModalFooter>
+            <Button variant="secondary" onClick={() => setRatingModalVisible(false)}>
+              Hủy
+            </Button>
+            <Button variant="primary" onClick={submitRating}>
+              Gửi đánh giá
+            </Button>
+          </ModalFooter>
+        </Modal> */}
       </div>
     </>
   )

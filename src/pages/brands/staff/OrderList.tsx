@@ -1,78 +1,19 @@
 import { AdminApiRequest } from '@/services/AdminApiRequest';
-import { Button, Form, message, Table, Tag, Popconfirm, Dropdown, Menu } from 'antd';
-import { DownloadOutlined, MoreOutlined } from '@ant-design/icons';
-import { Clock, CheckCircle, Truck, MapPin, Phone, Mail, ArrowLeft, Package, CreditCard } from "lucide-react"
+import { Button, Form, message, Table, Tag, Popconfirm, Input, Select } from 'antd';
+import { DownloadOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
 import * as XLSX from 'xlsx';
-import './OrderList.scss';
+import '../../admin/adminPage.scss';
 import SearchInput from '@/components/Search/SearchInput';
-
-const statusMap: Record<
-  string,
-  {
-    label: string
-    color: string
-    icon: React.ElementType
-    description: string
-    bgColor: string
-  }
-> = {
-  PENDING: {
-    label: "Chờ xác nhận",
-    color: "#f97316",
-    icon: Clock,
-    description: "Đơn hàng đang chờ được xác nhận từ cửa hàng",
-    bgColor: "linear-gradient(135deg, #fed7aa, #fdba74)",
-  },
-  CONFIRMED: {
-    label: "Đã xác nhận",
-    color: "#3b82f6",
-    icon: CheckCircle,
-    description: "Đơn hàng đã được xác nhận và đang chuẩn bị",
-    bgColor: "linear-gradient(135deg, #dbeafe, #bfdbfe)",
-  },
-  PREPARING: {
-    label: "Đang chuẩn bị",
-    color: "#f59e0b",
-    icon: Package,
-    description: "Đang pha chế và chuẩn bị đồ uống của bạn",
-    bgColor: "linear-gradient(135deg, #fef3c7, #fde68a)",
-  },
-  READY: {
-    label: "Sẵn sàng",
-    color: "#10b981",
-    icon: CheckCircle,
-    description: "Đơn hàng đã sẵn sàng để giao hoặc nhận",
-    bgColor: "linear-gradient(135deg, #d1fae5, #a7f3d0)",
-  },
-  DELIVERING: {
-    label: "Đang giao",
-    color: "#8b5cf6",
-    icon: Truck,
-    description: "Đơn hàng đang được giao đến địa chỉ của bạn",
-    bgColor: "linear-gradient(135deg, #ede9fe, #ddd6fe)",
-  },
-  COMPLETED: {
-    label: "Hoàn thành",
-    color: "#059669",
-    icon: CheckCircle,
-    description: "Đơn hàng đã được giao thành công",
-    bgColor: "linear-gradient(135deg, #d1fae5, #a7f3d0)",
-  },
-  CANCELLED: {
-    label: "Đã hủy",
-    color: "#ef4444",
-    icon: Clock,
-    description: "Đơn hàng đã bị hủy",
-    bgColor: "linear-gradient(135deg, #fee2e2, #fecaca)",
-  },
-}
+import StatusDropdown from '@/components/littleComponent/StatusDropdown/StatusDropdown';
+import AdminButton from '@/pages/admin/button/AdminButton';
 
 export const OrderList = () => {
   const [managerOrderList, setManagerOrderList] = useState<any[]>([]);
   const [originalManagerOrderList, setOriginalManagerOrderList] = useState<any[]>([]);
   const [searchKeyword, setSearchKeyword] = useState('');
+  const [staffInput, setStaffInput] = useState<{ [orderId: number]: string }>({}); // lưu staff tạm
 
   const fetchManagerOrderList = async () => {
     const res = await AdminApiRequest.get('/branch-order/list');
@@ -100,7 +41,6 @@ export const OrderList = () => {
     setManagerOrderList(filtered);
   };
 
-  // Reset search when keyword is empty
   useEffect(() => {
     if (!searchKeyword.trim()) {
       fetchManagerOrderList();
@@ -125,68 +65,89 @@ export const OrderList = () => {
     message.success('Xuất danh sách đơn hàng thành công.');
   };
 
-  const handleCompleteOrder = async (id: number) => {
-    try {
-      await AdminApiRequest.put(`/branch-order/complete/${id}`);
-      message.success('Đơn hàng đã được cập nhật thành hoàn thành.');
-      fetchManagerOrderList();
-    } catch (error) {
-      console.error('Error completing order:', error);
-      message.error('Không thể cập nhật trạng thái hoàn thành.');
-    }
-  };
-
+  // Hàm cập nhật trạng thái và lưu staffName
   const handleChangeStatus = async (id: number, newStatus: string) => {
+    const staffName = staffInput[id] || managerOrderList.find(o => o.id === id)?.staffName || "";
+    if (!staffName) {
+      message.warning("Vui lòng nhập tên nhân viên trước khi đổi trạng thái!");
+      return;
+    }
     try {
-      await AdminApiRequest.put(`/branch-order/status/${id}`, { status: newStatus });
-      message.success(`Đã cập nhật trạng thái đơn hàng thành ${statusMap[newStatus]?.label || newStatus}`);
+      await AdminApiRequest.put(`/branch-order/status/${id}`, {
+        status: newStatus,
+        staffName: staffName
+      });
+      message.success('Cập nhật trạng thái và nhân viên thành công.');
       fetchManagerOrderList();
+      setStaffInput(prev => ({ ...prev, [id]: "" })); // clear input nếu cần
     } catch (error) {
-      message.error('Cập nhật trạng thái thất bại');
+      message.error('Không thể cập nhật trạng thái.');
     }
   };
 
+  // Hàm hủy (truyền cả staffName nếu cần)
   const handleCancelOrder = async (id: number) => {
+    const staffName = staffInput[id] || managerOrderList.find(o => o.id === id)?.staffName || "";
+    if (!staffName) {
+      message.warning("Vui lòng nhập tên nhân viên trước khi hủy!");
+      return;
+    }
     try {
-      await AdminApiRequest.put(`/branch-order/cancel/${id}`);
+      await AdminApiRequest.put(`/branch-order/status/${id}`, {
+        status: "CANCELLED",
+        staffName
+      });
       message.success('Đơn hàng đã được hủy.');
       fetchManagerOrderList();
+      setStaffInput(prev => ({ ...prev, [id]: "" }));
     } catch (error) {
-      console.error('Error canceling order:', error);
       message.error('Không thể hủy đơn hàng.');
     }
   };
-  const statusMenu = (id: number) => (
-    <Menu
-      onClick={({ key }) => handleChangeStatus(id, key)}
-      items={Object.entries(statusMap).map(([status, config]) => ({
-        key: status,
-        label: config.label,
-      }))}
-    />
-  );
 
+  // Cấu hình trạng thái
+  const statusOptions = [
+    { value: 'PENDING', label: 'Chờ xác nhận' },
+    { value: 'CONFIRMED', label: 'Đã xác nhận' },
+    { value: 'PREPARING', label: 'Đang chuẩn bị' },
+    { value: 'READY', label: 'Sẵn sàng' },
+    { value: 'DELIVERING', label: 'Đang giao' },
+    { value: 'COMPLETED', label: 'Hoàn thành' },
+    { value: 'CANCELLED', label: 'Đã hủy' },
+  ];
+
+  // Map trạng thái sang label và màu sắc
+  const statusMap: Record<string, { label: string; color: string }> = {
+    PENDING: { label: 'Chờ xác nhận', color: 'orange' },
+    CONFIRMED: { label: 'Đã xác nhận', color: 'blue' },
+    PREPARING: { label: 'Đang chuẩn bị', color: 'purple' },
+    READY: { label: 'Sẵn sàng', color: 'cyan' },
+    DELIVERING: { label: 'Đang giao', color: 'geekblue' },
+    COMPLETED: { label: 'Hoàn thành', color: 'green' },
+    CANCELLED: { label: 'Đã hủy', color: 'red' },
+  };
 
   return (
     <div className="container-fluid m-2">
       <div className='sticky-header-wrapper'>
         <h2 className="h2 header-custom">DANH SÁCH ĐƠN HÀNG</h2>
-        {/* Tìm kiếm và  Export */}
         <div className="header-actions d-flex me-3 py-2 align-items-center justify-content-between">
           <div className="flex-grow-1 d-flex justify-content-center">
             <Form layout="inline" className="search-form d-flex">
               <SearchInput
-              placeholder="Tìm kiếm theo SĐT, mã đơn hoặc nhân viên"
-              value={searchKeyword}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchKeyword(e.target.value)}
-              onSearch={handleSearchKeyword}
-              allowClear
+                placeholder="Tìm kiếm theo SĐT, mã đơn hoặc nhân viên"
+                value={searchKeyword}
+                onChange={(e) => setSearchKeyword(e.target.value)}
+                onSearch={handleSearchKeyword}
+                allowClear
               />
             </Form>
           </div>
           <div className="d-flex" >
-            <Button
-              type="default" icon={<DownloadOutlined />}
+            <AdminButton
+              variant="primary"
+              size='sm' 
+              icon={<DownloadOutlined />}
               onClick={handleExportManagerOrderList}
               title='Tải xuống danh sách'
             />
@@ -194,8 +155,8 @@ export const OrderList = () => {
         </div>
       </div>
 
-      {/* Bảng đơn hàng */}
       <Table
+        className='custom-table'
         dataSource={managerOrderList}
         rowKey="id"
         columns={[
@@ -231,10 +192,24 @@ export const OrderList = () => {
           },
           {
             title: 'Nhân viên',
-            dataIndex: ['staff', 'name'],
+            dataIndex: 'staffName',
             key: 'staffName',
-            sorter: (a, b) => a.staffName.localeCompare(b.staffName)
+            render: (staffName: string, record: any) => (
+              <Input
+                value={staffInput[record.id] ?? staffName ?? ""}
+                placeholder="Tên nhân viên"
+                size="small"
+                style={{ width: 120 }}
+                onChange={e =>
+                  setStaffInput(prev => ({
+                    ...prev,
+                    [record.id]: e.target.value
+                  }))
+                }
+              />
+            ),
           },
+
           {
             title: 'Trạng thái',
             dataIndex: 'status',
@@ -253,9 +228,12 @@ export const OrderList = () => {
             title: 'Hành động',
             key: 'action',
             render: (_: any, record: any) => (
-              <Dropdown overlay={statusMenu(record.id)} trigger={['click']}>
-                <Button icon={<MoreOutlined />} />
-              </Dropdown>
+              <StatusDropdown 
+                value={record.status}
+                onChange={(newStatus) => handleChangeStatus(record.id, newStatus)}
+                statusMap={statusMap}
+              >
+              </StatusDropdown>
             )
           }
         ]}
