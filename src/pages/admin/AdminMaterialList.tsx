@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Form, Modal, Table, Space, Popconfirm, message } from 'antd';
-import moment from 'moment';
+import {  Form, Modal, Table, Space,message } from 'antd';
 import * as XLSX from 'xlsx';
-import "./AdminMaterialList.scss";
 import { DownloadOutlined } from '@ant-design/icons';
 import { AdminApiRequest } from '@/services/AdminApiRequest';
-import SearchInput from '@/components/adminsytem/Search/SearchInput';
-import FloatingLabelInput from '@/components/adminsytem/FloatingInput/FloatingLabelInput';
-
+import SearchInput from '@/components/Search/SearchInput';
+import FloatingLabelInput from '@/components/FloatingInput/FloatingLabelInput';
+import './adminPage.scss';
+import AdminButton from './button/AdminButton';
+import AdminPopConfirm from './button/AdminPopConfirm';
+import { useToast } from '@/components/littleComponent/Toast/Toast';
 
 const AdminMaterialList = () => {
     const [form] = Form.useForm();
@@ -15,14 +16,19 @@ const AdminMaterialList = () => {
     const [openCreateMaterialModal, setOpenCreateMaterialModal] = useState(false);
     const [editingMaterial, setEditingMaterial] = useState<any | null>(null);
     const [searchKeyword, setSearchKeyword] = useState('');
+    const [loading, setLoading] = useState(false)
+    const toast = useToast();
 
     const fetchMaterialList = async () => {
         try {
-            const res = await AdminApiRequest.get('/material/list');
-            setMaterialList(res.data);
+        setLoading(true)
+        const res = await AdminApiRequest.get("/material/list")
+        setMaterialList(res.data)
         } catch (error) {
-            console.error('Error fetching material list:', error);
-            message.error('Không thể tải danh sách nguyên liệu. Vui lòng thử lại.');
+        console.error("Error fetching material list:", error)
+        toast.fetchError("nguyên liệu")
+        } finally {
+        setLoading(false)
         }
     }
 
@@ -65,37 +71,36 @@ const AdminMaterialList = () => {
     const onOKCreateMaterial = async () => {
         try {
             const data = form.getFieldsValue();
-            // if (data.importDate) {
-            //     data.importDate = data.importDate.toISOString();
-            // } else {
-            //     message.error('Vui lòng chọn ngày nhập!');
-            //     return;
-            // }
-            // if (data.expiryDate) {
-            //     data.expiryDate = data.expiryDate.toISOString();
-            // } else {
-            //     message.error('Vui lòng chọn ngày hết hạn!');
-            //     return;
-            // }
 
+            const loadingKey = 'material-save';
+            toast.loading(editingMaterial ? 'Đang lưu thay đổi...' : 'Đang tạo nguyên liệu mới...', { key: loadingKey });
             if (editingMaterial) {
                 const { id, ...rest } = data;
                 await AdminApiRequest.put(`/material/${editingMaterial.id}`, rest);
+                toast.destroy(loadingKey);
+                toast.updateSuccess('nguyên liệu');
             } else {
                 await AdminApiRequest.post('/material', data);
+                toast.destroy(loadingKey);
+                toast.createSuccess('nguyên liệu');
             }
 
             fetchMaterialList();
             setOpenCreateMaterialModal(false);
             form.resetFields();
-            message.success('Nguyên liệu đã được lưu thành công!');
             setEditingMaterial(null);
 
         } catch (error) {
             console.error('Lỗi khi tạo nguyên liệu:', error);
             message.error('Không thể tạo nguyên liệu. Vui lòng thử lại.');
+            toast.destroy('material-save');
+            if (editingMaterial) {
+                toast.updateError('nguyên liệu');
+            } else {
+                toast.createError('nguyên liệu');
+            }
         }
-    }
+    };
 
     const onCancelCreateMaterial = () => {
         setOpenCreateMaterialModal(false);
@@ -104,12 +109,17 @@ const AdminMaterialList = () => {
 
     const onDeleteMaterial = async (id: number) => {
         try {
+            const loadingKey = 'material-delete';
+            toast.loading('Đang xóa nguyên liệu...', { key: loadingKey });
+
             await AdminApiRequest.delete(`/material/${id}`);
+            toast.destroy(loadingKey);
             fetchMaterialList();
-            message.success('Nguyên liệu đã được xóa thành công!');
+            toast.deleteSuccess('nguyên liệu');
         } catch (error) {
             console.error('Lỗi khi xóa nguyên liệu:', error);
-            message.error('Không thể xóa nguyên liệu. Vui lòng thử lại.');
+            toast.destroy('material-delete');
+            toast.deleteError('nguyên liệu');
         }
     };
 
@@ -135,11 +145,11 @@ const AdminMaterialList = () => {
     }, [searchKeyword]);
 
     return (
-        <div className="container-fluid m-2">
+        <div className="container-fluid">
             <div className='sticky-header-wrapper'>
                 <h2 className="h2 header-custom">QUẢN LÝ NGUYÊN LIỆU</h2>
                 {/* Tìm kiếm và Import + Export */}
-                <div className="header-actions d-flex me-2 py-2 align-items-center justify-content-between">
+                <div className="header-actions">
                     <div className="flex-grow-1 d-flex justify-content-center">
                         <Form layout="inline" className="search-form d-flex">
                         <SearchInput
@@ -152,17 +162,18 @@ const AdminMaterialList = () => {
                         </Form>
                     </div>
                     <div className="d-flex" >
-                        <Button 
-                            type="primary" 
+                        <AdminButton 
+                            variant="primary" 
+                            size="sm"
                             icon={<i className="fas fa-plus"></i>}
                             onClick={() => onOpenCreateMaterialModal()}
                         >
-                        </Button>
-                        <Button 
-                            type="primary" 
+                        </AdminButton>
+                        <AdminButton 
+                            variant="primary"
+                            size="sm"
                             icon={<DownloadOutlined />}
                             onClick={exportExcel}
-                            title='Tải xuống danh sách'
                         />
                     </div>
                 </div>
@@ -232,22 +243,26 @@ const AdminMaterialList = () => {
                         />
                     </div> */}
                     <div className='modal-footer-custom d-flex justify-content-end align-items-center gap-3'>
-                        <Button
-                            type='default'
+                        <AdminButton
+                            variant='secondary'
+                            size='sm'
                             onClick={() => onCancelCreateMaterial()}
                         >
                             Hủy
-                        </Button>
-                        <Button
-                            type='primary'
+                        </AdminButton>
+                        <AdminButton
+                            variant='primary'
+                            size='sm'
                             onClick={onOKCreateMaterial}
                         >
                             {editingMaterial ? "Lưu thay đổi" : "Tạo mới"}
-                        </Button>
+                        </AdminButton>
                     </div>  
                 </Form>
             </Modal>
             <Table
+                className="custom-table"
+                rowKey="id"
                 dataSource={materialList}
                 pagination={{
                     pageSize: 9, // Số lượng item trên mỗi trang
@@ -273,19 +288,24 @@ const AdminMaterialList = () => {
                         key: 'actions',
                         render: (_, record) => (
                             <Space size="middle">
-                                <Button type="default" onClick={() => onOpenCreateMaterialModal(record)}>
-                                    <i className="fas fa-edit"></i>
-                                </Button>
-                                <Popconfirm
-                                    title="Bạn có chắc chắn muốn xóa nguyên liệu này không?"
+                                <AdminButton 
+                                    variant="secondary" 
+                                    size="sm" 
+                                    icon={<i className="fas fa-edit"></i>}
+                                    onClick={() => onOpenCreateMaterialModal(record)}>
+                                </AdminButton>
+                                <AdminPopConfirm
+                                    title="Bạn có chắc chắn muốn xóa khách hàng này không?"
                                     onConfirm={() => onDeleteMaterial(record.id)}
                                     okText="Có"
                                     cancelText="Không"
                                 >
-                                    <Button className="ant-btn-danger">
-                                        <i className="fas fa-trash"></i>
-                                    </Button>
-                                </Popconfirm>
+                                    <AdminButton 
+                                        variant="destructive"
+                                        size="sm"
+                                        icon={<i className="fas fa-trash"></i>}>
+                                    </AdminButton>
+                                </AdminPopConfirm>
                             </Space>
                         ),
                     },
@@ -293,6 +313,7 @@ const AdminMaterialList = () => {
             />
         </div>
     );
+    
 };
 
-export default AdminMaterialList;
+export default AdminMaterialList

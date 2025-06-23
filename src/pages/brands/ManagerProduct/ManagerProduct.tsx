@@ -6,8 +6,8 @@ import imgDefault from '@/assets/cup10.jpg';
 import "../../../scss/_variables.scss";
 
 import { AdminApiRequest } from '@/services/AdminApiRequest';
-import FloatingLabelInput from '@/components/adminsytem/FloatingInput/FloatingLabelInput';
-import SearchInput from '@/components/adminsytem/Search/SearchInput';
+import FloatingLabelInput from '@/components/FloatingInput/FloatingLabelInput';
+import SearchInput from '@/components/Search/SearchInput';
 import { m } from 'framer-motion';
 
 type Product = {

@@ -1,8 +1,8 @@
-@import "../../../scss/variables.scss";
+@import "../../scss/variables.scss";
 
 .floating-wrapper {
   position: relative;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
   margin-top: 10px;
 
     .ant-input,
@@ -16,7 +16,7 @@
         border-radius: 8px;
         background: transparent;
         box-shadow: none;
-        color: #2F4156;
+        color: #000;
     }
   
     .ant-select {
@@ -30,7 +30,7 @@
         border: 1px solid #aaa;
 
         &:hover {
-            border: 1px solid get-color($primary, "100") !important;
+            border: 1px solid get-color($primary, "900") !important;
         }
 
         }
@@ -47,7 +47,7 @@
             font-size: 16px;
         }
             &:hover {
-                border-color: get-color($primary, "100");
+                border-color: get-color($primary, "900");
             }
 
         
@@ -72,7 +72,7 @@
         border-radius: 10px;
 
         &:hover {
-            border-color: get-color($primary, "100");
+            border-color: get-color($primary, "900");
         }
 
     }
@@ -92,10 +92,16 @@
     z-index: 1;
   }
 
+  &:hover .floating-label {
+    color: #2F4156;
+    transform: translateY(-25px);
+    font-size: 12px;
+    font-weight: 500;
+  }
+
   &.active .floating-label {
     transform: translateY(-25px);
     font-size: 12px;
     color: #2F4156;
-    
   }
 }

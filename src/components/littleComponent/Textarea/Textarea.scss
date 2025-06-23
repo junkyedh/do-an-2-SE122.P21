@@ -17,7 +17,7 @@
 
   &.textarea-label-required::after {
     content: ' *';
-    color: get-color($accent, "500");
+    color: get-color($accent1, "500");
   }
 }
 
@@ -62,11 +62,11 @@
   }
 
   &.textarea-error {
-    border-color: get-color($accent, "500");
-    background: get-color($accent, "50");
+    border-color: get-color($accent1, "500");
+    background: get-color($accent1, "50");
 
     &:focus {
-      box-shadow: 0 0 0 3px rgba(get-color($accent, "500"), 0.1);
+      box-shadow: 0 0 0 3px rgba(get-color($accent1, "500"), 0.1);
     }
   }
 
@@ -89,7 +89,7 @@
 }
 
 .textarea-error-text {
-  color: get-color($accent, "600");
+  color: get-color($accent1, "600");
   font-size: get-font-size($body-font-size, sm);
   font-weight: get-font-weight($font-weight, medium);
 }

@@ -5,8 +5,8 @@ import * as XLSX from 'xlsx';
 import "./ManagerMaterialList.scss";
 import { DownloadOutlined } from '@ant-design/icons';
 import { AdminApiRequest } from '@/services/AdminApiRequest';
-import SearchInput from '@/components/adminsytem/Search/SearchInput';
-import FloatingLabelInput from '@/components/adminsytem/FloatingInput/FloatingLabelInput';
+import SearchInput from '@/components/Search/SearchInput';
+import FloatingLabelInput from '@/components/FloatingInput/FloatingLabelInput';
 
 
 const ManagerMaterialList = () => {

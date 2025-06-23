@@ -5,15 +5,12 @@ import About from '../pages/customer/About/About';
 import Contact from '../pages/customer/Contact/Contact';
 import AdminLogin from '../pages/AdminLogin/AdminLogin';
 import ProtectedRoute from './ProtectedRoute';
-import AdminBranchList from '@/pages/admin/AdminBranchList/AdminBranchList';
-import AdminMaterialList from '@/pages/admin/AdminMaterialList/AdminMaterialList';
-import AdminProductList from '@/pages/admin/AdminProduct/AdminProduct';
-import AdminOrderList from '@/pages/admin/AdminOrderList/AdminOrderList';
-import AdminStaffList from '@/pages/admin/AdminStaffList/AdminStaffList';
-import AdminCustomerList from '@/pages/admin/AdminCustomerList/AdminCustomerList';
-import AdminPromotion from '@/pages/admin/AdminPromotion/AdminPromotion';
-import { Rating } from '@mui/material';
-import Statistic from '@/pages/brands/Statistic/Statistic';
+import AdminProductList from '@/pages/admin/AdminProduct';
+import AdminOrderList from '@/pages/admin/AdminOrderList';
+import AdminStaffList from '@/pages/admin/AdminStaffList';
+import AdminCustomerList from '@/pages/admin/AdminCustomerList';
+import AdminPromotion from '@/pages/admin/AdminPromotion';
+import Statistic from '@/pages/admin/AdminStatistic';
 import "@/App.scss";
 import ProductDetail from '@/pages/customer/ProductDetail/ProductDetail';
 import Menu from '@/pages/customer/Menu/Menu';
@@ -30,11 +27,13 @@ import { TrackingOrder } from '@/pages/customer/TrackingOrder/TrackingOrder';
 import ProfileUser from '@/pages/customer/ProfileUser/ProfileUser';
 import HistoryOrder from '@/pages/customer/HistoryOrder/HistoryOrder';
 import RegisterCustomer from '@/pages/AdminLogin/RegisterCustomer';
-import BranchStatistic from '@/pages/brands/Statistic/BranchStatistic';
-import AdminCustomerRating from '@/pages/admin/Rating/Rating';
+import BranchStatistic from '@/pages/brands/BranchStatistic';
+import AdminCustomerRating from '@/pages/admin/Rating';
 import ManagerBranchInfo from '@/pages/brands/ManagerBranchInfo/ManagerBranchInfo';
 import ManagerTableList from '@/pages/brands/ManagerTable/ManagerTable';
 import FeedbackPage from '@/pages/customer/Feedback/FeedbackPage';
+import AdminBranchList from '@/pages/admin/AdminBranchList';
+import AdminMaterialList from '@/pages/admin/AdminMaterialList';
 
 
 const MainRoutes: React.FC = () => {

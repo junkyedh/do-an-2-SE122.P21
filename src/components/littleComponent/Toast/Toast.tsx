@@ -2,11 +2,11 @@ import React from "react"
 import { createContext, useContext, useState, useCallback } from "react"
 import { createPortal } from "react-dom"
 import "./Toast.scss"
-import { CheckCircle, AlertCircle, Info, X, AlertTriangle } from "lucide-react"
+import { CheckCircle, AlertCircle, Info, X, AlertTriangle, Loader2 } from "lucide-react"
 import { Button } from "../Button/Button"
 import { cn } from "@/modules/utils"
 
-export type ToastType = "success" | "error" | "warning" | "info"
+export type ToastType = "success" | "error" | "warning" | "info" | "loading"
 
 export interface Toast {
   id: string
@@ -20,6 +20,12 @@ export interface Toast {
   }
 }
 
+export interface ToastOptions {
+  duration?: number
+  key?: string
+  title?: string
+}
+
 interface ToastContextType {
   toasts: Toast[]
   addToast: (toast: Omit<Toast, "id">) => void
@@ -28,6 +34,24 @@ interface ToastContextType {
   error: (message: string, title?: string) => void
   warning: (message: string, title?: string) => void
   info: (message: string, title?: string) => void
+  loading: (message: string, options?: ToastOptions) => string
+  destroy: (key?: string) => void
+
+  // CRUD specific methods
+  createSuccess: (entityName: string) => void
+  createError: (entityName: string, error?: string) => void
+  updateSuccess: (entityName: string) => void
+  updateError: (entityName: string, error?: string) => void
+  deleteSuccess: (entityName: string) => void
+  deleteError: (entityName: string, error?: string) => void
+  fetchError: (entityName: string, error?: string) => void
+  exportSuccess: (fileName: string) => void
+  exportError: (error?: string) => void
+  uploadSuccess: () => void
+  uploadError: (error?: string) => void
+  validationError: (message: string) => void
+  networkError: () => void
+  permissionError: () => void
 }
 
 const ToastContext = createContext<ToastContextType | undefined>(undefined)
@@ -45,6 +69,7 @@ const toastIcons = {
   error: AlertCircle,
   warning: AlertTriangle,
   info: Info,
+  loading: Loader2,
 }
 
 const ToastItem: React.FC<{
@@ -56,7 +81,7 @@ const ToastItem: React.FC<{
   return (
     <div className={cn("toast", `toast-${toast.type}`)}>
       <div className="toast-icon">
-        <Icon />
+        <Icon className={toast.type === "loading" ? "animate-spin" : ""} />
       </div>
       <div className="toast-content">
         {toast.title && <div className="toast-title">{toast.title}</div>}
@@ -67,14 +92,16 @@ const ToastItem: React.FC<{
           </Button>
         )}
       </div>
-      <Button
-        variant="ghost"
-        size="sm"
-        icon={<X />}
-        onClick={() => onRemove(toast.id)}
-        className="toast-close"
-        aria-label="Close notification"
-      />
+      {toast.type !== "loading" && (
+        <Button
+          variant="ghost"
+          size="sm"
+          icon={<X />}
+          onClick={() => onRemove(toast.id)}
+          className="toast-close"
+          aria-label="Close notification"
+        />
+      )}
     </div>
   )
 }
@@ -103,19 +130,26 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   }, [])
 
   const addToast = useCallback(
-    (toast: Omit<Toast, "id">) => {
-      const id = Math.random().toString(36).substr(2, 9)
-      const newToast = { ...toast, id }
+    (toast: Omit<Toast, "id"> & { key?: string }) => {
+      const { key, ...rest } = toast
+      const id = key || Math.random().toString(36).substr(2, 9)
+      const newToast = { ...rest, id }
 
-      setToasts((prev) => [...prev, newToast])
+      setToasts((prev) => {
+        // Remove existing toast with same key if exists
+        const filtered = prev.filter((t) => t.id !== id)
+        return [...filtered, newToast]
+      })
 
-      // Auto remove after duration
-      const duration = toast.duration ?? 5000
+      // Auto remove after duration (except for loading toasts with duration 0)
+      const duration = toast.duration ?? (toast.type === "loading" ? 0 : toast.type === "error" ? 7000 : 5000)
       if (duration > 0) {
         setTimeout(() => {
           removeToast(id)
         }, duration)
       }
+
+      return id
     },
     [removeToast],
   )
@@ -148,6 +182,120 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     [addToast],
   )
 
+  const loading = useCallback(
+    (message: string, options?: ToastOptions) => {
+      return addToast({
+        type: "loading",
+        message,
+        title: options?.title,
+        duration: options?.duration || 0,
+        key: options?.key,
+      })
+    },
+    [addToast],
+  )
+
+  const destroy = useCallback(
+    (key?: string) => {
+      if (key) {
+        removeToast(key)
+      } else {
+        setToasts([])
+      }
+    },
+    [removeToast],
+  )
+
+  // CRUD specific methods
+  const createSuccess = useCallback(
+    (entityName: string) => {
+      success(`✅ Tạo ${entityName} thành công!`)
+    },
+    [success],
+  )
+
+  const createError = useCallback(
+    (entityName: string, errorMsg?: string) => {
+      error(`❌ Không thể tạo ${entityName}. ${errorMsg || "Vui lòng thử lại."}`)
+    },
+    [error],
+  )
+
+  const updateSuccess = useCallback(
+    (entityName: string) => {
+      success(`✅ Cập nhật ${entityName} thành công!`)
+    },
+    [success],
+  )
+
+  const updateError = useCallback(
+    (entityName: string, errorMsg?: string) => {
+      error(`❌ Không thể cập nhật ${entityName}. ${errorMsg || "Vui lòng thử lại."}`)
+    },
+    [error],
+  )
+
+  const deleteSuccess = useCallback(
+    (entityName: string) => {
+      success(`✅ Xóa ${entityName} thành công!`)
+    },
+    [success],
+  )
+
+  const deleteError = useCallback(
+    (entityName: string, errorMsg?: string) => {
+      error(`❌ Không thể xóa ${entityName}. ${errorMsg || "Vui lòng thử lại."}`)
+    },
+    [error],
+  )
+
+  const fetchError = useCallback(
+    (entityName: string, errorMsg?: string) => {
+      error(`❌ Không thể tải danh sách ${entityName}. ${errorMsg || "Vui lòng thử lại."}`)
+    },
+    [error],
+  )
+
+  const exportSuccess = useCallback(
+    (fileName: string) => {
+      success(`📊 Xuất file ${fileName} thành công!`)
+    },
+    [success],
+  )
+
+  const exportError = useCallback(
+    (errorMsg?: string) => {
+      error(`❌ Không thể xuất file. ${errorMsg || "Vui lòng thử lại."}`)
+    },
+    [error],
+  )
+
+  const uploadSuccess = useCallback(() => {
+    success(`📁 Tải file lên thành công!`)
+  }, [success])
+
+  const uploadError = useCallback(
+    (errorMsg?: string) => {
+      error(`❌ Không thể tải file lên. ${errorMsg || "Vui lòng thử lại."}`)
+    },
+    [error],
+  )
+
+  const validationError = useCallback(
+    (message: string) => {
+      warning(`⚠️ ${message}`)
+    },
+    [warning],
+  )
+
+  const networkError = useCallback(() => {
+    error(`🌐 Lỗi kết nối mạng. Vui lòng kiểm tra kết nối internet.`)
+  }, [error])
+
+  const permissionError = useCallback(() => {
+    error(`🔒 Bạn không có quyền thực hiện hành động này.`)
+  }, [error])
+
   return (
     <ToastContext.Provider
       value={{
@@ -158,6 +306,22 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         error,
         warning,
         info,
+        loading,
+        destroy,
+        createSuccess,
+        createError,
+        updateSuccess,
+        updateError,
+        deleteSuccess,
+        deleteError,
+        fetchError,
+        exportSuccess,
+        exportError,
+        uploadSuccess,
+        uploadError,
+        validationError,
+        networkError,
+        permissionError,
       }}
     >
       {children}

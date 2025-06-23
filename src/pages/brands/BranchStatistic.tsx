@@ -1,15 +1,15 @@
 import { MainApiRequest } from '@/services/MainApiRequest';
 import React, { useEffect, useState } from 'react';
 import { Card } from 'react-bootstrap';
-import DrinkChart from './DrinkChart';
-import OrderRevenue14 from './OrderRevenue14';
-import OrderRevenue30 from './OrderRevenue30';
-import OrdersChart14 from './OrdersChart14';
-import OrdersChart30 from './OrdersChart30';
-import OrderType from './OrderType';
-import Revenue30Days from './Revenue30Days';
-import Top5Drinks from './Top5Drinks';
-import './Statistic.scss';
+import DrinkChart from '../Statistic/DrinkChart';
+import OrderRevenue14 from '../Statistic/OrderRevenue14';
+import OrderRevenue30 from '../Statistic/OrderRevenue30';
+import OrdersChart14 from '../Statistic/OrdersChart14';
+import OrdersChart30 from '../Statistic/OrdersChart30';
+import OrderType from '../Statistic/OrderType';
+import Revenue30Days from '../Statistic/Revenue30Days';
+import Top5Drinks from '../Statistic/Top5Drinks';
+import '../Statistic/Statistic.scss';
 import { useSystemContext } from '@/hooks/useSystemContext';
 
 const BranchStatistic: React.FC = () => {

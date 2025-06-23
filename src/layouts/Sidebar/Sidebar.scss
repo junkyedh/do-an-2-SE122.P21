@@ -1,19 +1,23 @@
 @import "../../scss/variables.scss";
 
-// Modern Admin Sidebar
+// Elegant Dark Sidebar - matching the image design
 .sidebar.menulist {
-  background: linear-gradient(180deg, get-color($primary, "800"), get-color($primary, "900"));
+  background: linear-gradient(180deg, 
+    get-color($primary, "800"), 
+    get-color($primary, "900")
+  );
   min-width: 280px;
   max-width: 320px;
   height: 100vh;
   padding: 1.5rem 0;
-  border-right: 1px solid get-color($primary, "600");
+  border-right: 1px solid rgba(get-color($primary, "600"), 0.3);
   display: flex;
   flex-direction: column;
-  box-shadow: 4px 0 24px rgba(47, 65, 86, 0.15);
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
   position: relative;
   overflow-y: auto;
 
+  // Subtle overlay for depth
   &::before {
     content: '';
     position: absolute;
@@ -21,19 +25,19 @@
     left: 0;
     right: 0;
     height: 100%;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), transparent);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.03), transparent);
     pointer-events: none;
   }
 
   .logo {
     text-align: center;
-    margin-bottom: 2rem;
+    margin-bottom: 2.5rem;
     padding: 0 1.5rem;
     
     svg {
       margin: 0 auto;
       display: block;
-      filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.2));
+      filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
       transition: transform 0.3s ease;
       
       &:hover {
@@ -64,7 +68,7 @@
 }
 
 .side-item {
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.5rem;
   position: relative;
   
   &.dropdown {
@@ -72,15 +76,15 @@
   }
 }
 
-// Enhanced Side Links
+// Professional Side Links
 .side-link {
   display: flex;
   align-items: center;
   gap: 1rem;
   font-size: 0.95rem;
   font-weight: 500;
-  padding: 0.875rem 1.5rem;
-  color: get-color($primary, "100");
+  padding: 1rem 1.5rem;
+  color: rgba(255, 255, 255, 0.8);
   border-radius: 0 2rem 2rem 0;
   text-decoration: none;
   background: transparent;
@@ -96,7 +100,7 @@
     transform: translateY(-50%);
     width: 4px;
     height: 0;
-    background: get-color($accent1, "default");
+    background: linear-gradient(180deg, get-color($accent1, "default"), get-color($accent1, "600"));
     border-radius: 0 2px 2px 0;
     transition: height 0.3s ease;
   }
@@ -108,7 +112,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: get-color($accent2, "300");
+    color: rgba(255, 255, 255, 0.7);
     transition: all 0.3s ease;
     flex-shrink: 0;
   }
@@ -122,7 +126,7 @@
 
   .arrow {
     margin-left: auto;
-    color: get-color($accent2, "400");
+    color: rgba(255, 255, 255, 0.6);
     font-size: 0.875rem;
     transition: transform 0.3s ease;
     flex-shrink: 0;
@@ -140,7 +144,7 @@
       rgba(get-color($primary, "700"), 0.8), 
       rgba(get-color($primary, "600"), 0.4)
     );
-    color: get-color($accent1, "100");
+    color: white;
     transform: translateX(4px);
     
     &::before {
@@ -148,17 +152,17 @@
     }
     
     .icon { 
-      color: get-color($accent1, "200");
+      color: get-color($accent1, "300");
       transform: scale(1.1);
     }
   }
 
   &.side-link-active {
     background: linear-gradient(90deg, 
-      rgba(get-color($accent1, "default"), 0.15), 
-      rgba(get-color($accent1, "default"), 0.05)
+      rgba(get-color($accent1, "default"), 0.2), 
+      rgba(get-color($accent1, "default"), 0.1)
     );
-    color: get-color($accent1, "default");
+    color: white;
     
     &::before {
       height: 80%;
@@ -169,7 +173,7 @@
     }
     
     .title {
-      color: get-color($accent1, "default");
+      color: white;
       font-weight: 600;
     }
   }
@@ -192,13 +196,14 @@
 
 // Submenu Styles
 .side-children {
-  background: rgba(get-color($primary, "900"), 0.5);
+  background: rgba(get-color($primary, "900"), 0.6);
   margin-left: 1rem;
   margin-right: 1rem;
   border-radius: 0.75rem;
   padding: 0.5rem 0;
   margin-bottom: 0.5rem;
   backdrop-filter: blur(10px);
+  border: 1px solid rgba(get-color($primary, "600"), 0.2);
   
   .side-item {
     margin-bottom: 0.125rem;
@@ -209,33 +214,33 @@
     padding: 0.625rem 1rem;
     margin-right: 0;
     border-radius: 0.5rem;
-    color: get-color($primary, "200");
+    color: rgba(255, 255, 255, 0.7);
     
     &::before {
       display: none;
     }
     
     .icon { 
-      color: get-color($accent2, "400");
+      color: rgba(255, 255, 255, 0.6);
       font-size: 1rem;
     }
     
     &:hover {
-      background: rgba(get-color($accent2, "default"), 0.1);
-      color: get-color($accent2, "100");
+      background: rgba(get-color($accent2, "default"), 0.15);
+      color: white;
       transform: translateX(2px);
       
       .icon { 
-        color: get-color($accent2, "200");
+        color: get-color($accent2, "300");
       }
     }
     
     &.side-link-active {
       background: rgba(get-color($accent1, "default"), 0.2);
-      color: get-color($accent1, "100");
+      color: white;
       
       .icon { 
-        color: get-color($accent1, "200");
+        color: get-color($accent1, "300");
       }
     }
   }
@@ -245,23 +250,29 @@
   }
 }
 
-// Enhanced Logout Button
+// Elegant Logout Button
 .logout-box {
-  margin: 1.5rem 1.5rem 0;
+  margin: auto;
+  margin-top: auto;
+  padding: 1rem;
+  width: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.75rem;
-  background: linear-gradient(135deg, get-color($accent1, "default"), get-color($accent1, "600"));
+  background: linear-gradient(135deg, 
+    get-color($accent1, "default"), 
+    get-color($accent1, "600")
+  );
   color: white;
   border: none;
   border-radius: 1rem;
-  padding: 0.875rem 1.25rem;
+  padding: 1rem 1.25rem;
   font-size: 0.95rem;
   font-weight: 600;
   letter-spacing: 0.5px;
   cursor: pointer;
-  box-shadow: 0 4px 16px rgba(get-color($accent1, "default"), 0.3);
+  box-shadow: 0 4px 16px rgba(get-color($accent1, "default"), 0.4);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
@@ -283,9 +294,12 @@
   }
   
   &:hover {
-    background: linear-gradient(135deg, get-color($accent1, "600"), get-color($accent1, "700"));
+    background: linear-gradient(135deg, 
+      get-color($accent1, "600"), 
+      get-color($accent1, "700")
+    );
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(get-color($accent1, "default"), 0.4);
+    box-shadow: 0 6px 20px rgba(get-color($accent1, "default"), 0.5);
     
     &::before {
       left: 100%;
@@ -325,10 +339,10 @@
 }
 
 .sidebar.menulist::-webkit-scrollbar-thumb {
-  background: rgba(get-color($accent1, "default"), 0.5);
+  background: rgba(get-color($accent1, "default"), 0.6);
   border-radius: 2px;
   
   &:hover {
-    background: rgba(get-color($accent1, "default"), 0.7);
+    background: rgba(get-color($accent1, "default"), 0.8);
   }
 }

@@ -1,19 +1,24 @@
-import { Button, DatePicker, Form, Input, message, Modal, Popconfirm, Select, Space, Table, Upload } from 'antd';
-import { UploadOutlined, DownloadOutlined } from '@ant-design/icons';
+import { DatePicker, Form, Input, message, Modal, Popconfirm, Select, Space, Table, Upload } from 'antd';
+import { DownloadOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
 import * as XLSX from 'xlsx';
-import "./AdminCustomerList.scss";
-import SearchInput from '@/components/adminsytem/Search/SearchInput';
+import SearchInput from '@/components/Search/SearchInput';
 import { AdminApiRequest } from '@/services/AdminApiRequest';
+import './adminPage.scss';
+import AdminButton from './button/AdminButton';
+import AdminPopConfirm from './button/AdminPopConfirm';
+import FloatingLabelInput from '@/components/FloatingInput/FloatingLabelInput';
+import { useToast } from '@/components/littleComponent/Toast/Toast';
 
 const AdminCustomerList = () => {
     const [customerList, setCustomerList] = useState<any[]>([]);
-    const [membershipList, setMembershipList] = useState<any[]>([]);
     const [searchKeyword, setSearchKeyword] = useState('');
     const [openCreateCustomerModal, setOpenCreateCustomerModal] = useState(false);
     const [editingCustomer, setEditingCustomer] = useState<any | null>(null);
     const [form] = Form.useForm();
+    const { toasts, addToast, removeToast, success, error, warning, info,} = useToast();
+
 
     const fetchCustomerList = async () => {
         try {
@@ -123,7 +128,7 @@ const AdminCustomerList = () => {
         try {
             await AdminApiRequest.delete(`/customer/${id}`);
             fetchCustomerList();
-            message.success('Xóa khách hàng thành công!');
+            success('Xóa khách hàng thành công!');
         } catch (error) {
             console.error('Lỗi khi xóa khách hàng:', error);
             message.error('Không thể xóa khách hàng. Vui lòng thử lại.');
@@ -133,13 +138,12 @@ const AdminCustomerList = () => {
 
 
     return (
-        <div className="container-fluid m-2">
+        <div className="container-fluid">
             <div className='sticky-header-wrapper'>
-                <h2 className="h2 header-custom">QUẢN LÝ KHÁCH HÀNG</h2>
+                <h2 className="header-custom">QUẢN LÝ KHÁCH HÀNG</h2>
                 {/* Tìm kiếm và Import + Export */}
-                <div className="header-actions d-flex me-2 py-2 align-items-center justify-content-between">
-                    <div className="flex-grow-1 d-flex justify-content-center">
-                        <Form layout="inline" className="search-form d-flex">
+                <div className="header-actions">
+                    <div className="search-form">
                         <SearchInput
                             placeholder="Tìm kiếm theo id, tên khách hàng hoặc SĐT"
                             value={searchKeyword}
@@ -147,7 +151,6 @@ const AdminCustomerList = () => {
                             onSearch={handleSearchKeyword}
                             allowClear
                         />
-                        </Form>
                     </div>
                     <div className="d-flex" >
                         {/* <Button 
@@ -156,17 +159,17 @@ const AdminCustomerList = () => {
                             onClick={() => onOpenCreateCustomerModal()}
                         >
                         </Button> */}
-                        <Button 
-                            type="primary" 
+                        <AdminButton 
+                            variant="primary" 
                             icon={<DownloadOutlined />}
                             onClick={exportExcel}
-                            title='Tải xuống danh sách'
                         />
                     </div>
                 </div>
             </div>
 
             <Modal
+                className='custom-modal'
                 title={editingCustomer ? 'Chỉnh sửa khách hàng' : 'Thêm khách hàng'}
                 open={openCreateCustomerModal}
                 onOk={onOKCreateCustomer}
@@ -176,80 +179,94 @@ const AdminCustomerList = () => {
                 // cancelText="Hủy"
             >
                 <Form form={form} layout="vertical">
-                    <div className="field-row">
-                        <Form.Item
+                    <div className="grid-2">
+                        <FloatingLabelInput
                             label="Tên"
                             name="name"
+                            component="input"
+                            type="text"
                             rules={[{ required: true, message: "Vui lòng nhập tên!" }]}
                         >
-                            <Input type="text" />
-                        </Form.Item>
-                        <Form.Item
+                        </FloatingLabelInput>
+                        <FloatingLabelInput
                             label="Giới tính"
                             name="gender"
+                            component="select"
                             rules={[{ required: true, message: "Vui lòng chọn giới tính!" }]}
+                            options={[
+                                { value: 'Nam', label: 'Nam' },
+                                { value: 'Nữ', label: 'Nữ' },
+                                { value: 'Khác', label: 'Khác' },
+                            ]}
                         >
-                            <Select>
-                                <Select.Option value="Nam">Nam</Select.Option>
-                                <Select.Option value="Nữ">Nữ</Select.Option>
-                                <Select.Option value="Khác">Khác</Select.Option>
-                            </Select>
-                        </Form.Item>
+                        </FloatingLabelInput>
                     </div>
-                    <div className="field-row">
-                        <Form.Item
+                    <div className="grid-2">
+                        <FloatingLabelInput
                             label="Số điện thoại"
                             name="phone"
+                            component="input"
+                            type="text"
                             rules={[{ required: true, message: "Vui lòng nhập số điện thoại!" }]}
                         >
-                            <Input type="text" />
-                        </Form.Item>
-                        <Form.Item
+                        </FloatingLabelInput>
+                        <FloatingLabelInput
                         label="Ngày đăng ký"
                         name="registrationDate"
+                        component="date"
+                        type="date"
                         rules={[{ required: true, message: "Vui lòng chọn ngày đăng ký!" }]}
                     >
-                        <DatePicker showTime/>
-                    </Form.Item>
+                    </FloatingLabelInput>
                     </div>
-                    <div className="field-row">
-                        <Form.Item
+                    <div className="grid-2">
+                        <FloatingLabelInput
                             label="Tổng mức chi tiêu"
                             name="total"
+                            component="input"
+                            type="number"
+                            disabled
                         >
-                            <Input type="number"  disabled/>
-                        </Form.Item>
-                        <Form.Item
+                        </FloatingLabelInput>
+                        <FloatingLabelInput
                             label="Hạng thành viên"
                             name="rank"
+                            component="select"
+                            rules={[{ required: true, message: "Vui lòng chọn hạng thành viên!" }]}
+                            options={[
+                                { value: 'Thường', label: 'Thường' },
+                                { value: 'Vàng', label: 'Vàng' },
+                                { value: 'Bạc', label: 'Bạc' },
+                                { value: 'Kim cương', label: 'Kim cương' },
+                            ]}
+                            disabled
                         >
-                            <Select  disabled>
-                                {membershipList.map((membership) => (
-                                    <Select.Option key={membership.id} value={membership.rank}>
-                                        {membership.rank}
-                                    </Select.Option>
-                                ))}
-                            </Select>
-                        </Form.Item>
+                        </FloatingLabelInput>
                     </div>
-                    <div className='modal-footer-custom d-flex justify-content-end align-items-center gap-3'>
-                        <Button
-                            type='default'
+                    <div className='modal-footer-custom'>
+                        <AdminButton
+                            variant='secondary'
                             onClick={onCancelCreateCustomer}
                         >
                             Hủy
-                        </Button>
-                        <Button
-                            type='primary'
+                        </AdminButton>
+                        <AdminButton
+                            variant='primary'
                             onClick={onOKCreateCustomer}
                         >
                             {editingCustomer ? "Lưu thay đổi" : "Tạo mới"}
-                        </Button>
+                        </AdminButton>
                     </div>
                 </Form>
             </Modal>
 
             <Table
+                className="custom-table"
+                rowKey="id"
+                pagination={{
+                    pageSize: 8,
+                    showSizeChanger: true,
+                }}
                 dataSource={customerList}
                 columns={[
                     { title: 'ID', dataIndex: 'id', key: 'id', sorter: (a, b) => a.id - b.id },
@@ -271,19 +288,24 @@ const AdminCustomerList = () => {
                         key: 'actions',
                         render: (_, record) => (
                             <Space size="middle">
-                                <Button type="default" onClick={() => onEditCustomer(record)}>
-                                    <i className="fas fa-edit"></i>
-                                </Button>
-                                <Popconfirm
+                                <AdminButton 
+                                    variant="secondary" 
+                                    size="sm" 
+                                    icon={<i className="fas fa-edit"></i>}
+                                    onClick={() => onEditCustomer(record)}>
+                                </AdminButton>
+                                <AdminPopConfirm
                                     title="Bạn có chắc chắn muốn xóa khách hàng này không?"
                                     onConfirm={() => onDeleteCustomer(record.id)}
                                     okText="Có"
                                     cancelText="Không"
                                 >
-                                    <Button className="ant-btn-danger">
-                                        <i className="fas fa-trash"></i>
-                                    </Button>
-                                </Popconfirm>
+                                    <AdminButton 
+                                        variant='destructive'
+                                        size="sm"
+                                        icon={<i className="fas fa-trash"></i>}>
+                                    </AdminButton>
+                                </AdminPopConfirm>
                             </Space>
                         ),
                     },

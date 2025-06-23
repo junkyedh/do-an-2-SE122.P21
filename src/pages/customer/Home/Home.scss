@@ -93,7 +93,7 @@
     margin: 0px 10px;
     transition: background-color 0.3s ease;
     color: get-color($primary, "100") !important;
-    background-color: get-color($accent, "100") !important;
+    background-color: get-color($accent1, "100") !important;
 
     @media (max-width: 576px) {
       width: 32px !important;
@@ -114,7 +114,7 @@
     }
 
     &.ant-btn-default {
-      background-color: get-color($accent, "100") !important;
+      background-color: get-color($accent1, "100") !important;
       color: get-color($primary, "200") !important;
       border: 1.25px solid get-color($secondary, "100");
 
@@ -127,13 +127,13 @@
 
     &.ant-btn-danger {
       background-color: get-color($neutral, "100") !important;
-      color: get-color($accent, "200") !important;
+      color: get-color($accent1, "200") !important;
       border: 1px solid lightpink !important;
 
       &:hover {
         background-color: lightpink !important;
         color: get-color($neutral, "100") !important;
-        border: 1.5px solid get-color($accent, "200") !important;
+        border: 1.5px solid get-color($accent1, "200") !important;
       }
     }
 

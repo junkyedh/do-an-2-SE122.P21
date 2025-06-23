@@ -1,16 +1,16 @@
 import { MainApiRequest } from '@/services/MainApiRequest';
 import React, { useEffect, useState } from 'react';
 import { Card } from 'react-bootstrap';
-import CustomerRankChart from './CustomerRankChart';
-import DrinkChart from './DrinkChart';
-import OrderRevenue14 from './OrderRevenue14';
-import OrderRevenue30 from './OrderRevenue30';
-import OrdersChart14 from './OrdersChart14';
-import OrdersChart30 from './OrdersChart30';
-import OrderType from './OrderType';
-import Revenue30Days from './Revenue30Days';
-import './Statistic.scss';
-import Top5Drinks from './Top5Drinks';
+import CustomerRankChart from '../Statistic/CustomerRankChart';
+import DrinkChart from '../Statistic/DrinkChart';
+import OrderRevenue14 from '../Statistic/OrderRevenue14';
+import OrderRevenue30 from '../Statistic/OrderRevenue30';
+import OrdersChart14 from '../Statistic/OrdersChart14';
+import OrdersChart30 from '../Statistic/OrdersChart30';
+import OrderType from '../Statistic/OrderType';
+import Revenue30Days from '../Statistic/Revenue30Days';
+import '../Statistic/Statistic.scss';
+import Top5Drinks from '../Statistic/Top5Drinks';
 
 
 
@@ -74,7 +74,7 @@ const Statistic: React.FC = () => {
         </Card>
         <Card className="card">
           <Card.Body>
-            <Card.Title>Tổng Số Khách Hàng</Card.Title>
+            <Card.Title>Tổng Số Khách</Card.Title>
             <Card.Text id="totalCustomer">N/A</Card.Text>
           </Card.Body>
         </Card>
@@ -102,8 +102,8 @@ const Statistic: React.FC = () => {
       {/* Các biểu đồ còn lại */}
       <div className="charts-row">
           <DrinkChart data={chartData}/>
-          <Top5Drinks data={chartData}/>
           <CustomerRankChart data={chartData}/>
+          <Top5Drinks data={chartData}/>
           <OrderType data={chartData}/>
       </div>
       <div className="charts-row">

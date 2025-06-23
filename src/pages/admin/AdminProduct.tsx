@@ -1,14 +1,14 @@
 import { Button, Form, GetProp, Input, message, Modal, Popconfirm, Progress, Space, Table, Tag, Upload, UploadFile, UploadProps, Select, Checkbox } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { use, useEffect, useState } from 'react';
-import "./AdminProduct.scss";
 import imgDefault from '@/assets/cup10.jpg';
-import "../../../scss/_variables.scss";
-
+import './adminPage.scss';
 import { AdminApiRequest } from '@/services/AdminApiRequest';
-import FloatingLabelInput from '@/components/adminsytem/FloatingInput/FloatingLabelInput';
-import SearchInput from '@/components/adminsytem/Search/SearchInput';
-import { m } from 'framer-motion';
+import FloatingLabelInput from '@/components/FloatingInput/FloatingLabelInput';
+import SearchInput from '@/components/Search/SearchInput';
+import AdminButton from './button/AdminButton';
+import AdminPopConfirm from './button/AdminPopConfirm';
+
 
 type ProductSize = {
     sizeName: string;
@@ -309,36 +309,34 @@ const AdminProductList = () => {
     }, [searchKeyword]);
 
     return (
-        <div className="container-fluid m-2">
+        <div className="container-fluid">
             <div className='sticky-header-wrapper'>
-                <h2 className="h2 header-custom">QUẢN LÝ SẢN PHẨM</h2>
-
-                <div className="header-actions d-flex me-3 py-2 align-items-center justify-content-between">
-                    <div className="flex-grow-1 d-flex justify-content-center">
-                        <Form layout="inline" className="search-form d-flex">
-                            <SearchInput
-                                placeholder="Tìm kiếm theo tên hoặc loại sản phẩm"
-                                value={searchKeyword}
-                                onChange={(e) => setSearchKeyword(e.target.value)}
-                                onSearch={handleSearchKeyword}
-                                allowClear
-                            />
-                        </Form>
+                <h2 className="header-custom">QUẢN LÝ SẢN PHẨM</h2>
+                <div className="header-actions">
+                    <div className="search-form">
+                        <SearchInput
+                            placeholder="Tìm kiếm theo tên hoặc loại sản phẩm"
+                            value={searchKeyword}
+                            onChange={(e) => setSearchKeyword(e.target.value)}
+                            onSearch={handleSearchKeyword}
+                            allowClear
+                        />
                     </div>
                     <div className="d-flex">
-                        <Button
-                            type="primary"
+                        <AdminButton
+                            variant="primary"
+                            size='sm'
                             icon={<i className="fas fa-plus"></i>}
                             onClick={() => onOpenCreateProductModal()}
                         >
-                        </Button>
+                        </AdminButton>
                     </div>
                 </div>
             </div>
 
             {/* Creating the modal for creating or editing products */}
             <Modal
-                className="custom-modal product-modal"
+                className="custom-modal"
                 title={editingProduct ? "Chỉnh sửa sản phẩm" : "Thêm mới sản phẩm"}
                 open={openCreateProductModal}
                 onCancel={onCancelCreateProduct}
@@ -350,7 +348,8 @@ const AdminProductList = () => {
                         {/* Bên trái */}
                         <div>
                             {/* Upload ảnh */}
-                            <Form.Item name="image">
+                            <Form.Item name="image" >
+                                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 140 }}>
                                 <Upload
                                     listType="picture-card"
                                     fileList={fileList}
@@ -366,6 +365,7 @@ const AdminProductList = () => {
                                         </div>
                                     )}
                                 </Upload>
+                            </div>
                                 {progress > 0 && <Progress percent={progress} />}
                             </Form.Item>
 
@@ -386,10 +386,9 @@ const AdminProductList = () => {
                                     options={[
                                         { value: 'Cà phê', label: 'Cà phê' },
                                         { value: 'Trà sữa', label: 'Trà sữa' },
-                                        { value: 'Trà', label: 'Trà' },
+                                        { value: 'Trà trái cây', label: 'Trà trái cây' },
                                         { value: 'Nước ép', label: 'Nước ép' },
                                         { value: 'Sinh tố', label: 'Sinh tố' },
-                                        { value: 'Nước ngọt', label: 'Nước ngọt' },
                                         { value: 'Bánh ngọt', label: 'Bánh ngọt' },
                                     ]}
                                 />
@@ -404,26 +403,26 @@ const AdminProductList = () => {
                             />
 
                             {/* Hot & Cold */}
-                            <div className="d-flex gap-4 mt-3">
-                                <Form.Item name="hot" valuePropName="checked">
-                                    <Checkbox>Hot</Checkbox>
-                                </Form.Item>
-                                <Form.Item name="cold" valuePropName="checked">
-                                    <Checkbox>Cold</Checkbox>
-                                </Form.Item>
+                            <div className="checkbox-group">
+                              <Form.Item name="hot" valuePropName="checked">
+                                <Checkbox>Hot</Checkbox>
+                              </Form.Item>
+                              <Form.Item name="cold" valuePropName="checked">
+                                <Checkbox>Cold</Checkbox>
+                              </Form.Item>
                             </div>
-
+                            
                             {/* Flags */}
-                            <div className="d-flex gap-4 mt-2">
-                                <Form.Item name="isPopular" valuePropName="checked">
-                                    <Checkbox>Phổ biến</Checkbox>
-                                </Form.Item>
-                                <Form.Item name="isNew" valuePropName="checked">
-                                    <Checkbox>Mới</Checkbox>
-                                </Form.Item>
-                                <Form.Item name="available" valuePropName="checked" initialValue={true}>
-                                    <Checkbox>Đang bán</Checkbox>
-                                </Form.Item>
+                            <div className="checkbox-group">
+                              <Form.Item name="isPopular" valuePropName="checked">
+                                <Checkbox>Phổ biến</Checkbox>
+                              </Form.Item>
+                              <Form.Item name="isNew" valuePropName="checked">
+                                <Checkbox>Mới</Checkbox>
+                              </Form.Item>
+                              <Form.Item name="available" valuePropName="checked" initialValue={true}>
+                                <Checkbox>Đang bán</Checkbox>
+                              </Form.Item>
                             </div>
                         </div>
 
@@ -451,14 +450,22 @@ const AdminProductList = () => {
                                                     <Input type="number" placeholder="Giá (VND)" />
                                                 </Form.Item>
                                                 {fields.length > 1 && (
-                                                    <Button danger type="text" onClick={() => remove(field.name)}>X</Button>
+                                                    <div className="justify-items-center d-flex">
+                                                        <AdminButton 
+                                                            variant='accent'
+                                                            className="remove-size-button"
+                                                            size='sm'
+                                                            onClick={() => remove(field.name)}
+                                                            >X
+                                                        </AdminButton>
+                                                    </div>
                                                 )}
                                             </div>
                                         ))}
                                         <Form.Item>
-                                            <Button type="dashed" onClick={() => add()} block>
+                                            <AdminButton variant='secondary' onClick={() => add()}>
                                                 + Thêm kích cỡ
-                                            </Button>
+                                            </AdminButton>
                                         </Form.Item>
                                     </>
                                 )}
@@ -491,13 +498,19 @@ const AdminProductList = () => {
                                                 >
                                                     <Input type="number" placeholder="Số lượng" />
                                                 </Form.Item>
-                                                <Button danger type="text" onClick={() => remove(field.name)}>X</Button>
+                                                <AdminButton 
+                                                    variant='accent'
+                                                    size='sm'
+                                                    onClick={() => remove(field.name)}>X
+                                                </AdminButton>
                                             </div>
                                         ))}
                                         <Form.Item>
-                                            <Button type="dashed" onClick={() => add()} block>
+                                            <AdminButton 
+                                                variant='secondary'
+                                                onClick={() => add()}>
                                                 + Thêm nguyên liệu
-                                            </Button>
+                                            </AdminButton>
                                         </Form.Item>
                                     </>
                                 )}
@@ -507,24 +520,27 @@ const AdminProductList = () => {
 
                     {/* Footer */}
                     <div className="modal-footer-custom d-flex justify-content-end align-items-center gap-3 mt-5">
-                        <Button
-                            type="default"
+                        <AdminButton
+                            variant="secondary"
+                            size='sm'
                             onClick={onCancelCreateProduct}
                         >
                             Hủy
-                        </Button>
-                        <Button
-                            type="primary"
-                            htmlType="submit"
+                        </AdminButton>
+                        <AdminButton
+                            variant="primary"
+                            size='sm'
                             disabled={progress > 0}
                         >
                             {editingProduct ? "Lưu thay đổi" : "Tạo mới"}
-                        </Button>
+                        </AdminButton>
                     </div>
                 </Form>
             </Modal>
 
             <Table
+                className="custom-table"
+                rowKey="id"
                 dataSource={adminProductList}
                 pagination={{
                     pageSize: 6, // Số lượng item trên mỗi trang
@@ -581,11 +597,11 @@ const AdminProductList = () => {
                     {
                         title: 'Mood', dataIndex: 'mood', key: 'mood', sorter: (a, b) => a.mood?.localeCompare(b.mood || '') || 0,
                         render: (_, record) => {
-                            const drinkCategory = ['Cà phê', 'Trà', 'Trà sữa', 'Nước ép', 'Sinh tố', 'Nước ngọt'];
+                            const drinkCategory = ['Cà phê', 'Trà trái cây', 'Trà sữa', 'Nước ép', 'Sinh tố'];
                             if (!drinkCategory.includes(record.category)) return 'Không áp dụng';
-                            if (record.category === 'Cà phê' || record.category === 'Trà') {
+                            if (record.category === 'Cà phê') {
                                 return <span>{record.mood || 'Nóng / Đá'}</span>;
-                            } else if (record.category === 'Trà sữa' || record.category === 'Nước ép' || record.category === 'Sinh tố' || record.category === 'Nước ngọt') {
+                            } else if (record.category === 'Trà sữa' || record.category === 'Nước ép' || record.category === 'Sinh tố' || record.category === 'Trà trái cây') {
                                 return <span>{record.mood || 'Lạnh'}</span>;
                             }
                             return 'Không áp dụng'; // Không hiển thị mood nếu không phải là loại đồ uống
@@ -605,22 +621,25 @@ const AdminProductList = () => {
                         key: 'action',
                         render: (_, record) => (
                             <Space size="middle">
-                                <Button
-                                    type="default"
+                                <AdminButton
+                                    variant="secondary"
+                                    size='sm'
+                                    icon={<i className="fas fa-edit"></i>}
                                     onClick={() => onOpenEditProduct(record)}>
-                                    <i className="fas fa-edit"></i>
-                                </Button>
+                                </AdminButton>
 
-                                <Popconfirm
+                                <AdminPopConfirm
                                     title="Bạn có chắc chắn muốn xóa coupon này?"
                                     onConfirm={() => onDeleteProduct(record.id)}
                                     okText="Đồng ý"
                                     cancelText="Hủy"
                                 >
-                                    <Button className='ant-btn-danger'>
-                                        <i className="fas fa-trash"></i>
-                                    </Button>
-                                </Popconfirm>
+                                    <AdminButton
+                                        variant="destructive"
+                                        size='sm'
+                                        icon={<i className="fas fa-trash"></i>}>
+                                    </AdminButton>
+                                </AdminPopConfirm>
 
                                 <Button
                                     type="text"

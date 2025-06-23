@@ -1,10 +1,12 @@
 import { Button,  Form, Input, message, Modal, Popconfirm,  Space, Table, Tag } from 'antd';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
-import "./AdminPromotion.scss";
 import { AdminApiRequest } from '@/services/AdminApiRequest';
-import FloatingLabelInput from '@/components/adminsytem/FloatingInput/FloatingLabelInput';
-import { m } from 'framer-motion';
+import FloatingLabelInput from '@/components/FloatingInput/FloatingLabelInput';
+import './adminPage.scss';
+import AdminButton from './button/AdminButton';
+import AdminPopConfirm from './button/AdminPopConfirm';
+
 
 const AdminPromotion = () => {
     const [promoteForm] = Form.useForm();
@@ -224,9 +226,9 @@ const AdminPromotion = () => {
 
 
     return (
-        <div className="container-fluid m-2">
+        <div className="container-fluid">
             <div className='sticky-header-wrapper'>
-                <h2 className="h2 header-custom">QUẢN LÝ KHUYẾN MÃI</h2>
+                <h2 className="header-custom">QUẢN LÝ KHUYẾN MÃI</h2>
             </div>  
             {/* Modal for creating or editing promote */}
             <Modal
@@ -285,18 +287,20 @@ const AdminPromotion = () => {
                     />
                 </div>
                 <div className='modal-footer-custom d-flex justify-content-end align-items-center gap-3'>
-                    <Button 
-                        type='default'
+                    <AdminButton 
+                        variant='secondary'
+                        size='sm'
                         onClick={onCancelCreatePromote}
                     >
                         Hủy
-                    </Button>
-                    <Button 
-                        type='primary'
+                    </AdminButton>
+                    <AdminButton 
+                        variant='primary'
+                        size='sm'
                         onClick={onOKCreatePromote}
                     >
                         {editPromote ? "Lưu thay đổi" : "Tạo mới"}
-                    </Button>
+                    </AdminButton>
                 </div>
             </Form>
         </Modal>
@@ -331,8 +335,9 @@ const AdminPromotion = () => {
                             rules={[{ required: true, message: 'Mã Code là bắt buộc' }]}>
                             <Input
                                 addonAfter={
-                                    <Button
-                                        type="link"
+                                    <AdminButton
+                                        variant='secondary'
+                                        size='sm'
                                         className='random-button'
                                         onClick={() => {
                                             const randomCode = generateRandomCode();
@@ -341,24 +346,26 @@ const AdminPromotion = () => {
 
                                     >
                                         Random
-                                    </Button>
+                                    </AdminButton>
                                 }
                             />
                         </Form.Item>
                     </div>
                     <div className='modal-footer-custom d-flex justify-content-end align-items-center gap-3'>
-                        <Button 
-                            type='default'
+                        <AdminButton 
+                            variant='secondary'
+                            size='sm'
                             onClick={onCancelCreateCoupon}
                         >
                             Hủy
-                        </Button>
-                        <Button 
-                            type='primary'
+                        </AdminButton>
+                        <AdminButton 
+                            variant='primary'
+                            size='sm'
                             onClick={onOKCreateCoupon}
                         >
                             {editPromote ? "Lưu thay đổi" : "Tạo mới"}
-                        </Button>
+                        </AdminButton>
                     </div>
                 </Form>
             </Modal>
@@ -368,16 +375,18 @@ const AdminPromotion = () => {
             <div className="d-flex me-2 align-items-center">
                 <h4 className='h4 mt-3'>Danh sách Khuyến mãi</h4>
                 <div className="d-flex" >
-                    <Button 
-                        type="primary" 
+                    <AdminButton 
+                        variant="primary"
+                        size="sm" 
                         icon={<i className="fas fa-plus"></i>}
                         onClick={() => onOpenCreatePromoteModal()}
                     >
-                    </Button>
+                    </AdminButton>
                 </div>
             </div>
 
             <Table
+                className='custom-table'
                 dataSource={adminPromoteList}
                 pagination={{
                     pageSize: 5, // Số lượng item trên mỗi trang
@@ -403,20 +412,25 @@ const AdminPromotion = () => {
                     {
                         title: 'Actions', key: 'actions', render: (text, record) => (
                             <Space size="middle">
-                                <Button type="default" onClick={() => onOpenEditPromote(record)}>
-                                    <i className="fas fa-edit"></i>
-                                </Button>
-                                <Popconfirm
+                                <AdminButton 
+                                    variant="secondary" 
+                                    size="sm"
+                                    icon={<i className="fas fa-edit"></i>}
+                                    onClick={() => onOpenEditPromote(record)}>
+                                </AdminButton>
+                                <AdminPopConfirm
                                     title="Bạn có chắc chắn muốn xóa khuyến mãi này?"
                                     onConfirm={() => onDeletePromote(record.id)}
                                     okText="Đồng ý"
                                     cancelText="Hủy"
 
                                 >
-                                    <Button className='ant-btn-danger'>
-                                        <i className="fas fa-trash"></i>
-                                    </Button>
-                                </Popconfirm>
+                                    <AdminButton
+                                        variant="destructive"
+                                        size="sm"
+                                        icon={<i className="fas fa-trash"></i>}>
+                                    </AdminButton>
+                                </AdminPopConfirm>
                             </Space>
                         )
                     },
@@ -426,15 +440,18 @@ const AdminPromotion = () => {
             <div className="d-flex me-2 align-items-center">
                 <h4 className='h4'>Danh sách Coupon</h4>
                 <div className="d-flex" >
-                    <Button 
-                        type="primary" 
+                    <AdminButton 
+                        variant="primary" 
+                        size="sm"
                         icon={<i className="fas fa-plus"></i>}
                         onClick={() => onOpenCreateCouponModal()}
                     >
-                    </Button>
+                    </AdminButton>
                 </div>
             </div>
             <Table
+                className='custom-table'
+                rowKey="id"
                 dataSource={adminCouponList}
                 pagination={{
                     pageSize: 5, // Số lượng item trên mỗi trang
@@ -452,23 +469,26 @@ const AdminPromotion = () => {
                     },
                     { title: 'Mã Code', dataIndex: 'code', key: 'code' },
                     {
-                        title: 'Actions', key: 'actions', render: (text, record) => (
+                        title: 'Hành động', key: 'actions', render: (text, record) => (
                             <Space size="middle">
-                                <Button 
-                                    type="default"
+                                <AdminButton 
+                                    variant="secondary" 
+                                    size="sm"
+                                    icon={<i className="fas fa-edit"></i>}
                                     onClick={() => onOpenEditCoupon(record)}>
-                                    <i className="fas fa-edit"></i>
-                                </Button>
-                                <Popconfirm
+                                </AdminButton>
+                                <AdminPopConfirm
                                     title="Bạn có chắc chắn muốn xóa coupon này?"
                                     onConfirm={() => onDeleteCoupon(record.id)}
                                     okText="Đồng ý"
                                     cancelText="Hủy"
                                 >
-                                    <Button className='ant-btn-danger'>
-                                        <i className="fas fa-trash"></i>
-                                    </Button>
-                                </Popconfirm>
+                                    <AdminButton
+                                        variant="destructive"
+                                        size="sm"
+                                        icon={<i className="fas fa-trash"></i>}>
+                                    </AdminButton>
+                                </AdminPopConfirm>
                             </Space>
                         )
                     },

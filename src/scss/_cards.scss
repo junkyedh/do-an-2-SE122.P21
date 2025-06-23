@@ -61,8 +61,8 @@
   }
 
   &.card-accent {
-    background: linear-gradient(135deg, get-color($accent, "50"), get-color($accent, "100"));
-    border-color: get-color($accent, "200");
+    background: linear-gradient(135deg, get-color($accent1, "50"), get-color($accent1, "100"));
+    border-color: get-color($accent1, "200");
   }
 
   &.card-glass {

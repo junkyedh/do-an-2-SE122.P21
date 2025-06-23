@@ -6,7 +6,7 @@ import moment from 'moment';
 import { useEffect, useState } from 'react';
 import * as XLSX from 'xlsx';
 import './ManagerOrderList.scss';
-import SearchInput from '@/components/adminsytem/Search/SearchInput';
+import SearchInput from '@/components/Search/SearchInput';
 
 export const ManagerOrderList = () => {
   const [managerOrderList, setManagerOrderList] = useState<any[]>([]);

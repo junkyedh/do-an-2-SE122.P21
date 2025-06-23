@@ -94,14 +94,14 @@
 
   // Accent Button
   &.btn-accent {
-    background: linear-gradient(135deg, get-color($accent, "500"), get-color($accent, "600"));
+    background: linear-gradient(135deg, get-color($accent1, "500"), get-color($accent1, "600"));
     color: $white;
-    box-shadow: 0 4px 16px rgba(get-color($accent, "500"), 0.3);
+    box-shadow: 0 4px 16px rgba(get-color($accent1, "500"), 0.3);
 
     &:hover {
-      background: linear-gradient(135deg, get-color($accent, "600"), get-color($accent, "700"));
+      background: linear-gradient(135deg, get-color($accent1, "600"), get-color($accent1, "700"));
       transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(get-color($accent, "500"), 0.4);
+      box-shadow: 0 8px 24px rgba(get-color($accent1, "500"), 0.4);
     }
   }
 

@@ -18,7 +18,7 @@
 
   &.required::after {
     content: ' *';
-    color: get-color($accent, "500");
+    color: get-color($accent1, "500");
   }
 }
 
@@ -51,8 +51,8 @@
   }
 
   &.error {
-    border-color: get-color($accent, "500");
-    background: get-color($accent, "50");
+    border-color: get-color($accent1, "500");
+    background: get-color($accent1, "50");
   }
 
   &::placeholder {
@@ -124,7 +124,7 @@
 }
 
 .form-error {
-  color: get-color($accent, "600");
+  color: get-color($accent1, "600");
   font-size: get-font-size($body-font-size, sm);
   margin-top: 4px;
 }

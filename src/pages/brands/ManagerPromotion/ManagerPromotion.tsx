@@ -3,7 +3,7 @@ import moment from 'moment';
 import { useEffect, useState } from 'react';
 import "./ManagerPromotion.scss";
 import { AdminApiRequest } from '@/services/AdminApiRequest';
-import FloatingLabelInput from '@/components/adminsytem/FloatingInput/FloatingLabelInput';
+import FloatingLabelInput from '@/components/FloatingInput/FloatingLabelInput';
 import { m } from 'framer-motion';
 
 const ManagerPromotion = () => {

@@ -3,6 +3,7 @@ import { Table, Rate, Space, Image, Select, message } from 'antd';
 import { MainApiRequest } from '@/services/MainApiRequest';
 import moment from 'moment';
 import { AdminApiRequest } from '@/services/AdminApiRequest';
+import './adminPage.scss'; // Import your custom styles
 
 const AdminCustomerRating = () => {
     const [ratingsList, setRatingsList] = useState<any[]>([]);
@@ -49,24 +50,28 @@ const AdminCustomerRating = () => {
     };
 
     return (
-        <div className="container-fluid m-2">
-            <h3 className='h3 mb-3'>Quản lý đánh giá khách hàng</h3>
-
-            <div className='mb-3' style={{ maxWidth: 300 }}>
-                <Select
-                    allowClear
-                    placeholder="Lọc theo sản phẩm"
-                    style={{ width: '100%' }}
-                    onChange={handleProductFilterChange}
-                    value={selectedProductId ?? undefined}
-                    options={productList.map(p => ({
-                        label: p.name,
-                        value: Number(p.id), // Đảm bảo kiểu số
-                    }))}
-                />
+        <div className="container-fluid">
+            <div className="sticky-header-wrapper">
+                <h2 className="header-custom">QUẢN LÝ ĐÁNH GIÁ KHÁCH HÀNG</h2>
+                <div className="header-actions">
+                    <div className="search-form">
+                        <Select
+                            allowClear
+                            placeholder="Lọc theo sản phẩm"
+                            style={{ width: '100%'}}
+                            onChange={handleProductFilterChange}
+                            value={selectedProductId ?? undefined}
+                            options={productList.map(p => ({
+                                label: p.name,
+                                value: Number(p.id), // Đảm bảo kiểu số
+                            }))}
+                        />
+                    </div>
+                </div>
             </div>
 
             <Table
+                className="custom-table"
                 rowKey="id"
                 dataSource={ratingsList}
                 pagination={{ pageSize: 10, showSizeChanger: true }}

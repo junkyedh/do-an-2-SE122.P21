@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Input, Select, DatePicker, InputNumber, Form } from 'antd';
 import { FormItemProps } from 'antd';
 import './FloatingLabelInput.scss';
+import { on } from 'events';
 
 type ComponentType = 'input' | 'select' | 'date' | 'textarea';
 
@@ -15,6 +16,7 @@ interface FloatingLabelInputProps extends FormItemProps {
   readOnly?: boolean;
   componentProps?: any;
   options?: { label: string; value: any }[];
+  onChange?: (value: any) => void;
 }
 
 const FloatingLabelInput: React.FC<FloatingLabelInputProps> = ({
@@ -27,6 +29,7 @@ const FloatingLabelInput: React.FC<FloatingLabelInputProps> = ({
   readOnly,
   componentProps = {},
   options = [],
+  onChange,
   ...formItemProps
 }) => {
   const [isFocused, setIsFocused] = useState(false);
@@ -52,6 +55,7 @@ const FloatingLabelInput: React.FC<FloatingLabelInputProps> = ({
               placeholder=" "
               style={{ width: '100%' }}
               min={min}
+              onChange={onChange}
             />
           </Form.Item>
         );
@@ -72,6 +76,7 @@ const FloatingLabelInput: React.FC<FloatingLabelInputProps> = ({
             options={options}
             placeholder=" "
             style={{ width: '100%' }}
+            onChange={onChange}
           />
         </Form.Item>
       );
@@ -85,6 +90,7 @@ const FloatingLabelInput: React.FC<FloatingLabelInputProps> = ({
             {...commonProps}
             placeholder=" "
             style={{ width: '100%' }}
+            onChange={onChange}
           />
         </Form.Item>
       );

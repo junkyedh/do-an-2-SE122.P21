@@ -41,10 +41,10 @@
   }
 
   &.toast-error {
-    border-left-color: get-color($accent, "500");
+    border-left-color: get-color($accent1, "500");
     
     .toast-icon {
-      color: get-color($accent, "500");
+      color: get-color($accent1, "500");
     }
   }
 
@@ -64,6 +64,14 @@
     }
   }
 
+  &.toast-loading {
+    border-left-color: get-color($primary, "500");
+    
+    .toast-icon {
+      color: get-color($primary, "500");
+    }
+  }
+
   .toast-icon {
     flex-shrink: 0;
     margin-top: 2px;
@@ -71,6 +79,10 @@
     svg {
       width: 20px;
       height: 20px;
+    }
+
+    .animate-spin {
+      animation: spin 1s linear infinite;
     }
   }
 
@@ -123,6 +135,15 @@
   to {
     transform: translateX(0);
     opacity: 1;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
   }
 }
 

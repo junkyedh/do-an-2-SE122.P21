@@ -5,18 +5,29 @@ import { DownloadOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
 import * as XLSX from 'xlsx';
-import './AdminOrderList.scss';
-import SearchInput from '@/components/adminsytem/Search/SearchInput';
-
+import SearchInput from '@/components/Search/SearchInput';
+import './adminPage.scss';
+import AdminButton from './button/AdminButton';
+import { useToast } from '@/components/littleComponent/Toast/Toast';
 export const AdminOrderList = () => {
   const [adminOrderList, setAdminOrderList] = useState<any[]>([]);
   const [originalAdminOrderList, setOriginalAdminOrderList] = useState<any[]>([]);
   const [searchKeyword, setSearchKeyword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const toast = useToast();
 
   const fetchAdminOrderList = async () => {
-    const res = await AdminApiRequest.get('/order/list');
-    setAdminOrderList(res.data);
-    setOriginalAdminOrderList(res.data);
+    try {
+      setLoading(true)
+      const res = await AdminApiRequest.get("/order/list")
+      setAdminOrderList(res.data)
+      setOriginalAdminOrderList(res.data)
+    } catch (error) {
+      console.error("Error fetching order list:", error)
+      toast.fetchError("đơn hàng")
+    } finally {
+      setLoading(false)
+    }
   };
 
   useEffect(() => {
@@ -65,27 +76,25 @@ export const AdminOrderList = () => {
   };
 
   return (
-    <div className="container-fluid m-2">
+    <div className="container-fluid">
       <div className='sticky-header-wrapper'>
-        <h2 className="h2 header-custom">DANH SÁCH ĐƠN HÀNG</h2>
+        <h2 className="header-custom">DANH SÁCH ĐƠN HÀNG</h2>
         {/* Tìm kiếm và  Export */}
-        <div className="header-actions d-flex me-3 py-2 align-items-center justify-content-between">
-          <div className="flex-grow-1 d-flex justify-content-center">
-            <Form layout="inline" className="search-form d-flex">
-              <SearchInput
-                  placeholder="Tìm kiếm theo SĐT, mã đơn hoặc nhân viên"
-                  value={searchKeyword}
-                  onChange={(e) => setSearchKeyword(e.target.value)}
-                  onSearch={handleSearchKeyword}
-                  allowClear
-              />
-            </Form>
+        <div className="header-actions">
+          <div className="search-form">
+            <SearchInput
+                placeholder="Tìm kiếm theo SĐT, mã đơn hoặc nhân viên"
+                value={searchKeyword}
+                onChange={(e) => setSearchKeyword(e.target.value)}
+                onSearch={handleSearchKeyword}
+                allowClear
+            />
           </div>
           <div className="d-flex" >
-            <Button 
-              type="default" icon={<DownloadOutlined />}
+            <AdminButton 
+              variant="primary" 
+              icon={<DownloadOutlined />}
               onClick={handleExportAdminOrderList}
-              title='Tải xuống danh sách'
             />
           </div>
         </div>
@@ -93,8 +102,13 @@ export const AdminOrderList = () => {
 
       {/* Bảng đơn hàng */}
       <Table
-        dataSource={adminOrderList}
+        className="custom-table"
         rowKey="id"
+        pagination={{ 
+          pageSize: 10, 
+          showSizeChanger: true 
+        }}
+        dataSource={adminOrderList}
         columns={[
           {
             title: 'Mã đơn',

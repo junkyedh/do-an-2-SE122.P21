@@ -37,10 +37,10 @@
   }
 
   &.error {
-    border-left-color: get-color($accent, "500");
+    border-left-color: get-color($accent1, "500");
     
     .toast-icon {
-      color: get-color($accent, "500");
+      color: get-color($accent1, "500");
     }
   }
 
