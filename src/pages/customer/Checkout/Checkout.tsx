@@ -241,6 +241,13 @@ export const Checkout: React.FC = () => {
         branchId: selectedBranch!,
       })
       const orderId = o.id
+      await MainApiRequest.put(`/order/${orderId}`, {
+        phoneCustomer: phone,
+        serviceType: deliveryMethod === "delivery" ? "TAKE AWAY" : "DINE IN",
+        totalPrice: finalTotal,
+        orderDate: new Date().toISOString(),
+        status: "PENDING",
+      })
 
       await Promise.all(
         items.map((it) => {
