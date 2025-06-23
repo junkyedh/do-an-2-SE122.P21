@@ -3,7 +3,7 @@ import { Card, Descriptions, Spin, message, Button, Modal, Form, Input, Tag } fr
 import moment from 'moment';
 import { AdminApiRequest } from '@/services/AdminApiRequest';
 import { useSystemContext } from '@/hooks/useSystemContext';
-import './ManagerBranchInfo.scss'; // CSS riêng nếu cần
+import '../admin/adminPage.scss';
 
 const ManagerBranchInfo = () => {
   const [branch, setBranch] = useState<any>(null);
@@ -54,7 +54,7 @@ const ManagerBranchInfo = () => {
   }, [branchId]);
 
   return (
-    <div className="container-fluid m-3">
+    <div className="container-fluid">
       <h3 className="h3 mb-4" >
         Thông tin Chi nhánh
       </h3>

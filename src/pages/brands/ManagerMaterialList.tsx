@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { Button, Form, Input, DatePicker, Modal, Table, Space, Popconfirm, message, Select } from 'antd';
 import moment from 'moment';
 import * as XLSX from 'xlsx';
-import "./ManagerMaterialList.scss";
+import '../admin/adminPage.scss';
 import { DownloadOutlined } from '@ant-design/icons';
 import { AdminApiRequest } from '@/services/AdminApiRequest';
 import SearchInput from '@/components/Search/SearchInput';
 import FloatingLabelInput from '@/components/FloatingInput/FloatingLabelInput';
-
+import AdminButton from "@/pages/admin/button/AdminButton";
+import AdminPopConfirm from "@/pages/admin/button/AdminPopConfirm";
 
 const ManagerMaterialList = () => {
     const [form] = Form.useForm();
@@ -135,25 +136,23 @@ const ManagerMaterialList = () => {
     }, [searchKeyword]);
 
     return (
-        <div className="container-fluid m-2">
+        <div className="container-fluid">
             <div className='sticky-header-wrapper'>
-                <h2 className="h2 header-custom">QUẢN LÝ NGUYÊN LIỆU</h2>
+                <h2 className="header-custom">QUẢN LÝ NGUYÊN LIỆU</h2>
                 {/* Tìm kiếm và Import + Export */}
-                <div className="header-actions d-flex me-2 py-2 align-items-center justify-content-between">
-                    <div className="flex-grow-1 d-flex justify-content-center">
-                        <Form layout="inline" className="search-form d-flex">
-                            <SearchInput
-                                placeholder="Tìm kiếm theo tên, loại bảo quản hoặc ID"
-                                value={searchKeyword}
-                                onChange={(e) => setSearchKeyword(e.target.value)}
-                                onSearch={handleSearchKeyword}
-                                allowClear
-                            />
-                        </Form>
+                <div className="header-actions">
+                    <div className="search-form">
+                        <SearchInput
+                            placeholder="Tìm kiếm theo id, tên hoặc loại bảo quản"
+                            value={searchKeyword}
+                            onChange={(e) => setSearchKeyword(e.target.value)}
+                            onSearch={handleSearchKeyword}
+                            allowClear
+                        />
                     </div>
                     <div className="d-flex" >
-                        <Button
-                            type="primary"
+                        <AdminButton
+                            variant="primary"
                             icon={<DownloadOutlined />}
                             onClick={exportExcel}
                             title='Tải xuống danh sách'
@@ -222,24 +221,25 @@ const ManagerMaterialList = () => {
                         />
                     </div>
 
-                    <div className='modal-footer-custom d-flex justify-content-end align-items-center gap-3'>
-                        <Button
-                            type='default'
+                    <div className='modal-footer-custom'>
+                        <AdminButton variant="secondary"
                             onClick={onCancelCreateMaterial}
                         >
                             Hủy
-                        </Button>
-                        <Button
-                            type='primary'
+                        </AdminButton>
+                        <AdminButton
+                            variant='primary'
                             onClick={onOKCreateMaterial}
                         >
                             Lưu thay đổi
-                        </Button>
+                        </AdminButton>
                     </div>
                 </Form>
             </Modal>
 
             <Table
+                className="custom-table"
+                rowKey="id"
                 dataSource={materialList}
                 pagination={{
                     pageSize: 9, // Số lượng item trên mỗi trang
@@ -298,15 +298,17 @@ const ManagerMaterialList = () => {
                         key: 'actions',
                         render: (_, record) => (
                             <Space size="middle">
-                                <Button type="default" onClick={() => onOpenCreateMaterialModal(record)}>
-                                    <i className="fas fa-edit"></i>
-                                </Button>
+                                <AdminButton
+                                    variant="secondary"
+                                    size="sm"
+                                    icon={<i className="fas fa-edit"></i>}
+                                    onClick={() => onOpenCreateMaterialModal(record)} />
                             </Space>
                         ),
                     },
                 ]}
             />
-        </div>
+        </div >
     );
 };
 
