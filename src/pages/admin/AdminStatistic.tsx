@@ -11,7 +11,7 @@ import OrderType from '../Statistic/OrderType';
 import Revenue30Days from '../Statistic/Revenue30Days';
 import '../Statistic/Statistic.scss';
 import Top5Drinks from '../Statistic/Top5Drinks';
-
+import TopBranchRevenue from '../Statistic/TopBranchRevenue';
 
 
 const Statistic: React.FC = () => {
@@ -27,7 +27,7 @@ const Statistic: React.FC = () => {
     const totalStaff = document.getElementById('totalStaff');
     const totalOrder = document.getElementById('totalOrder');
     const totalTable = document.getElementById('totalTable');
-
+    const totalBranch = document.getElementById('totalBranch');
 
     if (res.data.totalPayment && totalOrder) {
       totalOrder.innerText = res.data.totalPayment.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
@@ -43,6 +43,9 @@ const Statistic: React.FC = () => {
     }
     if (res.data.totalTable && totalTable) {
       totalTable.innerText = res.data.totalTable;
+    }
+    if (res.data.totalBranch && totalBranch) {
+      totalBranch.innerText = res.data.totalBranch;
     }
   };
 
@@ -90,6 +93,12 @@ const Statistic: React.FC = () => {
             <Card.Text id="totalTable">N/A</Card.Text>
           </Card.Body>
         </Card>
+        <Card className="card">
+          <Card.Body>
+            <Card.Title>Tổng Số Chi Nhánh</Card.Title>
+            <Card.Text id="totalBranch">N/A</Card.Text>
+          </Card.Body>
+        </Card>
       </div>
 
       {/* Biểu đồ Doanh Thu riêng */}
@@ -115,6 +124,11 @@ const Statistic: React.FC = () => {
         <div className="chart-right">
           <OrderRevenue14 data={chartData} />
           <OrderRevenue30 data={chartData} />
+        </div>
+      </div>
+      <div className="charts">
+        <div className="chart-full-width">
+          <TopBranchRevenue />
         </div>
       </div>
     </div>

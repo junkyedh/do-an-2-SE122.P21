@@ -1,12 +1,13 @@
 import { AdminApiRequest } from '@/services/AdminApiRequest';
 import { Button, Form, message, Table, Tag, Popconfirm } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
-
 import moment from 'moment';
 import { useEffect, useState } from 'react';
 import * as XLSX from 'xlsx';
-import './ManagerOrderList.scss';
+import '../admin/adminPage.scss';
 import SearchInput from '@/components/Search/SearchInput';
+import AdminButton from "@/pages/admin/button/AdminButton";
+import AdminPopConfirm from "@/pages/admin/button/AdminPopConfirm";
 
 export const ManagerOrderList = () => {
   const [managerOrderList, setManagerOrderList] = useState<any[]>([]);
@@ -88,25 +89,23 @@ export const ManagerOrderList = () => {
 
 
   return (
-    <div className="container-fluid m-2">
+    <div className="container-fluid">
       <div className='sticky-header-wrapper'>
-        <h2 className="h2 header-custom">DANH SÁCH ĐƠN HÀNG</h2>
+        <h2 className="header-custom">DANH SÁCH ĐƠN HÀNG</h2>
         {/* Tìm kiếm và  Export */}
-        <div className="header-actions d-flex me-3 py-2 align-items-center justify-content-between">
-          <div className="flex-grow-1 d-flex justify-content-center">
-            <Form layout="inline" className="search-form d-flex">
-              <SearchInput
-                placeholder="Tìm kiếm theo SĐT, mã đơn hoặc nhân viên"
-                value={searchKeyword}
-                onChange={(e) => setSearchKeyword(e.target.value)}
-                onSearch={handleSearchKeyword}
-                allowClear
-              />
-            </Form>
+        <div className="header-actions">
+          <div className="search-form">
+            <SearchInput
+              placeholder="Tìm kiếm theo SĐT, mã đơn hoặc nhân viên"
+              value={searchKeyword}
+              onChange={(e) => setSearchKeyword(e.target.value)}
+              onSearch={handleSearchKeyword}
+              allowClear
+            />
           </div>
           <div className="d-flex" >
-            <Button
-              type="default" icon={<DownloadOutlined />}
+            <AdminButton
+              variant="primary" icon={<DownloadOutlined />}
               onClick={handleExportManagerOrderList}
               title='Tải xuống danh sách'
             />
@@ -116,6 +115,7 @@ export const ManagerOrderList = () => {
 
       {/* Bảng đơn hàng */}
       <Table
+        className="custom-table"
         dataSource={managerOrderList}
         rowKey="id"
         columns={[
@@ -177,30 +177,30 @@ export const ManagerOrderList = () => {
 
               return (
                 <div className="d-flex gap-2">
-                  <Button
-                    type="primary"
-                    size="small"
+                  <AdminButton
+                    variant="primary"
+                    size="sm"
                     disabled={isCompleted || isCanceled}
+                    icon={<i className='fas fa-check'></i>}
                     onClick={() => handleCompleteOrder(record.id)}
                   >
-                    Hoàn thành
-                  </Button>
+                  </AdminButton>
 
-                  <Popconfirm
+                  <AdminPopConfirm
                     title="Bạn có chắc chắn muốn hủy đơn hàng này?"
                     onConfirm={() => handleCancelOrder(record.id)}
                     okText="Đồng ý"
                     cancelText="Hủy"
-                    disabled={isCompleted || isCanceled}
+                    //disabled={isCompleted || isCanceled}
                   >
-                    <Button
-                      danger
-                      size="small"
+                    <AdminButton
+                      variant="destructive"
+                      size="sm"
+                      icon={<i className='fas fa-stop'></i>}
                       disabled={isCompleted || isCanceled}
                     >
-                      Hủy
-                    </Button>
-                  </Popconfirm>
+                    </AdminButton>
+                  </AdminPopConfirm>
                 </div>
               );
             }
