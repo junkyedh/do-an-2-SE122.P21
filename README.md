@@ -1,9 +1,10 @@
-![image](https://github.com/user-attachments/assets/09c38e78-e48d-4df8-a17c-8257663d957f)# Cafe W Fen - Coffee Chain Management System
 
 ## Introduction
+# Cafe W Fen - Coffee Chain Management System
+![image](https://github.com/user-attachments/assets/09c38e78-e48d-4df8-a17c-8257663d957f)
 Cafe W Fen is a centralized management platform designed for coffee shop chains. The system streamlines business operations at each branch while providing comprehensive oversight for the entire chain. It covers product management, order processing, inventory control, user roles, revenue tracking, and profit statistics, ensuring accuracy, flexibility, and scientific management.
 
-[![Watch the video](https://img.youtube.com/vi/kk189WpFxNo)](https://www.youtube.com/watch?v=kk189WpFxNo)
+[![Watch the video](https://img.youtube.com/vi/kk189WpFxNo/0.jpg))](https://www.youtube.com/watch?v=kk189WpFxNo)
 ## Features
 - **Centralized Management:** Manage all branches, employees, products, materials, orders, and customers from a single platform.
 - **Role-Based Access:** Supports Admin, Manager, Employee, and Customer roles with strict permission controls.
