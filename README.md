@@ -42,7 +42,7 @@ Cafe W Fen is a centralized management platform designed for coffee shop chains.
 ## Installation
 1. **Clone the repository:**
   ```bash
-  git clone https://github.com/yourusername/cafe-w-fen.git
+  git clone https://github.com/junkyedh/cafe-w-fen.git
   cd cafe-w-fen
   ```
 2. **Install dependencies:**
@@ -84,4 +84,5 @@ Cafe W Fen is a centralized management platform designed for coffee shop chains.
 
 ## License
 This project is licensed under the [MIT License](LICENSE).
+
 
